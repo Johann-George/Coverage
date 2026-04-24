@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Create Quote - Step 1: Customer & Distribution | InsureCore</title>
+  <title>Create Quote - Step 2: Product Selection | InsureCore</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
@@ -111,68 +111,33 @@
       letter-spacing: 0.5px;
     }
     
-    .optional-badge {
-      background: var(--success-light);
-      color: #065f46;
-      font-size: 10px;
-      font-weight: 600;
-      padding: 4px 12px;
-      border-radius: 20px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    
-    .status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 500;
-    }
-    
-    .status-active {
-      background: var(--success-light);
-      color: #065f46;
-    }
-    
-    .status-warning {
-      background: var(--warning-light);
-      color: #92400e;
-    }
-    
-    .status-danger {
-      background: var(--danger-light);
-      color: #991b1b;
-    }
-    
-    .channel-card {
+    .product-card {
       border: 2px solid var(--border);
       border-radius: 12px;
-      padding: 20px 16px;
+      padding: 20px;
       cursor: pointer;
       transition: all 0.2s;
-      text-align: center;
       position: relative;
+      background: white;
     }
     
-    .channel-card:hover {
+    .product-card:hover {
       border-color: var(--primary-light);
-      background: #f8fafc;
+      background: #fafbff;
       transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     }
     
-    .channel-card.selected {
+    .product-card.selected {
       border-color: var(--primary);
       background: #eff6ff;
       box-shadow: 0 4px 12px rgba(30, 64, 175, 0.15);
     }
     
-    .channel-card .check-mark {
+    .product-card .check-mark {
       position: absolute;
-      top: 10px;
-      right: 10px;
+      top: 12px;
+      right: 12px;
       width: 24px;
       height: 24px;
       background: var(--primary);
@@ -183,66 +148,150 @@
       color: white;
     }
     
-    .recipient-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 16px;
+    .product-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
       margin-bottom: 12px;
     }
     
-    .add-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      color: var(--primary);
-      font-weight: 500;
-      font-size: 14px;
-      cursor: pointer;
-      padding: 8px 0;
-      border: none;
-      background: none;
-      transition: opacity 0.2s;
+    .badge-basic {
+      background: #e0f2fe;
+      color: #0369a1;
     }
     
-    .add-btn:hover { opacity: 0.7; }
+    .badge-enhanced {
+      background: #fae8ff;
+      color: #a21caf;
+    }
     
-    .toggle-container {
+    .badge-premium {
+      background: #fef3c7;
+      color: #b45309;
+    }
+    
+    .badge-custom {
+      background: #f0fdf4;
+      color: #15803d;
+    }
+    
+    .product-features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    
+    .feature-tag {
+      background: var(--surface);
+      color: var(--text-secondary);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 4px;
     }
     
-    .toggle-switch {
-      position: relative;
-      width: 44px;
-      height: 24px;
-      background: #cbd5e1;
-      border-radius: 12px;
+    .contribution-card {
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
       cursor: pointer;
-      transition: 0.2s;
-      border: none;
+      transition: all 0.2s;
+      text-align: center;
     }
     
-    .toggle-switch.active {
-      background: var(--primary);
+    .contribution-card:hover {
+      border-color: var(--primary-light);
+      background: #f8fafc;
     }
     
-    .toggle-switch::after {
-      content: '';
+    .contribution-card.selected {
+      border-color: var(--primary);
+      background: #eff6ff;
+    }
+    
+    .contribution-icon {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+    
+    .slider-container {
+      margin-top: 20px;
+      padding: 20px;
+      background: var(--surface);
+      border-radius: 10px;
+    }
+    
+    .slider-track {
+      position: relative;
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 4px;
+      margin: 20px 0;
+    }
+    
+    .slider-fill {
       position: absolute;
-      width: 20px;
-      height: 20px;
-      background: white;
-      border-radius: 50%;
-      top: 2px;
-      left: 2px;
-      transition: 0.2s;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%);
+      border-radius: 4px;
+      transition: width 0.2s;
     }
     
-    .toggle-switch.active::after {
-      left: 22px;
+    .slider-thumb {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 24px;
+      height: 24px;
+      background: white;
+      border: 3px solid var(--primary);
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      transition: transform 0.1s;
+    }
+    
+    .slider-thumb:hover {
+      transform: translate(-50%, -50%) scale(1.1);
+    }
+    
+    .slider-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    
+    .contribution-summary {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px dashed var(--border);
+    }
+    
+    .contribution-item {
+      text-align: center;
+    }
+    
+    .contribution-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    
+    .contribution-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 4px;
     }
     
     .info-card {
@@ -276,20 +325,53 @@
       line-height: 1.5;
     }
     
-    .create-customer-link {
-      background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%);
-      border: 2px dashed var(--primary-light);
-      border-radius: 12px;
-      padding: 32px 20px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.2s;
+    .context-card {
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
     }
     
-    .create-customer-link:hover {
-      border-style: solid;
-      background: linear-gradient(135deg, #dbeafe 0%, #dcfce7 100%);
-      transform: translateY(-2px);
+    .context-avatar {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 20px;
+      font-weight: 700;
+    }
+    
+    .context-details {
+      flex: 1;
+    }
+    
+    .context-title {
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+    }
+    
+    .context-subtitle {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    
+    .context-badge {
+      background: var(--success-light);
+      color: #065f46;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
     }
     
     .stepper {
@@ -308,6 +390,11 @@
       font-size: 13px;
       font-weight: 500;
       white-space: nowrap;
+    }
+    
+    .step.completed {
+      background: var(--success-light);
+      color: #065f46;
     }
     
     .step.active {
@@ -330,6 +417,11 @@
       justify-content: center;
       font-size: 12px;
       font-weight: 600;
+    }
+    
+    .step.completed .step-number {
+      background: #065f46;
+      color: white;
     }
     
     .step.active .step-number {
@@ -361,6 +453,13 @@
       box-shadow: 0 4px 12px rgba(30, 64, 175, 0.25);
     }
     
+    .btn-primary:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
     .btn-secondary {
       background: white;
       color: var(--text-primary);
@@ -378,62 +477,23 @@
       border-color: #cbd5e1;
     }
     
-    .btn-icon {
-      background: none;
-      border: none;
-      padding: 6px;
-      cursor: pointer;
-      color: var(--danger);
-      border-radius: 6px;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    
-    .btn-icon:hover {
-      background: var(--danger-light);
-    }
-    
-    .override-link {
-      margin-left: 8px;
+    .btn-outline {
+      background: transparent;
       color: var(--primary);
-      font-size: 12px;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 14px;
       cursor: pointer;
-      border: none;
-      background: none;
-      padding: 0;
-      text-decoration: none;
-    }
-    
-    .override-link:hover {
-      text-decoration: underline;
-    }
-    
-    .search-wrapper {
-      position: relative;
-    }
-    
-    .search-icon {
-      position: absolute;
-      left: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-muted);
-      pointer-events: none;
-    }
-    
-    .search-input {
-      padding-left: 42px;
-    }
-    
-    .validation-success {
-      margin-top: 8px;
-      display: flex;
+      border: 1px solid var(--primary);
+      transition: all 0.2s;
+      display: inline-flex;
       align-items: center;
-      gap: 6px;
-      font-size: 13px;
-      color: var(--success);
+      gap: 8px;
+    }
+    
+    .btn-outline:hover {
+      background: #eff6ff;
     }
     
     .grid-2 {
@@ -451,7 +511,13 @@
     .grid-4 {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
+      gap: 16px;
+    }
+    
+    @media (max-width: 900px) {
+      .grid-4 {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
     
     @media (max-width: 768px) {
@@ -529,6 +595,94 @@
       display: flex;
       gap: 12px;
     }
+    
+    .validity-option {
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+      font-weight: 500;
+      font-size: 14px;
+    }
+    
+    .validity-option:hover {
+      border-color: var(--primary-light);
+      background: #f8fafc;
+    }
+    
+    .validity-option.selected {
+      border-color: var(--primary);
+      background: #eff6ff;
+      color: var(--primary);
+    }
+    
+    .product-details-panel {
+      background: linear-gradient(135deg, #f0f9ff 0%, #eff6ff 100%);
+      border: 1px solid #bae6fd;
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 16px;
+    }
+    
+    .panel-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #bae6fd;
+    }
+    
+    .panel-title {
+      font-weight: 600;
+      font-size: 14px;
+      color: #0369a1;
+    }
+    
+    .coverage-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    
+    .coverage-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-primary);
+    }
+    
+    .coverage-check {
+      width: 20px;
+      height: 20px;
+      background: #d1fae5;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #065f46;
+      flex-shrink: 0;
+    }
+    
+    .scheme-size-input {
+      position: relative;
+    }
+    
+    .scheme-size-input input {
+      padding-right: 80px;
+    }
+    
+    .scheme-size-suffix {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 13px;
+      color: var(--text-muted);
+    }
   </style>
 </head>
 <body>
@@ -538,27 +692,9 @@
     const { useState, useEffect } = React;
 
     // Icon Components
-    const CheckIcon = () => (
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+    const CheckIcon = ({ size = 14 }) => (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
         <path d="M20 6L9 17l-5-5"/>
-      </svg>
-    );
-
-    const SearchIcon = () => (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-      </svg>
-    );
-
-    const PlusIcon = () => (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M12 5v14M5 12h14"/>
-      </svg>
-    );
-
-    const TrashIcon = () => (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M10 11v6M14 11v6"/>
       </svg>
     );
 
@@ -574,90 +710,141 @@
       </svg>
     );
 
-    const ExternalLinkIcon = () => (
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/>
+    const ChevronLeft = () => (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="m15 18-6-6 6-6"/>
       </svg>
     );
 
+    const AlertIcon = () => (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0zM12 9v4M12 17h.01"/>
+      </svg>
+    );
+
+    const PackageIcon = () => (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M16.5 9.4l-9-5.19M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>
+        <polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>
+      </svg>
+    );
+
+    // Products data
+    const products = [
+      {
+        id: 'grp-basic-001',
+        code: 'GRP-BASIC-001',
+        name: 'Group Life Basic',
+        badge: 'basic',
+        description: 'Essential group life coverage with core death and disability benefits',
+        minLives: 10,
+        maxLives: 500,
+        features: ['Death Benefit', 'TPD', 'Funeral', 'Critical Illness'],
+        coverages: [
+          'Death Benefit (2-5x Annual Salary)',
+          'Total Permanent Disability',
+          'Funeral Expense Cover',
+          'Critical Illness (Optional)',
+          'Accidental Death Benefit',
+          'Repatriation Cover'
+        ]
+      },
+      {
+        id: 'grp-enhanced-002',
+        code: 'GRP-ENHANCED-002',
+        name: 'Group Life Enhanced',
+        badge: 'enhanced',
+        description: 'Comprehensive coverage with additional riders and higher limits',
+        minLives: 25,
+        maxLives: 2000,
+        features: ['Death Benefit', 'TPD', 'Funeral', 'CI', 'Last Expense', 'Education'],
+        coverages: [
+          'Death Benefit (3-8x Annual Salary)',
+          'Total Permanent Disability',
+          'Funeral Expense Cover',
+          'Critical Illness (Included)',
+          'Last Expense Benefit',
+          'Education Benefit',
+          'Spouse & Dependant Cover',
+          'Accelerated Death Benefit'
+        ]
+      },
+      {
+        id: 'grp-premium-003',
+        code: 'GRP-PREMIUM-003',
+        name: 'Group Life Premium',
+        badge: 'premium',
+        description: 'Top-tier coverage with maximum flexibility and highest benefit limits',
+        minLives: 50,
+        maxLives: 10000,
+        features: ['Death Benefit', 'TPD', 'Funeral', 'CI', 'WOP', 'Terminal'],
+        coverages: [
+          'Death Benefit (5-10x Annual Salary)',
+          'Total Permanent Disability',
+          'Funeral Expense Cover (Enhanced)',
+          'Critical Illness (36 conditions)',
+          'Waiver of Premium',
+          'Terminal Illness Benefit',
+          'Family Income Benefit',
+          'Retrenchment Cover',
+          'HIV/AIDS Cover'
+        ]
+      },
+      {
+        id: 'grp-custom-004',
+        code: 'GRP-CUSTOM-004',
+        name: 'Bespoke Solution',
+        badge: 'custom',
+        description: 'Tailored coverage designed to meet specific employer requirements',
+        minLives: 100,
+        maxLives: null,
+        features: ['Customizable', 'Flexible Limits', 'Tailored Riders'],
+        coverages: [
+          'Fully Customizable Benefits',
+          'Flexible Coverage Limits',
+          'Bespoke Rider Selection',
+          'Industry-Specific Add-ons',
+          'Dedicated Account Management',
+          'Custom Claims Process'
+        ]
+      }
+    ];
+
+    const validityOptions = [15, 30, 45, 60, 90];
+
     function App() {
-      // State Management
-      const [customerType, setCustomerType] = useState('direct');
-      const [searchQuery, setSearchQuery] = useState('Safaricom');
-      const [customerFound, setCustomerFound] = useState(true);
-      const [sameAsContact, setSameAsContact] = useState(false);
-      const [recipients, setRecipients] = useState([
-        { id: 1, name: 'Grace Wanjiku', email: 'grace.w@safaricom.co.ke', phone: '+254 722 123 456', role: 'HR Manager' }
-      ]);
-      const [selectedBroker, setSelectedBroker] = useState('aon');
-      const [commissionOverride, setCommissionOverride] = useState(false);
-      const [customCommission, setCustomCommission] = useState('');
-      
-      // Mock Data
-      const customerData = {
-        legalName: 'Safaricom PLC',
-        kraPin: 'P051234567X',
+      // Customer context from Step 1 (simulated)
+      const customerContext = {
+        name: 'Safaricom PLC',
+        type: 'Employer (Direct)',
         industry: 'Telecommunications',
-        relationshipManager: 'James Mwangi',
-        kycStatus: 'Active',
-        riskFlag: null
+        broker: 'Aon Minet Kenya Ltd'
       };
-      
-      const brokers = [
-        { id: 'aon', name: 'Aon Minet Kenya Ltd', code: 'AON-001', commission: 7.5, class: 'A' },
-        { id: 'marsh', name: 'Marsh Kenya', code: 'MRS-002', commission: 6.5, class: 'B' },
-        { id: 'wib', name: 'Willis Towers Watson', code: 'WTW-003', commission: 7.0, class: 'A' }
-      ];
-      
-      const banks = [
-        'Equity Bank',
-        'KCB Bank',
-        'Co-operative Bank',
-        'NCBA Bank',
-        'Absa Bank Kenya',
-        'Stanbic Bank',
-        'Standard Chartered',
-        'I&M Bank',
-        'DTB Bank'
-      ];
-      
-      // Handlers
-      const handleSearchChange = (e) => {
-        const value = e.target.value;
-        setSearchQuery(value);
-        setCustomerFound(value.toLowerCase().includes('safaricom'));
+
+      // State
+      const [selectedProduct, setSelectedProduct] = useState('grp-basic-001');
+      const [contributionType, setContributionType] = useState('employer');
+      const [employerContribution, setEmployerContribution] = useState(100);
+      const [schemeSize, setSchemeSize] = useState('450');
+      const [quoteValidity, setQuoteValidity] = useState(30);
+      const [schemeType, setSchemeType] = useState('');
+
+      const getProduct = () => products.find(p => p.id === selectedProduct);
+
+      const handleSliderChange = (e) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const percentage = Math.round((x / rect.width) * 100);
+        setEmployerContribution(Math.max(0, Math.min(100, percentage)));
       };
-      
-      const addRecipient = () => {
-        setRecipients([...recipients, { 
-          id: Date.now(), 
-          name: '', 
-          email: '', 
-          phone: '', 
-          role: '' 
-        }]);
-      };
-      
-      const removeRecipient = (id) => {
-        if (recipients.length > 1) {
-          setRecipients(recipients.filter(r => r.id !== id));
-        }
-      };
-      
-      const updateRecipient = (id, field, value) => {
-        setRecipients(recipients.map(r => 
-          r.id === id ? { ...r, [field]: value } : r
-        ));
-      };
-      
-      const getSelectedBroker = () => brokers.find(b => b.id === selectedBroker);
-      
-      const getCurrentCommission = () => {
-        if (commissionOverride && customCommission) {
-          return customCommission;
-        }
-        const broker = getSelectedBroker();
-        return broker ? broker.commission : '';
+
+      const isValidSchemeSize = () => {
+        const product = getProduct();
+        const size = parseInt(schemeSize) || 0;
+        if (!product) return false;
+        if (size < product.minLives) return false;
+        if (product.maxLives && size > product.maxLives) return false;
+        return true;
       };
 
       return (
@@ -671,17 +858,17 @@
                 <span className="page-badge">Group Life</span>
               </div>
               <p className="page-description">
-                Build a Group Life quotation. You can save as draft at any time and send to the customer once complete.
+                Select the product and configure scheme parameters for this quotation.
               </p>
             </div>
             
             {/* Stepper */}
             <div className="stepper">
-              <div className="step active">
-                <span className="step-number">1</span>
+              <div className="step completed">
+                <span className="step-number"><CheckIcon size={12} /></span>
                 Customer & Distribution
               </div>
-              <div className="step inactive">
+              <div className="step active">
                 <span className="step-number">2</span>
                 Product Selection
               </div>
@@ -699,432 +886,314 @@
               </div>
             </div>
             
-            {/* Section 1: Customer Type & Channel */}
-            <div className="form-section">
-              <div className="section-header">
-                <div className="section-icon" style={{ background: '#eff6ff', color: '#1e40af' }}>📋</div>
-                <div>
-                  <h3 className="section-title">Customer Type & Channel</h3>
-                  <p className="section-description">Select how this customer is onboarding</p>
+            {/* Customer Context Card */}
+            <div className="context-card">
+              <div className="context-avatar">
+                {customerContext.name.charAt(0)}
+              </div>
+              <div className="context-details">
+                <div className="context-title">{customerContext.name}</div>
+                <div className="context-subtitle">
+                  {customerContext.type} · {customerContext.industry} · via {customerContext.broker}
                 </div>
               </div>
-              
-              <div className="grid-3">
-                <div 
-                  className={`channel-card ${customerType === 'direct' ? 'selected' : ''}`}
-                  onClick={() => setCustomerType('direct')}
-                >
-                  {customerType === 'direct' && (
-                    <div className="check-mark"><CheckIcon /></div>
-                  )}
-                  <div style={{ fontSize: '32px', marginBottom: '12px' }}>🏢</div>
-                  <div style={{ fontWeight: '600', fontSize: '15px', marginBottom: '4px', color: '#0f172a' }}>
-                    Employer (Direct)
-                  </div>
-                  <div style={{ fontSize: '13px', color: '#64748b' }}>Direct corporate client</div>
-                </div>
-                
-                <div 
-                  className={`channel-card ${customerType === 'broker' ? 'selected' : ''}`}
-                  onClick={() => setCustomerType('broker')}
-                >
-                  {customerType === 'broker' && (
-                    <div className="check-mark"><CheckIcon /></div>
-                  )}
-                  <div style={{ fontSize: '32px', marginBottom: '12px' }}>🤝</div>
-                  <div style={{ fontWeight: '600', fontSize: '15px', marginBottom: '4px', color: '#0f172a' }}>
-                    Via Broker
-                  </div>
-                  <div style={{ fontSize: '13px', color: '#64748b' }}>Intermediary channel</div>
-                </div>
-                
-                <div 
-                  className={`channel-card ${customerType === 'banca' ? 'selected' : ''}`}
-                  onClick={() => setCustomerType('banca')}
-                >
-                  {customerType === 'banca' && (
-                    <div className="check-mark"><CheckIcon /></div>
-                  )}
-                  <div style={{ fontSize: '32px', marginBottom: '12px' }}>🏦</div>
-                  <div style={{ fontWeight: '600', fontSize: '15px', marginBottom: '4px', color: '#0f172a' }}>
-                    Bancassurance
-                  </div>
-                  <div style={{ fontSize: '13px', color: '#64748b' }}>Bank partnership</div>
-                </div>
-              </div>
+              <div className="context-badge">✓ KYC Verified</div>
             </div>
             
-            {/* Section 2: Customer Search & Selection */}
+            {/* Section 1: Product Selection */}
             <div className="form-section">
               <div className="section-header">
-                <div className="section-icon" style={{ background: '#f0fdf4', color: '#16a34a' }}>🔍</div>
+                <div className="section-icon" style={{ background: '#eff6ff', color: '#1e40af' }}>📦</div>
                 <div>
-                  <h3 className="section-title">Customer Search & Selection</h3>
-                  <p className="section-description">Find an existing customer or create new</p>
+                  <h3 className="section-title">Select Product</h3>
+                  <p className="section-description">Choose the group life product for this quotation</p>
                 </div>
               </div>
               
-              {/* Search Input */}
-              <div style={{ marginBottom: '20px' }}>
-                <label className="form-label">
-                  Search Customer <span className="required">*</span>
-                </label>
-                <div className="search-wrapper">
-                  <input 
-                    type="text" 
-                    className="form-input search-input" 
-                    placeholder="Search by name, KRA PIN, or registration number..."
-                    value={searchQuery}
-                    onChange={handleSearchChange}
-                  />
-                  <div className="search-icon">
-                    <SearchIcon />
+              <div className="grid-2">
+                {products.map(product => (
+                  <div 
+                    key={product.id}
+                    className={`product-card ${selectedProduct === product.id ? 'selected' : ''}`}
+                    onClick={() => setSelectedProduct(product.id)}
+                  >
+                    {selectedProduct === product.id && (
+                      <div className="check-mark"><CheckIcon /></div>
+                    )}
+                    <span className={`product-badge badge-${product.badge}`}>
+                      {product.badge}
+                    </span>
+                    <div style={{ fontWeight: '600', fontSize: '16px', marginBottom: '4px', color: '#0f172a' }}>
+                      {product.name}
+                    </div>
+                    <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>
+                      {product.code}
+                    </div>
+                    <div style={{ fontSize: '13px', color: '#64748b', marginBottom: '8px', lineHeight: '1.4' }}>
+                      {product.description}
+                    </div>
+                    <div style={{ fontSize: '12px', color: '#94a3b8' }}>
+                      {product.minLives} - {product.maxLives ? product.maxLives.toLocaleString() : '∞'} lives
+                    </div>
+                    <div className="product-features">
+                      {product.features.slice(0, 4).map((f, i) => (
+                        <span key={i} className="feature-tag">
+                          <CheckIcon size={12} /> {f}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                </div>
-                {customerFound && searchQuery && (
-                  <div className="validation-success">
-                    <CheckIcon /> 
-                    <span>Customer found and verified</span>
-                    <span style={{ margin: '0 4px' }}>·</span>
-                    <span className="status-badge status-active">KYC: Active</span>
-                  </div>
-                )}
+                ))}
               </div>
               
-              {/* Customer Details or Create New */}
-              {customerFound && searchQuery ? (
-                <div className="grid-2">
-                  <div>
-                    <label className="form-label">
-                      Legal Name <span className="auto-badge">AUTO</span>
-                    </label>
-                    <input type="text" className="form-input" value={customerData.legalName} disabled />
+              {/* Product Details Panel */}
+              {selectedProduct && (
+                <div className="product-details-panel">
+                  <div className="panel-header">
+                    <PackageIcon />
+                    <span className="panel-title">{getProduct()?.name} — Included Coverages</span>
                   </div>
-                  <div>
-                    <label className="form-label">
-                      KRA / Tax PIN <span className="auto-badge">AUTO</span>
-                    </label>
-                    <input type="text" className="form-input" value={customerData.kraPin} disabled />
-                  </div>
-                  <div>
-                    <label className="form-label">
-                      Industry <span className="auto-badge">AUTO</span>
-                    </label>
-                    <input type="text" className="form-input" value={customerData.industry} disabled />
-                  </div>
-                  <div>
-                    <label className="form-label">
-                      Relationship Manager <span className="auto-badge">AUTO</span>
-                    </label>
-                    <input type="text" className="form-input" value={customerData.relationshipManager} disabled />
+                  <div className="coverage-grid">
+                    {getProduct()?.coverages.map((coverage, i) => (
+                      <div key={i} className="coverage-item">
+                        <span className="coverage-check"><CheckIcon size={12} /></span>
+                        {coverage}
+                      </div>
+                    ))}
                   </div>
                 </div>
-              ) : (
-                <div className="create-customer-link">
-                  <div style={{ fontSize: '40px', marginBottom: '12px' }}>➕</div>
-                  <div style={{ fontWeight: '600', fontSize: '16px', color: '#1e40af', marginBottom: '6px' }}>
-                    Customer not found?
+              )}
+            </div>
+            
+            {/* Section 2: Scheme Classification */}
+            <div className="form-section">
+              <div className="section-header">
+                <div className="section-icon" style={{ background: '#fef3c7', color: '#d97706' }}>⚙️</div>
+                <div>
+                  <h3 className="section-title">Scheme Classification</h3>
+                  <p className="section-description">Define scheme type and contribution structure</p>
+                </div>
+              </div>
+              
+              <div className="grid-2" style={{ marginBottom: '20px' }}>
+                <div>
+                  <label className="form-label">Scheme Type <span className="required">*</span></label>
+                  <select 
+                    className="form-input" 
+                    value={schemeType}
+                    onChange={(e) => setSchemeType(e.target.value)}
+                  >
+                    <option value="">Select Scheme Type</option>
+                    <option value="ordinary">Ordinary Life</option>
+                    <option value="deposit">Deposit Administration</option>
+                    <option value="unit-linked">Unit Linked</option>
+                    <option value="hybrid">Hybrid</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="form-label">
+                    Scheme Size (No. of Employees) <span className="required">*</span>
+                  </label>
+                  <div className="scheme-size-input">
+                    <input 
+                      type="text" 
+                      className="form-input" 
+                      placeholder="e.g. 450"
+                      value={schemeSize}
+                      onChange={(e) => setSchemeSize(e.target.value.replace(/\D/g, ''))}
+                      style={{ 
+                        borderColor: schemeSize && !isValidSchemeSize() ? '#ef4444' : undefined 
+                      }}
+                    />
+                    <span className="scheme-size-suffix">employees</span>
                   </div>
-                  <div style={{ fontSize: '14px', color: '#64748b', marginBottom: '12px' }}>
-                    Create a new customer record and return to continue this quote
+                  {schemeSize && !isValidSchemeSize() && (
+                    <div style={{ marginTop: '6px', fontSize: '12px', color: '#ef4444' }}>
+                      ⚠ {getProduct()?.name} requires {getProduct()?.minLives} - {getProduct()?.maxLives?.toLocaleString() || '∞'} lives
+                    </div>
+                  )}
+                </div>
+              </div>
+              
+              {/* Premium Contribution Type */}
+              <div style={{ marginBottom: '8px' }}>
+                <label className="form-label">Premium Contribution Type <span className="required">*</span></label>
+              </div>
+              <div className="grid-3" style={{ marginBottom: '8px' }}>
+                <div 
+                  className={`contribution-card ${contributionType === 'employer' ? 'selected' : ''}`}
+                  onClick={() => { setContributionType('employer'); setEmployerContribution(100); }}
+                >
+                  <div className="contribution-icon">🏢</div>
+                  <div style={{ fontWeight: '600', fontSize: '14px', marginBottom: '2px' }}>Employer Pays Fully</div>
+                  <div style={{ fontSize: '12px', color: '#64748b' }}>100% employer funded</div>
+                </div>
+                
+                <div 
+                  className={`contribution-card ${contributionType === 'shared' ? 'selected' : ''}`}
+                  onClick={() => { setContributionType('shared'); setEmployerContribution(70); }}
+                >
+                  <div className="contribution-icon">🤝</div>
+                  <div style={{ fontWeight: '600', fontSize: '14px', marginBottom: '2px' }}>Shared Contribution</div>
+                  <div style={{ fontSize: '12px', color: '#64748b' }}>Split between parties</div>
+                </div>
+                
+                <div 
+                  className={`contribution-card ${contributionType === 'employee' ? 'selected' : ''}`}
+                  onClick={() => { setContributionType('employee'); setEmployerContribution(0); }}
+                >
+                  <div className="contribution-icon">👤</div>
+                  <div style={{ fontWeight: '600', fontSize: '14px', marginBottom: '2px' }}>Employee Pays Fully</div>
+                  <div style={{ fontSize: '12px', color: '#64748b' }}>Voluntary scheme</div>
+                </div>
+              </div>
+              
+              {/* Contribution Slider (for shared) */}
+              {contributionType === 'shared' && (
+                <div className="slider-container">
+                  <div style={{ textAlign: 'center', marginBottom: '8px', fontWeight: '500', color: '#64748b', fontSize: '13px' }}>
+                    Adjust contribution split
                   </div>
-                  <span style={{ 
-                    display: 'inline-flex', 
-                    alignItems: 'center', 
-                    gap: '6px',
-                    color: '#1e40af',
-                    fontWeight: '500',
-                    fontSize: '14px'
-                  }}>
-                    Create New Customer <ExternalLinkIcon />
+                  <div 
+                    className="slider-track"
+                    onClick={handleSliderChange}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <div 
+                      className="slider-fill" 
+                      style={{ width: `${employerContribution}%` }}
+                    />
+                    <div 
+                      className="slider-thumb"
+                      style={{ left: `${employerContribution}%` }}
+                    />
+                  </div>
+                  <div className="slider-labels">
+                    <span>Employee 100%</span>
+                    <span>50/50</span>
+                    <span>Employer 100%</span>
+                  </div>
+                  <div className="contribution-summary">
+                    <div className="contribution-item">
+                      <div className="contribution-value">{employerContribution}%</div>
+                      <div className="contribution-label">Employer Contribution</div>
+                    </div>
+                    <div className="contribution-item">
+                      <div className="contribution-value">{100 - employerContribution}%</div>
+                      <div className="contribution-label">Employee Contribution</div>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
+              {contributionType === 'employee' && (
+                <div className="warning-card" style={{ marginTop: '12px' }}>
+                  <AlertIcon />
+                  <span>
+                    <strong>Voluntary Scheme:</strong> Employee-funded schemes may have lower participation rates. 
+                    Consider a minimum participation requirement (typically 75%) for underwriting.
                   </span>
                 </div>
               )}
             </div>
             
-            {/* Section 3: Quote Recipients */}
+            {/* Section 3: Quote Configuration */}
             <div className="form-section">
               <div className="section-header">
-                <div className="section-icon" style={{ background: '#fef3c7', color: '#d97706' }}>📧</div>
-                <div style={{ flex: 1 }}>
-                  <h3 className="section-title">Quote Recipient(s)</h3>
-                  <p className="section-description">Who should receive this quotation?</p>
+                <div className="section-icon" style={{ background: '#f0fdf4', color: '#16a34a' }}>📋</div>
+                <div>
+                  <h3 className="section-title">Quote Configuration</h3>
+                  <p className="section-description">Set quote validity and reference details</p>
                 </div>
-                <div className="toggle-container">
-                  <span style={{ fontSize: '13px', color: '#64748b' }}>Same as customer contact</span>
-                  <button 
-                    className={`toggle-switch ${sameAsContact ? 'active' : ''}`}
-                    onClick={() => setSameAsContact(!sameAsContact)}
-                    type="button"
-                  />
-                </div>
-              </div>
-              
-              {recipients.map((recipient, idx) => (
-                <div key={recipient.id} className="recipient-card">
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                    <span style={{ fontSize: '13px', fontWeight: '600', color: '#64748b' }}>
-                      Recipient {idx + 1}
-                    </span>
-                    {recipients.length > 1 && (
-                      <button 
-                        className="btn-icon"
-                        onClick={() => removeRecipient(recipient.id)}
-                        type="button"
-                      >
-                        <TrashIcon />
-                      </button>
-                    )}
-                  </div>
-                  <div className="grid-4">
-                    <div>
-                      <label className="form-label">Full Name <span className="required">*</span></label>
-                      <input 
-                        type="text" 
-                        className="form-input" 
-                        placeholder="Full name" 
-                        value={recipient.name}
-                        onChange={(e) => updateRecipient(recipient.id, 'name', e.target.value)}
-                      />
-                    </div>
-                    <div>
-                      <label className="form-label">Email <span className="required">*</span></label>
-                      <input 
-                        type="email" 
-                        className="form-input" 
-                        placeholder="email@company.com" 
-                        value={recipient.email}
-                        onChange={(e) => updateRecipient(recipient.id, 'email', e.target.value)}
-                      />
-                    </div>
-                    <div>
-                      <label className="form-label">Phone</label>
-                      <input 
-                        type="text" 
-                        className="form-input" 
-                        placeholder="+254 7XX XXX XXX" 
-                        value={recipient.phone}
-                        onChange={(e) => updateRecipient(recipient.id, 'phone', e.target.value)}
-                      />
-                    </div>
-                    <div>
-                      <label className="form-label">Role</label>
-                      <select 
-                        className="form-input" 
-                        value={recipient.role}
-                        onChange={(e) => updateRecipient(recipient.id, 'role', e.target.value)}
-                      >
-                        <option value="">Select role</option>
-                        <option value="HR Manager">HR Manager</option>
-                        <option value="Finance">Finance</option>
-                        <option value="Broker Rep">Broker Rep</option>
-                        <option value="Admin">Admin</option>
-                        <option value="CEO/MD">CEO/MD</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-              ))}
-              
-              <button className="add-btn" onClick={addRecipient} type="button">
-                <PlusIcon /> Add another recipient
-              </button>
-            </div>
-            
-            {/* Section 4: Intermediary / Broker (Conditional) */}
-            {(customerType === 'broker' || customerType === 'direct') && (
-              <div className="form-section">
-                <div className="section-header">
-                  <div className="section-icon" style={{ background: '#fae8ff', color: '#a855f7' }}>🤝</div>
-                  <div style={{ flex: 1 }}>
-                    <h3 className="section-title">Intermediary / Broker</h3>
-                    <p className="section-description">
-                      {customerType === 'broker' 
-                        ? 'Select the broker handling this quote' 
-                        : 'Optional: Link a broker to this quote'}
-                    </p>
-                  </div>
-                  {customerType === 'direct' && (
-                    <span className="optional-badge">OPTIONAL</span>
-                  )}
-                </div>
-                
-                <div className="grid-3" style={{ marginBottom: '16px' }}>
-                  <div>
-                    <label className="form-label">
-                      Broker Name {customerType === 'broker' && <span className="required">*</span>}
-                    </label>
-                    <select 
-                      className="form-input" 
-                      value={selectedBroker} 
-                      onChange={(e) => {
-                        setSelectedBroker(e.target.value);
-                        setCommissionOverride(false);
-                        setCustomCommission('');
-                      }}
-                    >
-                      <option value="">Select broker</option>
-                      {brokers.map(b => (
-                        <option key={b.id} value={b.id}>{b.name}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="form-label">
-                      Broker Code <span className="auto-badge">AUTO</span>
-                    </label>
-                    <input 
-                      type="text" 
-                      className="form-input" 
-                      value={selectedBroker ? getSelectedBroker()?.code || '' : ''} 
-                      disabled 
-                    />
-                  </div>
-                  <div>
-                    <label className="form-label">
-                      Commission Class <span className="auto-badge">AUTO</span>
-                    </label>
-                    <input 
-                      type="text" 
-                      className="form-input" 
-                      value={selectedBroker ? `Class ${getSelectedBroker()?.class || ''}` : ''} 
-                      disabled 
-                    />
-                  </div>
-                </div>
-                
-                {selectedBroker && (
-                  <>
-                    <div className="grid-2" style={{ marginBottom: '16px' }}>
-                      <div>
-                        <label className="form-label">
-                          Commission % 
-                          <span className="auto-badge">DEFAULT</span>
-                          <button 
-                            className="override-link"
-                            onClick={() => {
-                              setCommissionOverride(!commissionOverride);
-                              if (!commissionOverride) {
-                                setCustomCommission(getSelectedBroker()?.commission.toString() || '');
-                              }
-                            }}
-                            type="button"
-                          >
-                            {commissionOverride ? '↩ Reset to default' : '✏️ Override'}
-                          </button>
-                        </label>
-                        <input 
-                          type="text" 
-                          className="form-input" 
-                          value={commissionOverride ? customCommission : `${getSelectedBroker()?.commission || ''}%`}
-                          onChange={(e) => setCustomCommission(e.target.value)}
-                          disabled={!commissionOverride}
-                          style={{ maxWidth: '150px' }}
-                          placeholder="e.g. 7.5"
-                        />
-                      </div>
-                    </div>
-                    
-                    <div className="info-card">
-                      <InfoIcon />
-                      <span>
-                        Commission class <strong>{getSelectedBroker()?.class}</strong> applies — {getCurrentCommission()}% will apply. 
-                        Regulatory cap: <strong>10%</strong>
-                      </span>
-                    </div>
-                  </>
-                )}
-              </div>
-            )}
-            
-            {/* Section 5: Bancassurance (Conditional) */}
-            {customerType === 'banca' && (
-              <div className="form-section">
-                <div className="section-header">
-                  <div className="section-icon" style={{ background: '#ecfdf5', color: '#059669' }}>🏦</div>
-                  <div>
-                    <h3 className="section-title">Bancassurance Partner</h3>
-                    <p className="section-description">Bank channel partnership details</p>
-                  </div>
-                </div>
-                
-                <div className="grid-3">
-                  <div>
-                    <label className="form-label">Bank Name <span className="required">*</span></label>
-                    <select className="form-input">
-                      <option value="">Select bank</option>
-                      {banks.map(bank => (
-                        <option key={bank} value={bank}>{bank}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="form-label">Branch <span className="required">*</span></label>
-                    <input type="text" className="form-input" placeholder="e.g. Westlands" />
-                  </div>
-                  <div>
-                    <label className="form-label">Channel Partner Code <span className="required">*</span></label>
-                    <input type="text" className="form-input" placeholder="e.g. EQT-BNC-001" />
-                  </div>
-                </div>
-              </div>
-            )}
-            
-            {/* Section 6: Customer Bank Details */}
-            <div className="form-section">
-              <div className="section-header">
-                <div className="section-icon" style={{ background: '#fef2f2', color: '#dc2626' }}>💳</div>
-                <div style={{ flex: 1 }}>
-                  <h3 className="section-title">Customer Bank Details</h3>
-                  <p className="section-description">For refunds / dividend payments</p>
-                </div>
-                <span className="optional-badge">OPTIONAL</span>
-              </div>
-              
-              <div className="info-card" style={{ marginBottom: '16px' }}>
-                <InfoIcon />
-                <span>
-                  Bank details will be auto-fetched from customer records if available. 
-                  You can override if needed.
-                </span>
               </div>
               
               <div className="grid-2">
                 <div>
-                  <label className="form-label">Bank Name</label>
-                  <select className="form-input">
-                    <option value="">Select bank</option>
-                    {banks.map(bank => (
-                      <option key={bank} value={bank}>{bank}</option>
+                  <label className="form-label">Quote Validity <span className="required">*</span></label>
+                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                    {validityOptions.map(days => (
+                      <div
+                        key={days}
+                        className={`validity-option ${quoteValidity === days ? 'selected' : ''}`}
+                        onClick={() => setQuoteValidity(days)}
+                        style={{ flex: '1', minWidth: '60px' }}
+                      >
+                        {days} days
+                      </div>
                     ))}
-                  </select>
+                  </div>
                 </div>
                 <div>
-                  <label className="form-label">Branch</label>
-                  <input type="text" className="form-input" placeholder="e.g. Upperhill" />
+                  <label className="form-label">Quote Reference <span className="auto-badge">AUTO-GENERATED</span></label>
+                  <input 
+                    type="text" 
+                    className="form-input" 
+                    value="QT-2025-SAF-00847" 
+                    disabled 
+                    style={{ fontFamily: 'monospace', letterSpacing: '0.5px' }}
+                  />
+                  <div style={{ marginTop: '6px', fontSize: '12px', color: '#64748b' }}>
+                    Reference will be assigned upon draft save
+                  </div>
+                </div>
+              </div>
+              
+              <div className="info-card" style={{ marginTop: '16px' }}>
+                <InfoIcon />
+                <span>
+                  Quote validity starts from the date of dispatch to the customer. 
+                  Quotes can be extended before expiry with underwriting approval.
+                </span>
+              </div>
+            </div>
+            
+            {/* Summary Card */}
+            <div className="form-section" style={{ background: 'linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%)', border: '1px solid #bae6fd' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+                <div style={{ fontSize: '24px' }}>📊</div>
+                <div>
+                  <h3 style={{ margin: 0, fontSize: '16px', fontWeight: '600' }}>Selection Summary</h3>
+                </div>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px' }}>
+                <div>
+                  <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>Product</div>
+                  <div style={{ fontWeight: '600', color: '#0f172a' }}>{getProduct()?.name}</div>
                 </div>
                 <div>
-                  <label className="form-label">Account Number</label>
-                  <input type="text" className="form-input" placeholder="Account number" />
+                  <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>Scheme Size</div>
+                  <div style={{ fontWeight: '600', color: '#0f172a' }}>{schemeSize || '—'} employees</div>
                 </div>
                 <div>
-                  <label className="form-label">Account Name</label>
-                  <input type="text" className="form-input" placeholder="As per bank records" />
+                  <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>Contribution</div>
+                  <div style={{ fontWeight: '600', color: '#0f172a' }}>
+                    {contributionType === 'employer' && 'Employer 100%'}
+                    {contributionType === 'employee' && 'Employee 100%'}
+                    {contributionType === 'shared' && `${employerContribution}% / ${100 - employerContribution}%`}
+                  </div>
+                </div>
+                <div>
+                  <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>Validity</div>
+                  <div style={{ fontWeight: '600', color: '#0f172a' }}>{quoteValidity} days</div>
                 </div>
               </div>
             </div>
             
             {/* Action Buttons */}
             <div className="action-bar">
-              <button className="btn-secondary" type="button">
-                💾 Save as Draft
+              <button className="btn-outline" type="button">
+                <ChevronLeft /> Back to Customer
               </button>
               <div className="action-bar-right">
                 <button className="btn-secondary" type="button">
-                  Cancel
+                  💾 Save Draft
                 </button>
-                <button className="btn-primary" type="button">
-                  Continue to Product Selection
+                <button 
+                  className="btn-primary" 
+                  type="button"
+                  disabled={!schemeType || !schemeSize || !isValidSchemeSize()}
+                >
+                  Continue to Scheme Details
                   <ChevronRight />
                 </button>
               </div>
