@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Create Quote - Step 2: Product Selection | InsureCore</title>
+  <title>Create Quote - Step 3: Scheme Details | InsureCore</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
@@ -24,6 +24,8 @@
       --warning-light: #fef3c7;
       --danger: #ef4444;
       --danger-light: #fef2f2;
+      --purple: #8b5cf6;
+      --purple-light: #ede9fe;
       --surface: #f8fafc;
       --border: #e2e8f0;
       --text-primary: #0f172a;
@@ -68,6 +70,7 @@
       display: flex;
       align-items: center;
       gap: 4px;
+      flex-wrap: wrap;
     }
     
     .form-input {
@@ -97,201 +100,62 @@
       color: var(--text-muted);
     }
     
+    .form-input.has-suffix {
+      padding-right: 50px;
+    }
+    
+    .input-wrapper {
+      position: relative;
+    }
+    
+    .input-suffix {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+    
+    .form-hint {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    
     .required { color: var(--danger); }
     
-    .auto-badge {
-      background: #dbeafe;
-      color: var(--primary);
+    .badge {
       font-size: 10px;
       font-weight: 600;
-      padding: 2px 6px;
+      padding: 2px 8px;
       border-radius: 4px;
-      margin-left: 6px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-    }
-    
-    .product-card {
-      border: 2px solid var(--border);
-      border-radius: 12px;
-      padding: 20px;
-      cursor: pointer;
-      transition: all 0.2s;
-      position: relative;
-      background: white;
-    }
-    
-    .product-card:hover {
-      border-color: var(--primary-light);
-      background: #fafbff;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    }
-    
-    .product-card.selected {
-      border-color: var(--primary);
-      background: #eff6ff;
-      box-shadow: 0 4px 12px rgba(30, 64, 175, 0.15);
-    }
-    
-    .product-card .check-mark {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      width: 24px;
-      height: 24px;
-      background: var(--primary);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-    }
-    
-    .product-badge {
-      display: inline-block;
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 12px;
-    }
-    
-    .badge-basic {
-      background: #e0f2fe;
-      color: #0369a1;
-    }
-    
-    .badge-enhanced {
-      background: #fae8ff;
-      color: #a21caf;
-    }
-    
-    .badge-premium {
-      background: #fef3c7;
-      color: #b45309;
-    }
-    
-    .badge-custom {
-      background: #f0fdf4;
-      color: #15803d;
-    }
-    
-    .product-features {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 12px;
-    }
-    
-    .feature-tag {
-      background: var(--surface);
-      color: var(--text-secondary);
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 12px;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 4px;
     }
     
-    .contribution-card {
-      border: 2px solid var(--border);
-      border-radius: 10px;
-      padding: 16px;
-      cursor: pointer;
-      transition: all 0.2s;
-      text-align: center;
-    }
-    
-    .contribution-card:hover {
-      border-color: var(--primary-light);
-      background: #f8fafc;
-    }
-    
-    .contribution-card.selected {
-      border-color: var(--primary);
-      background: #eff6ff;
-    }
-    
-    .contribution-icon {
-      font-size: 28px;
-      margin-bottom: 8px;
-    }
-    
-    .slider-container {
-      margin-top: 20px;
-      padding: 20px;
-      background: var(--surface);
-      border-radius: 10px;
-    }
-    
-    .slider-track {
-      position: relative;
-      height: 8px;
-      background: #e2e8f0;
-      border-radius: 4px;
-      margin: 20px 0;
-    }
-    
-    .slider-fill {
-      position: absolute;
-      height: 100%;
-      background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%);
-      border-radius: 4px;
-      transition: width 0.2s;
-    }
-    
-    .slider-thumb {
-      position: absolute;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      width: 24px;
-      height: 24px;
-      background: white;
-      border: 3px solid var(--primary);
-      border-radius: 50%;
-      cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-      transition: transform 0.1s;
-    }
-    
-    .slider-thumb:hover {
-      transform: translate(-50%, -50%) scale(1.1);
-    }
-    
-    .slider-labels {
-      display: flex;
-      justify-content: space-between;
-      font-size: 12px;
-      color: var(--text-secondary);
-    }
-    
-    .contribution-summary {
-      display: flex;
-      justify-content: center;
-      gap: 40px;
-      margin-top: 16px;
-      padding-top: 16px;
-      border-top: 1px dashed var(--border);
-    }
-    
-    .contribution-item {
-      text-align: center;
-    }
-    
-    .contribution-value {
-      font-size: 24px;
-      font-weight: 700;
+    .badge-auto {
+      background: #dbeafe;
       color: var(--primary);
     }
     
-    .contribution-label {
-      font-size: 12px;
-      color: var(--text-secondary);
-      margin-top: 4px;
+    .badge-product {
+      background: var(--purple-light);
+      color: var(--purple);
+    }
+    
+    .badge-calculated {
+      background: var(--success-light);
+      color: #065f46;
+    }
+    
+    .badge-override {
+      background: var(--warning-light);
+      color: #b45309;
     }
     
     .info-card {
@@ -305,6 +169,7 @@
       font-size: 13px;
       color: #0369a1;
       line-height: 1.5;
+      margin-bottom: 20px;
     }
     
     .info-card svg {
@@ -323,6 +188,7 @@
       font-size: 13px;
       color: #92400e;
       line-height: 1.5;
+      margin-bottom: 20px;
     }
     
     .context-card {
@@ -331,47 +197,43 @@
       border-radius: 10px;
       padding: 16px 20px;
       margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      gap: 16px;
     }
     
-    .context-avatar {
-      width: 48px;
-      height: 48px;
-      background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
-      border-radius: 10px;
+    .context-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+    
+    .context-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .context-icon {
+      width: 32px;
+      height: 32px;
+      background: white;
+      border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: white;
-      font-size: 20px;
-      font-weight: 700;
+      font-size: 14px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
     }
     
-    .context-details {
-      flex: 1;
+    .context-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
     
-    .context-title {
+    .context-value {
+      font-size: 14px;
       font-weight: 600;
-      font-size: 15px;
       color: var(--text-primary);
-      margin-bottom: 2px;
-    }
-    
-    .context-subtitle {
-      font-size: 13px;
-      color: var(--text-secondary);
-    }
-    
-    .context-badge {
-      background: var(--success-light);
-      color: #065f46;
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 500;
     }
     
     .stepper {
@@ -453,13 +315,6 @@
       box-shadow: 0 4px 12px rgba(30, 64, 175, 0.25);
     }
     
-    .btn-primary:disabled {
-      background: #94a3b8;
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-    }
-    
     .btn-secondary {
       background: white;
       color: var(--text-primary);
@@ -524,15 +379,6 @@
       .grid-2, .grid-3, .grid-4 {
         grid-template-columns: 1fr;
       }
-      
-      .stepper {
-        gap: 6px;
-      }
-      
-      .step {
-        padding: 6px 12px;
-        font-size: 12px;
-      }
     }
     
     .page-header {
@@ -596,92 +442,204 @@
       gap: 12px;
     }
     
-    .validity-option {
-      border: 2px solid var(--border);
-      border-radius: 8px;
-      padding: 12px 16px;
-      cursor: pointer;
-      transition: all 0.2s;
-      text-align: center;
-      font-weight: 500;
-      font-size: 14px;
-    }
-    
-    .validity-option:hover {
-      border-color: var(--primary-light);
-      background: #f8fafc;
-    }
-    
-    .validity-option.selected {
-      border-color: var(--primary);
-      background: #eff6ff;
-      color: var(--primary);
-    }
-    
-    .product-details-panel {
-      background: linear-gradient(135deg, #f0f9ff 0%, #eff6ff 100%);
-      border: 1px solid #bae6fd;
-      border-radius: 12px;
-      padding: 20px;
-      margin-top: 16px;
-    }
-    
-    .panel-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 16px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid #bae6fd;
-    }
-    
-    .panel-title {
+    .subsection-title {
+      font-size: 12px;
       font-weight: 600;
-      font-size: 14px;
-      color: #0369a1;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed var(--border);
     }
     
-    .coverage-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
+    .checkbox-group {
+      display: flex;
+      flex-direction: column;
       gap: 12px;
     }
     
-    .coverage-item {
+    .checkbox-item {
       display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 13px;
-      color: var(--text-primary);
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 16px;
+      background: var(--surface);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid transparent;
     }
     
-    .coverage-check {
+    .checkbox-item:hover {
+      background: #f1f5f9;
+    }
+    
+    .checkbox-item.checked {
+      background: #eff6ff;
+      border-color: var(--primary-light);
+    }
+    
+    .checkbox-item.warning {
+      background: #fffbeb;
+      border-color: #fcd34d;
+    }
+    
+    .checkbox-box {
       width: 20px;
       height: 20px;
-      background: #d1fae5;
-      border-radius: 50%;
+      border: 2px solid var(--border);
+      border-radius: 4px;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #065f46;
       flex-shrink: 0;
+      transition: all 0.2s;
+      background: white;
     }
     
-    .scheme-size-input {
-      position: relative;
+    .checkbox-item.checked .checkbox-box {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
     }
     
-    .scheme-size-input input {
-      padding-right: 80px;
+    .checkbox-item.warning .checkbox-box {
+      border-color: #f59e0b;
     }
     
-    .scheme-size-suffix {
-      position: absolute;
-      right: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 13px;
+    .checkbox-item.warning.checked .checkbox-box {
+      background: #f59e0b;
+      border-color: #f59e0b;
+    }
+    
+    .checkbox-content {
+      flex: 1;
+    }
+    
+    .checkbox-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+    }
+    
+    .checkbox-hint {
+      font-size: 12px;
       color: var(--text-muted);
+    }
+    
+    .textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      resize: vertical;
+      min-height: 100px;
+      transition: all 0.2s;
+    }
+    
+    .textarea:focus {
+      outline: none;
+      border-color: var(--primary-light);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    
+    .textarea::placeholder {
+      color: var(--text-muted);
+    }
+    
+    .period-control-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      text-align: center;
+    }
+    
+    .period-control-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    
+    .period-control-input {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    
+    .period-control-input input {
+      width: 70px;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      text-align: center;
+      color: var(--text-primary);
+    }
+    
+    .period-control-input input:focus {
+      outline: none;
+      border-color: var(--primary-light);
+    }
+    
+    .period-control-suffix {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+    
+    .override-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      background: var(--warning-light);
+      color: #b45309;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 500;
+      margin-left: 8px;
+    }
+    
+    .distribution-summary {
+      background: linear-gradient(135deg, #fae8ff 0%, #ede9fe 100%);
+      border: 1px solid #e9d5ff;
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+    }
+    
+    .distribution-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+    
+    .distribution-item {
+      text-align: center;
+    }
+    
+    .distribution-label {
+      font-size: 11px;
+      color: #7c3aed;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+    
+    .distribution-value {
+      font-size: 14px;
+      font-weight: 600;
+      color: #5b21b6;
     }
   </style>
 </head>
@@ -722,129 +680,86 @@
       </svg>
     );
 
-    const PackageIcon = () => (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M16.5 9.4l-9-5.19M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>
-        <polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>
+    const LockIcon = () => (
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>
       </svg>
     );
 
-    // Products data
-    const products = [
-      {
-        id: 'grp-basic-001',
-        code: 'GRP-BASIC-001',
-        name: 'Group Life Basic',
-        badge: 'basic',
-        description: 'Essential group life coverage with core death and disability benefits',
-        minLives: 10,
-        maxLives: 500,
-        features: ['Death Benefit', 'TPD', 'Funeral', 'Critical Illness'],
-        coverages: [
-          'Death Benefit (2-5x Annual Salary)',
-          'Total Permanent Disability',
-          'Funeral Expense Cover',
-          'Critical Illness (Optional)',
-          'Accidental Death Benefit',
-          'Repatriation Cover'
-        ]
-      },
-      {
-        id: 'grp-enhanced-002',
-        code: 'GRP-ENHANCED-002',
-        name: 'Group Life Enhanced',
-        badge: 'enhanced',
-        description: 'Comprehensive coverage with additional riders and higher limits',
-        minLives: 25,
-        maxLives: 2000,
-        features: ['Death Benefit', 'TPD', 'Funeral', 'CI', 'Last Expense', 'Education'],
-        coverages: [
-          'Death Benefit (3-8x Annual Salary)',
-          'Total Permanent Disability',
-          'Funeral Expense Cover',
-          'Critical Illness (Included)',
-          'Last Expense Benefit',
-          'Education Benefit',
-          'Spouse & Dependant Cover',
-          'Accelerated Death Benefit'
-        ]
-      },
-      {
-        id: 'grp-premium-003',
-        code: 'GRP-PREMIUM-003',
-        name: 'Group Life Premium',
-        badge: 'premium',
-        description: 'Top-tier coverage with maximum flexibility and highest benefit limits',
-        minLives: 50,
-        maxLives: 10000,
-        features: ['Death Benefit', 'TPD', 'Funeral', 'CI', 'WOP', 'Terminal'],
-        coverages: [
-          'Death Benefit (5-10x Annual Salary)',
-          'Total Permanent Disability',
-          'Funeral Expense Cover (Enhanced)',
-          'Critical Illness (36 conditions)',
-          'Waiver of Premium',
-          'Terminal Illness Benefit',
-          'Family Income Benefit',
-          'Retrenchment Cover',
-          'HIV/AIDS Cover'
-        ]
-      },
-      {
-        id: 'grp-custom-004',
-        code: 'GRP-CUSTOM-004',
-        name: 'Bespoke Solution',
-        badge: 'custom',
-        description: 'Tailored coverage designed to meet specific employer requirements',
-        minLives: 100,
-        maxLives: null,
-        features: ['Customizable', 'Flexible Limits', 'Tailored Riders'],
-        coverages: [
-          'Fully Customizable Benefits',
-          'Flexible Coverage Limits',
-          'Bespoke Rider Selection',
-          'Industry-Specific Add-ons',
-          'Dedicated Account Management',
-          'Custom Claims Process'
-        ]
-      }
-    ];
-
-    const validityOptions = [15, 30, 45, 60, 90];
+    const SparkleIcon = () => (
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4"/>
+      </svg>
+    );
 
     function App() {
-      // Customer context from Step 1 (simulated)
+      // Context from previous steps (simulated)
       const customerContext = {
         name: 'Safaricom PLC',
         type: 'Employer (Direct)',
-        industry: 'Telecommunications',
-        broker: 'Aon Minet Kenya Ltd'
+        broker: 'Aon Minet Kenya Ltd',
+        brokerCode: 'AON-001',
+        brokerLicense: 'IRA/BRK/2024/0123',
+        commission: '7.5%'
+      };
+      
+      const productContext = {
+        code: 'GRP-BASIC-001',
+        name: 'Group Life Basic',
+        schemeSize: 450,
+        contribution: 'Employer 100%',
+        term: '12 Months'
       };
 
-      // State
-      const [selectedProduct, setSelectedProduct] = useState('grp-basic-001');
-      const [contributionType, setContributionType] = useState('employer');
-      const [employerContribution, setEmployerContribution] = useState(100);
-      const [schemeSize, setSchemeSize] = useState('450');
-      const [quoteValidity, setQuoteValidity] = useState(30);
-      const [schemeType, setSchemeType] = useState('');
+      // State - Policy Period
+      const [inceptionDate, setInceptionDate] = useState('');
+      const [expiryDate, setExpiryDate] = useState('');
+      const [renewalDate, setRenewalDate] = useState('');
+      
+      // State - Coverage Parameters
+      const [sumAssuredBasis, setSumAssuredBasis] = useState('salary');
+      const [salaryMultiple, setSalaryMultiple] = useState('3');
+      const [minSumAssured, setMinSumAssured] = useState('50000');
+      const [maxSumAssured, setMaxSumAssured] = useState('5000000');
+      const [fcl, setFcl] = useState('5000000');
+      const [dependentCover, setDependentCover] = useState('not-included');
+      
+      // State - Period Controls
+      const [gracePeriod, setGracePeriod] = useState('30');
+      const [freeLookPeriod, setFreeLookPeriod] = useState('15');
+      const [noticePeriod, setNoticePeriod] = useState('30');
+      const [lateEnrolmentCutoff, setLateEnrolmentCutoff] = useState('30');
+      
+      // State - Special Conditions
+      const [specialConditions, setSpecialConditions] = useState('');
+      const [waiveWaiting, setWaiveWaiting] = useState(false);
+      const [autoRenewal, setAutoRenewal] = useState(true);
+      const [experienceRefund, setExperienceRefund] = useState(false);
 
-      const getProduct = () => products.find(p => p.id === selectedProduct);
+      // Auto-calculate expiry date when inception changes
+      useEffect(() => {
+        if (inceptionDate) {
+          const inception = new Date(inceptionDate);
+          const expiry = new Date(inception);
+          expiry.setFullYear(expiry.getFullYear() + 1);
+          setExpiryDate(expiry.toISOString().split('T')[0]);
+          
+          const renewal = new Date(expiry);
+          setRenewalDate(renewal.toISOString().split('T')[0]);
+        }
+      }, [inceptionDate]);
 
-      const handleSliderChange = (e) => {
-        const rect = e.currentTarget.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const percentage = Math.round((x / rect.width) * 100);
-        setEmployerContribution(Math.max(0, Math.min(100, percentage)));
-      };
-
-      const isValidSchemeSize = () => {
-        const product = getProduct();
-        const size = parseInt(schemeSize) || 0;
-        if (!product) return false;
-        if (size < product.minLives) return false;
-        if (product.maxLives && size > product.maxLives) return false;
-        return true;
+      // Check if values are overridden from product defaults
+      const isOverridden = (field) => {
+        const defaults = {
+          salaryMultiple: '3',
+          maxSumAssured: '5000000',
+          fcl: '5000000',
+          gracePeriod: '30',
+          freeLookPeriod: '15',
+          noticePeriod: '30'
+        };
+        return defaults[field] && eval(field) !== defaults[field];
       };
 
       return (
@@ -858,7 +773,7 @@
                 <span className="page-badge">Group Life</span>
               </div>
               <p className="page-description">
-                Select the product and configure scheme parameters for this quotation.
+                Configure policy terms, coverage parameters, and scheme-specific conditions.
               </p>
             </div>
             
@@ -868,11 +783,11 @@
                 <span className="step-number"><CheckIcon size={12} /></span>
                 Customer & Distribution
               </div>
-              <div className="step active">
-                <span className="step-number">2</span>
+              <div className="step completed">
+                <span className="step-number"><CheckIcon size={12} /></span>
                 Product Selection
               </div>
-              <div className="step inactive">
+              <div className="step active">
                 <span className="step-number">3</span>
                 Scheme Details
               </div>
@@ -886,295 +801,391 @@
               </div>
             </div>
             
-            {/* Customer Context Card */}
+            {/* Context Summary Cards */}
             <div className="context-card">
-              <div className="context-avatar">
-                {customerContext.name.charAt(0)}
-              </div>
-              <div className="context-details">
-                <div className="context-title">{customerContext.name}</div>
-                <div className="context-subtitle">
-                  {customerContext.type} · {customerContext.industry} · via {customerContext.broker}
+              <div className="context-row">
+                <div className="context-item">
+                  <div className="context-icon">🏢</div>
+                  <div>
+                    <div className="context-label">Customer</div>
+                    <div className="context-value">{customerContext.name}</div>
+                  </div>
+                </div>
+                <div className="context-item">
+                  <div className="context-icon">📦</div>
+                  <div>
+                    <div className="context-label">Product</div>
+                    <div className="context-value">{productContext.name}</div>
+                  </div>
+                </div>
+                <div className="context-item">
+                  <div className="context-icon">👥</div>
+                  <div>
+                    <div className="context-label">Scheme Size</div>
+                    <div className="context-value">{productContext.schemeSize} employees</div>
+                  </div>
+                </div>
+                <div className="context-item">
+                  <div className="context-icon">💰</div>
+                  <div>
+                    <div className="context-label">Contribution</div>
+                    <div className="context-value">{productContext.contribution}</div>
+                  </div>
                 </div>
               </div>
-              <div className="context-badge">✓ KYC Verified</div>
             </div>
             
-            {/* Section 1: Product Selection */}
-            <div className="form-section">
-              <div className="section-header">
-                <div className="section-icon" style={{ background: '#eff6ff', color: '#1e40af' }}>📦</div>
-                <div>
-                  <h3 className="section-title">Select Product</h3>
-                  <p className="section-description">Choose the group life product for this quotation</p>
+            {/* Distribution Channel Summary (from Step 1) */}
+            <div className="distribution-summary">
+              <div style={{ fontSize: '11px', fontWeight: '600', color: '#7c3aed', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '12px' }}>
+                Distribution Channel (from Step 1)
+              </div>
+              <div className="distribution-row">
+                <div className="distribution-item">
+                  <div className="distribution-label">Channel</div>
+                  <div className="distribution-value">{customerContext.type}</div>
+                </div>
+                <div className="distribution-item">
+                  <div className="distribution-label">Intermediary</div>
+                  <div className="distribution-value">{customerContext.broker}</div>
+                </div>
+                <div className="distribution-item">
+                  <div className="distribution-label">License No.</div>
+                  <div className="distribution-value">{customerContext.brokerLicense}</div>
+                </div>
+                <div className="distribution-item">
+                  <div className="distribution-label">Commission</div>
+                  <div className="distribution-value">{customerContext.commission}</div>
                 </div>
               </div>
-              
-              <div className="grid-2">
-                {products.map(product => (
-                  <div 
-                    key={product.id}
-                    className={`product-card ${selectedProduct === product.id ? 'selected' : ''}`}
-                    onClick={() => setSelectedProduct(product.id)}
-                  >
-                    {selectedProduct === product.id && (
-                      <div className="check-mark"><CheckIcon /></div>
-                    )}
-                    <span className={`product-badge badge-${product.badge}`}>
-                      {product.badge}
-                    </span>
-                    <div style={{ fontWeight: '600', fontSize: '16px', marginBottom: '4px', color: '#0f172a' }}>
-                      {product.name}
-                    </div>
-                    <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>
-                      {product.code}
-                    </div>
-                    <div style={{ fontSize: '13px', color: '#64748b', marginBottom: '8px', lineHeight: '1.4' }}>
-                      {product.description}
-                    </div>
-                    <div style={{ fontSize: '12px', color: '#94a3b8' }}>
-                      {product.minLives} - {product.maxLives ? product.maxLives.toLocaleString() : '∞'} lives
-                    </div>
-                    <div className="product-features">
-                      {product.features.slice(0, 4).map((f, i) => (
-                        <span key={i} className="feature-tag">
-                          <CheckIcon size={12} /> {f}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-              
-              {/* Product Details Panel */}
-              {selectedProduct && (
-                <div className="product-details-panel">
-                  <div className="panel-header">
-                    <PackageIcon />
-                    <span className="panel-title">{getProduct()?.name} — Included Coverages</span>
-                  </div>
-                  <div className="coverage-grid">
-                    {getProduct()?.coverages.map((coverage, i) => (
-                      <div key={i} className="coverage-item">
-                        <span className="coverage-check"><CheckIcon size={12} /></span>
-                        {coverage}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
             </div>
             
-            {/* Section 2: Scheme Classification */}
+            {/* Info Card */}
+            <div className="info-card">
+              <InfoIcon />
+              <span>
+                Fields marked <span className="badge badge-product"><LockIcon /> From Product</span> are pre-filled from the product configuration. 
+                You can override values where permitted. Overrides above approval thresholds will require authorisation.
+              </span>
+            </div>
+            
+            {/* Section 1: Policy Period */}
             <div className="form-section">
               <div className="section-header">
-                <div className="section-icon" style={{ background: '#fef3c7', color: '#d97706' }}>⚙️</div>
+                <div className="section-icon" style={{ background: '#eff6ff', color: '#1e40af' }}>📅</div>
                 <div>
-                  <h3 className="section-title">Scheme Classification</h3>
-                  <p className="section-description">Define scheme type and contribution structure</p>
+                  <h3 className="section-title">Policy Period</h3>
+                  <p className="section-description">Define the policy period, channel and key operational parameters</p>
                 </div>
               </div>
               
-              <div className="grid-2" style={{ marginBottom: '20px' }}>
+              <div className="grid-2" style={{ marginBottom: '16px' }}>
                 <div>
-                  <label className="form-label">Scheme Type <span className="required">*</span></label>
-                  <select 
-                    className="form-input" 
-                    value={schemeType}
-                    onChange={(e) => setSchemeType(e.target.value)}
-                  >
-                    <option value="">Select Scheme Type</option>
-                    <option value="ordinary">Ordinary Life</option>
-                    <option value="deposit">Deposit Administration</option>
-                    <option value="unit-linked">Unit Linked</option>
-                    <option value="hybrid">Hybrid</option>
-                  </select>
+                  <label className="form-label">
+                    Policy Inception Date <span className="required">*</span>
+                  </label>
+                  <input 
+                    type="date" 
+                    className="form-input"
+                    value={inceptionDate}
+                    onChange={(e) => setInceptionDate(e.target.value)}
+                  />
                 </div>
                 <div>
                   <label className="form-label">
-                    Scheme Size (No. of Employees) <span className="required">*</span>
+                    Policy Expiry Date <span className="required">*</span>
+                    <span className="badge badge-calculated"><SparkleIcon /> Auto-calculated</span>
                   </label>
-                  <div className="scheme-size-input">
-                    <input 
-                      type="text" 
-                      className="form-input" 
-                      placeholder="e.g. 450"
-                      value={schemeSize}
-                      onChange={(e) => setSchemeSize(e.target.value.replace(/\D/g, ''))}
-                      style={{ 
-                        borderColor: schemeSize && !isValidSchemeSize() ? '#ef4444' : undefined 
-                      }}
-                    />
-                    <span className="scheme-size-suffix">employees</span>
-                  </div>
-                  {schemeSize && !isValidSchemeSize() && (
-                    <div style={{ marginTop: '6px', fontSize: '12px', color: '#ef4444' }}>
-                      ⚠ {getProduct()?.name} requires {getProduct()?.minLives} - {getProduct()?.maxLives?.toLocaleString() || '∞'} lives
-                    </div>
-                  )}
-                </div>
-              </div>
-              
-              {/* Premium Contribution Type */}
-              <div style={{ marginBottom: '8px' }}>
-                <label className="form-label">Premium Contribution Type <span className="required">*</span></label>
-              </div>
-              <div className="grid-3" style={{ marginBottom: '8px' }}>
-                <div 
-                  className={`contribution-card ${contributionType === 'employer' ? 'selected' : ''}`}
-                  onClick={() => { setContributionType('employer'); setEmployerContribution(100); }}
-                >
-                  <div className="contribution-icon">🏢</div>
-                  <div style={{ fontWeight: '600', fontSize: '14px', marginBottom: '2px' }}>Employer Pays Fully</div>
-                  <div style={{ fontSize: '12px', color: '#64748b' }}>100% employer funded</div>
-                </div>
-                
-                <div 
-                  className={`contribution-card ${contributionType === 'shared' ? 'selected' : ''}`}
-                  onClick={() => { setContributionType('shared'); setEmployerContribution(70); }}
-                >
-                  <div className="contribution-icon">🤝</div>
-                  <div style={{ fontWeight: '600', fontSize: '14px', marginBottom: '2px' }}>Shared Contribution</div>
-                  <div style={{ fontSize: '12px', color: '#64748b' }}>Split between parties</div>
-                </div>
-                
-                <div 
-                  className={`contribution-card ${contributionType === 'employee' ? 'selected' : ''}`}
-                  onClick={() => { setContributionType('employee'); setEmployerContribution(0); }}
-                >
-                  <div className="contribution-icon">👤</div>
-                  <div style={{ fontWeight: '600', fontSize: '14px', marginBottom: '2px' }}>Employee Pays Fully</div>
-                  <div style={{ fontSize: '12px', color: '#64748b' }}>Voluntary scheme</div>
-                </div>
-              </div>
-              
-              {/* Contribution Slider (for shared) */}
-              {contributionType === 'shared' && (
-                <div className="slider-container">
-                  <div style={{ textAlign: 'center', marginBottom: '8px', fontWeight: '500', color: '#64748b', fontSize: '13px' }}>
-                    Adjust contribution split
-                  </div>
-                  <div 
-                    className="slider-track"
-                    onClick={handleSliderChange}
-                    style={{ cursor: 'pointer' }}
-                  >
-                    <div 
-                      className="slider-fill" 
-                      style={{ width: `${employerContribution}%` }}
-                    />
-                    <div 
-                      className="slider-thumb"
-                      style={{ left: `${employerContribution}%` }}
-                    />
-                  </div>
-                  <div className="slider-labels">
-                    <span>Employee 100%</span>
-                    <span>50/50</span>
-                    <span>Employer 100%</span>
-                  </div>
-                  <div className="contribution-summary">
-                    <div className="contribution-item">
-                      <div className="contribution-value">{employerContribution}%</div>
-                      <div className="contribution-label">Employer Contribution</div>
-                    </div>
-                    <div className="contribution-item">
-                      <div className="contribution-value">{100 - employerContribution}%</div>
-                      <div className="contribution-label">Employee Contribution</div>
-                    </div>
-                  </div>
-                </div>
-              )}
-              
-              {contributionType === 'employee' && (
-                <div className="warning-card" style={{ marginTop: '12px' }}>
-                  <AlertIcon />
-                  <span>
-                    <strong>Voluntary Scheme:</strong> Employee-funded schemes may have lower participation rates. 
-                    Consider a minimum participation requirement (typically 75%) for underwriting.
-                  </span>
-                </div>
-              )}
-            </div>
-            
-            {/* Section 3: Quote Configuration */}
-            <div className="form-section">
-              <div className="section-header">
-                <div className="section-icon" style={{ background: '#f0fdf4', color: '#16a34a' }}>📋</div>
-                <div>
-                  <h3 className="section-title">Quote Configuration</h3>
-                  <p className="section-description">Set quote validity and reference details</p>
+                  <input 
+                    type="date" 
+                    className="form-input"
+                    value={expiryDate}
+                    disabled
+                  />
+                  <div className="form-hint">Calculated as inception + policy term (1 year)</div>
                 </div>
               </div>
               
               <div className="grid-2">
                 <div>
-                  <label className="form-label">Quote Validity <span className="required">*</span></label>
-                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                    {validityOptions.map(days => (
-                      <div
-                        key={days}
-                        className={`validity-option ${quoteValidity === days ? 'selected' : ''}`}
-                        onClick={() => setQuoteValidity(days)}
-                        style={{ flex: '1', minWidth: '60px' }}
-                      >
-                        {days} days
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <label className="form-label">Quote Reference <span className="auto-badge">AUTO-GENERATED</span></label>
+                  <label className="form-label">
+                    Policy Term
+                    <span className="badge badge-product"><LockIcon /> From Product</span>
+                  </label>
                   <input 
                     type="text" 
-                    className="form-input" 
-                    value="QT-2025-SAF-00847" 
-                    disabled 
-                    style={{ fontFamily: 'monospace', letterSpacing: '0.5px' }}
+                    className="form-input"
+                    value="12 Months — Annual Renewable"
+                    disabled
                   />
-                  <div style={{ marginTop: '6px', fontSize: '12px', color: '#64748b' }}>
-                    Reference will be assigned upon draft save
-                  </div>
                 </div>
-              </div>
-              
-              <div className="info-card" style={{ marginTop: '16px' }}>
-                <InfoIcon />
-                <span>
-                  Quote validity starts from the date of dispatch to the customer. 
-                  Quotes can be extended before expiry with underwriting approval.
-                </span>
+                <div>
+                  <label className="form-label">
+                    Renewal Date
+                    <span className="badge badge-calculated"><SparkleIcon /> Auto-calculated</span>
+                  </label>
+                  <input 
+                    type="date" 
+                    className="form-input"
+                    value={renewalDate}
+                    disabled
+                  />
+                  <div className="form-hint">Same as expiry — auto-renewal triggered 30 days before</div>
+                </div>
               </div>
             </div>
             
-            {/* Summary Card */}
-            <div className="form-section" style={{ background: 'linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%)', border: '1px solid #bae6fd' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
-                <div style={{ fontSize: '24px' }}>📊</div>
+            {/* Section 2: Coverage & Benefit Parameters */}
+            <div className="form-section">
+              <div className="section-header">
+                <div className="section-icon" style={{ background: '#fef3c7', color: '#d97706' }}>🛡️</div>
                 <div>
-                  <h3 style={{ margin: 0, fontSize: '16px', fontWeight: '600' }}>Selection Summary</h3>
+                  <h3 className="section-title">Coverage & Benefit Parameters</h3>
+                  <p className="section-description">Configure sum assured basis and coverage limits</p>
                 </div>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px' }}>
+              
+              <div className="warning-card">
+                <AlertIcon />
+                <span>
+                  Values below are defaulted from the product. You can override within permitted ranges. 
+                  <strong> Overrides will be flagged for underwriter review.</strong>
+                </span>
+              </div>
+              
+              <div className="grid-2" style={{ marginBottom: '16px' }}>
                 <div>
-                  <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>Product</div>
-                  <div style={{ fontWeight: '600', color: '#0f172a' }}>{getProduct()?.name}</div>
+                  <label className="form-label">
+                    Sum Assured Basis
+                    <span className="badge badge-product"><LockIcon /> From Product</span>
+                  </label>
+                  <input 
+                    type="text" 
+                    className="form-input"
+                    value="Multiple of Annual Salary"
+                    disabled
+                  />
                 </div>
                 <div>
-                  <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>Scheme Size</div>
-                  <div style={{ fontWeight: '600', color: '#0f172a' }}>{schemeSize || '—'} employees</div>
+                  <label className="form-label">
+                    Salary Multiple <span className="required">*</span>
+                    {salaryMultiple !== '3' && <span className="override-indicator">⚠ Override</span>}
+                  </label>
+                  <div className="input-wrapper">
+                    <input 
+                      type="number" 
+                      className="form-input has-suffix"
+                      value={salaryMultiple}
+                      onChange={(e) => setSalaryMultiple(e.target.value)}
+                      min="1"
+                      max="5"
+                    />
+                    <span className="input-suffix">×</span>
+                  </div>
+                  <div className="form-hint">Product allows 1× to 5×</div>
                 </div>
+              </div>
+              
+              <div className="grid-2" style={{ marginBottom: '16px' }}>
                 <div>
-                  <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>Contribution</div>
-                  <div style={{ fontWeight: '600', color: '#0f172a' }}>
-                    {contributionType === 'employer' && 'Employer 100%'}
-                    {contributionType === 'employee' && 'Employee 100%'}
-                    {contributionType === 'shared' && `${employerContribution}% / ${100 - employerContribution}%`}
+                  <label className="form-label">
+                    Minimum Sum Assured
+                    <span className="badge badge-product"><SparkleIcon /> Auto from Product</span>
+                  </label>
+                  <div className="input-wrapper">
+                    <input 
+                      type="text" 
+                      className="form-input has-suffix"
+                      value={parseInt(minSumAssured).toLocaleString()}
+                      disabled
+                    />
+                    <span className="input-suffix">KES</span>
                   </div>
                 </div>
                 <div>
-                  <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>Validity</div>
-                  <div style={{ fontWeight: '600', color: '#0f172a' }}>{quoteValidity} days</div>
+                  <label className="form-label">
+                    Maximum Sum Assured <span className="required">*</span>
+                    {maxSumAssured !== '5000000' && <span className="override-indicator">⚠ Override</span>}
+                  </label>
+                  <div className="input-wrapper">
+                    <input 
+                      type="text" 
+                      className="form-input has-suffix"
+                      value={maxSumAssured}
+                      onChange={(e) => setMaxSumAssured(e.target.value.replace(/\D/g, ''))}
+                    />
+                    <span className="input-suffix">KES</span>
+                  </div>
+                  <div className="form-hint">Override product default if scheme-specific limit applies</div>
+                </div>
+              </div>
+              
+              <div className="grid-2">
+                <div>
+                  <label className="form-label">
+                    Free Cover Limit (FCL) <span className="required">*</span>
+                    {fcl !== '5000000' && <span className="override-indicator">⚠ Override</span>}
+                  </label>
+                  <div className="input-wrapper">
+                    <input 
+                      type="text" 
+                      className="form-input has-suffix"
+                      value={fcl}
+                      onChange={(e) => setFcl(e.target.value.replace(/\D/g, ''))}
+                    />
+                    <span className="input-suffix">KES</span>
+                  </div>
+                  <div className="form-hint">Negotiated FCL for this specific scheme</div>
+                </div>
+                <div>
+                  <label className="form-label">Dependent Cover</label>
+                  <select 
+                    className="form-input"
+                    value={dependentCover}
+                    onChange={(e) => setDependentCover(e.target.value)}
+                  >
+                    <option value="not-included">Not Included</option>
+                    <option value="spouse-only">Spouse Only</option>
+                    <option value="spouse-children">Spouse & Children</option>
+                    <option value="full-family">Full Family (incl. Parents)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            
+            {/* Section 3: Period Controls */}
+            <div className="form-section">
+              <div className="section-header">
+                <div className="section-icon" style={{ background: '#f0fdf4', color: '#16a34a' }}>⏱️</div>
+                <div>
+                  <h3 className="section-title">Period Controls</h3>
+                  <p className="section-description">Overridable from product defaults</p>
+                </div>
+              </div>
+              
+              <div className="grid-4">
+                <div className="period-control-card">
+                  <div className="period-control-label">
+                    Grace Period
+                    <span className="badge badge-product" style={{ padding: '1px 4px', fontSize: '9px' }}><SparkleIcon /></span>
+                  </div>
+                  <div className="period-control-input">
+                    <input 
+                      type="number" 
+                      value={gracePeriod}
+                      onChange={(e) => setGracePeriod(e.target.value)}
+                    />
+                    <span className="period-control-suffix">days</span>
+                  </div>
+                </div>
+                
+                <div className="period-control-card">
+                  <div className="period-control-label">
+                    Free Look Period
+                    <span className="badge badge-product" style={{ padding: '1px 4px', fontSize: '9px' }}><SparkleIcon /></span>
+                  </div>
+                  <div className="period-control-input">
+                    <input 
+                      type="number" 
+                      value={freeLookPeriod}
+                      onChange={(e) => setFreeLookPeriod(e.target.value)}
+                    />
+                    <span className="period-control-suffix">days</span>
+                  </div>
+                </div>
+                
+                <div className="period-control-card">
+                  <div className="period-control-label">
+                    Notice Period
+                    <span className="badge badge-product" style={{ padding: '1px 4px', fontSize: '9px' }}><SparkleIcon /></span>
+                  </div>
+                  <div className="period-control-input">
+                    <input 
+                      type="number" 
+                      value={noticePeriod}
+                      onChange={(e) => setNoticePeriod(e.target.value)}
+                    />
+                    <span className="period-control-suffix">days</span>
+                  </div>
+                </div>
+                
+                <div className="period-control-card">
+                  <div className="period-control-label">
+                    Late Enrolment Cutoff
+                  </div>
+                  <div className="period-control-input">
+                    <input 
+                      type="number" 
+                      value={lateEnrolmentCutoff}
+                      onChange={(e) => setLateEnrolmentCutoff(e.target.value)}
+                    />
+                    <span className="period-control-suffix">days</span>
+                  </div>
+                  <div style={{ fontSize: '11px', color: '#94a3b8', marginTop: '8px' }}>
+                    Days after inception within which members can join without UW
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Section 4: Special Conditions & Endorsements */}
+            <div className="form-section">
+              <div className="section-header">
+                <div className="section-icon" style={{ background: '#fae8ff', color: '#a855f7' }}>📝</div>
+                <div>
+                  <h3 className="section-title">Special Conditions & Endorsements</h3>
+                  <p className="section-description">Scheme-specific conditions and operational flags</p>
+                </div>
+              </div>
+              
+              <div style={{ marginBottom: '20px' }}>
+                <label className="form-label">Special Conditions / Remarks</label>
+                <textarea 
+                  className="textarea"
+                  placeholder="Any scheme-specific conditions, exclusions, or endorsements agreed with the policyholder..."
+                  value={specialConditions}
+                  onChange={(e) => setSpecialConditions(e.target.value)}
+                />
+              </div>
+              
+              <div className="checkbox-group">
+                <div 
+                  className={`checkbox-item warning ${waiveWaiting ? 'checked' : ''}`}
+                  onClick={() => setWaiveWaiting(!waiveWaiting)}
+                >
+                  <div className="checkbox-box">
+                    {waiveWaiting && <CheckIcon size={12} />}
+                  </div>
+                  <div className="checkbox-content">
+                    <div className="checkbox-label">Waive waiting period for all members</div>
+                    <div className="checkbox-hint">⚠️ Requires underwriter approval — will be flagged during review</div>
+                  </div>
+                </div>
+                
+                <div 
+                  className={`checkbox-item ${autoRenewal ? 'checked' : ''}`}
+                  onClick={() => setAutoRenewal(!autoRenewal)}
+                >
+                  <div className="checkbox-box">
+                    {autoRenewal && <CheckIcon size={12} />}
+                  </div>
+                  <div className="checkbox-content">
+                    <div className="checkbox-label">Auto-renewal enabled at expiry</div>
+                    <div className="checkbox-hint">Policy will be flagged for renewal 30 days before expiry</div>
+                  </div>
+                </div>
+                
+                <div 
+                  className={`checkbox-item ${experienceRefund ? 'checked' : ''}`}
+                  onClick={() => setExperienceRefund(!experienceRefund)}
+                >
+                  <div className="checkbox-box">
+                    {experienceRefund && <CheckIcon size={12} />}
+                  </div>
+                  <div className="checkbox-content">
+                    <div className="checkbox-label">Experience refund applicable (loss ratio {"<"} 50%)</div>
+                    <div className="checkbox-hint">Profit-sharing arrangement if claims experience is favorable</div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1182,18 +1193,15 @@
             {/* Action Buttons */}
             <div className="action-bar">
               <button className="btn-outline" type="button">
-                <ChevronLeft /> Back to Customer
+                <ChevronLeft /> Back to Product
               </button>
+              <div style={{ fontSize: '13px', color: '#64748b' }}>Step 3 of 5</div>
               <div className="action-bar-right">
                 <button className="btn-secondary" type="button">
                   💾 Save Draft
                 </button>
-                <button 
-                  className="btn-primary" 
-                  type="button"
-                  disabled={!schemeType || !schemeSize || !isValidSchemeSize()}
-                >
-                  Continue to Scheme Details
+                <button className="btn-primary" type="button">
+                  Next — Coverage Selection
                   <ChevronRight />
                 </button>
               </div>
