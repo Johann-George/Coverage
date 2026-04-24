@@ -1,562 +1,1034 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Create Quote - Member Data | InsureCore</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  
-  <style>
-    * { font-family: 'DM Sans', sans-serif; box-sizing: border-box; }
-    body { margin: 0; padding: 0; background: #f8fafc; }
-    
-    .page-container { display: flex; min-height: 100vh; }
-    
-    .sidebar {
-      width: 280px;
-      background: white;
-      border-right: 1px solid #e2e8f0;
-      padding: 24px;
-      flex-shrink: 0;
-    }
-    
-    .sidebar-title {
-      font-size: 11px;
-      font-weight: 600;
-      color: #94a3b8;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 16px;
-    }
-    
-    .step-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      padding: 12px 0;
-      position: relative;
-    }
-    
-    .step-item:not(:last-child)::after {
-      content: '';
-      position: absolute;
-      left: 15px;
-      top: 44px;
-      width: 2px;
-      height: calc(100% - 20px);
-      background: #e2e8f0;
-    }
-    
-    .step-item.completed:not(:last-child)::after { background: #10b981; }
-    
-    .step-number {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 13px;
-      font-weight: 600;
-      flex-shrink: 0;
-      z-index: 1;
-    }
-    
-    .step-item.completed .step-number { background: #d1fae5; color: #065f46; }
-    .step-item.active .step-number { background: #1e40af; color: white; }
-    .step-item.inactive .step-number { background: #f1f5f9; color: #94a3b8; }
-    
-    .step-content { flex: 1; padding-top: 4px; }
-    .step-label { font-size: 14px; font-weight: 600; color: #0f172a; margin-bottom: 2px; }
-    .step-item.inactive .step-label { color: #94a3b8; }
-    .step-desc { font-size: 12px; color: #94a3b8; }
-    
-    .summary-card {
-      background: #f0f9ff;
-      border: 1px solid #bae6fd;
-      border-radius: 12px;
-      padding: 16px;
-      margin-top: 24px;
-    }
-    
-    .summary-card-title {
-      font-size: 11px;
-      font-weight: 600;
-      color: #0369a1;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 12px;
-    }
-    
-    .summary-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 6px 0;
-      font-size: 13px;
-    }
-    
-    .summary-label { color: #64748b; }
-    .summary-value { font-weight: 600; color: #0f172a; }
-    .summary-badge { background: #fef3c7; color: #92400e; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
-    .summary-divider { border-top: 1px solid #bae6fd; margin: 12px 0; }
-    .summary-premium { display: flex; justify-content: space-between; align-items: center; padding-top: 4px; }
-    .summary-premium-label { font-size: 13px; color: #0369a1; font-weight: 500; }
-    .summary-premium-value { font-size: 16px; font-weight: 700; color: #1e40af; }
-    
-    .main-content { flex: 1; padding: 32px; overflow-y: auto; }
-    
-    .content-card {
-      background: white;
-      border: 1px solid #e2e8f0;
-      border-radius: 12px;
-      padding: 24px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-    }
-    
-    .content-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
-    .content-icon { width: 48px; height: 48px; background: #eff6ff; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
-    .content-title { font-size: 20px; font-weight: 700; color: #0f172a; margin: 0 0 4px 0; }
-    .content-desc { font-size: 14px; color: #64748b; margin: 0; }
-    
-    .section { margin-bottom: 24px; }
-    .section-title { font-size: 11px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px; }
-    
-    .method-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-    
-    .method-card {
-      border: 2px solid #e2e8f0;
-      border-radius: 12px;
-      padding: 20px;
-      cursor: pointer;
-      transition: all 0.2s;
-      text-align: left;
-    }
-    
-    .method-card:hover { border-color: #3b82f6; background: #fafbff; }
-    .method-card.selected { border-color: #1e40af; background: #eff6ff; }
-    
-    .method-icon { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 12px; }
-    .method-card:nth-child(1) .method-icon { background: #fef3c7; }
-    .method-card:nth-child(2) .method-icon { background: #fce7f3; }
-    .method-card:nth-child(3) .method-icon { background: #e0e7ff; }
-    
-    .method-title { font-size: 15px; font-weight: 600; color: #0f172a; margin-bottom: 4px; }
-    .method-desc { font-size: 13px; color: #64748b; }
-    
-    .upload-area {
-      border: 2px dashed #e2e8f0;
-      border-radius: 12px;
-      padding: 40px;
-      text-align: center;
-      background: #fafbfc;
-      transition: all 0.2s;
-      cursor: pointer;
-      margin-top: 24px;
-    }
-    
-    .upload-area:hover { border-color: #3b82f6; background: #f8faff; }
-    .upload-area.dragover { border-color: #1e40af; background: #eff6ff; }
-    .upload-icon { font-size: 48px; margin-bottom: 16px; }
-    .upload-text { font-size: 14px; color: #64748b; margin-bottom: 8px; }
-    .upload-text a { color: #1e40af; font-weight: 600; text-decoration: none; }
-    .upload-text a:hover { text-decoration: underline; }
-    .upload-hint { font-size: 13px; color: #94a3b8; }
-    .upload-hint a { color: #1e40af; font-weight: 500; }
-    
-    .member-list-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid #e2e8f0;
-    }
-    
-    .member-stats { display: flex; align-items: center; gap: 8px; font-size: 14px; }
-    .member-stats .total { font-weight: 600; color: #0f172a; }
-    .member-stats .eligible { color: #10b981; }
-    .member-stats .medical { color: #f59e0b; }
-    .member-stats .excluded { color: #ef4444; }
-    .member-actions { display: flex; gap: 8px; }
-    
-    .table-container { overflow-x: auto; border: 1px solid #e2e8f0; border-radius: 8px; }
-    .member-table { width: 100%; border-collapse: collapse; min-width: 950px; }
-    .member-table th { background: #f8fafc; padding: 12px 16px; text-align: left; font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e2e8f0; white-space: nowrap; }
-    .member-table td { padding: 12px 16px; border-bottom: 1px solid #e2e8f0; font-size: 14px; color: #0f172a; vertical-align: middle; }
-    .member-table tr:hover { background: #f8fafc; }
-    .member-table tr.excluded { background: #fef2f2; }
-    .member-table tr.medical { background: #fffbeb; }
-    .member-table tr:last-child td { border-bottom: none; }
-    .age-text { font-weight: 500; }
-    .age-text.error { color: #ef4444; }
-    
-    .inline-select {
-      padding: 6px 28px 6px 10px;
-      border: 1px solid #e2e8f0;
-      border-radius: 6px;
-      font-size: 13px;
-      color: #0f172a;
-      background: white;
-      cursor: pointer;
-      appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 8px center;
-    }
-    
-    .inline-select:focus { outline: none; border-color: #3b82f6; }
-    .date-cell { display: flex; align-items: center; gap: 8px; }
-    .date-picker-btn { background: none; border: none; color: #94a3b8; cursor: pointer; padding: 4px; }
-    .date-picker-btn:hover { color: #1e40af; }
-    
-    .scroll-indicator { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 12px; }
-    .scroll-track { width: 200px; height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden; }
-    .scroll-thumb { width: 60%; height: 100%; background: #cbd5e1; border-radius: 3px; }
-    .scroll-arrow { width: 24px; height: 24px; background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #64748b; }
-    .scroll-arrow:hover { background: #e2e8f0; }
-    
-    .alert { display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; border-radius: 8px; font-size: 13px; line-height: 1.5; margin-top: 16px; }
-    .alert.warning { background: #fffbeb; border: 1px solid #fcd34d; color: #92400e; }
-    .alert-icon { flex-shrink: 0; margin-top: 1px; }
-    
-    .validation-section { margin-top: 24px; }
-    .validation-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-    .validation-card { border-radius: 12px; padding: 20px; text-align: center; border: 1px solid; }
-    .validation-card.eligible { background: #f0fdf4; border-color: #86efac; }
-    .validation-card.medical { background: #fffbeb; border-color: #fcd34d; }
-    .validation-card.excluded { background: #fef2f2; border-color: #fca5a5; }
-    .validation-card.rate { background: #eff6ff; border-color: #93c5fd; }
-    .validation-value { font-size: 32px; font-weight: 700; margin-bottom: 4px; }
-    .validation-card.eligible .validation-value { color: #10b981; }
-    .validation-card.medical .validation-value { color: #f59e0b; }
-    .validation-card.excluded .validation-value { color: #ef4444; }
-    .validation-card.rate .validation-value { color: #3b82f6; }
-    .validation-label { font-size: 13px; font-weight: 500; color: #64748b; }
-    
-    .footer { display: flex; align-items: center; justify-content: space-between; margin-top: 32px; padding-top: 24px; border-top: 1px solid #e2e8f0; }
-    .footer-center { font-size: 13px; color: #94a3b8; }
-    
-    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s; border: none; }
-    .btn-primary { background: #1e40af; color: white; }
-    .btn-primary:hover { background: #1e3a8a; }
-    .btn-secondary { background: white; color: #0f172a; border: 1px solid #e2e8f0; }
-    .btn-secondary:hover { background: #f8fafc; }
-    .btn-sm { padding: 8px 14px; font-size: 13px; }
-    
-    @media (max-width: 1100px) { .validation-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 900px) { .sidebar { display: none; } .method-grid { grid-template-columns: 1fr; } }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Product Configuration – Step 2</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F4F6FA;
+    --surface: #FFFFFF;
+    --border: #E2E6EF;
+    --border-focus: #2563EB;
+    --primary: #2563EB;
+    --primary-dark: #1D4ED8;
+    --primary-light: #EFF4FF;
+    --text-primary: #0F172A;
+    --text-secondary: #475569;
+    --text-muted: #94A3B8;
+    --success: #059669;
+    --success-light: #ECFDF5;
+    --warning: #D97706;
+    --warning-light: #FFFBEB;
+    --error: #DC2626;
+    --tag-bg: #F1F5F9;
+    --sidebar-w: 280px;
+    --radius: 10px;
+    --radius-sm: 6px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+    font-size: 14px;
+  }
+
+  /* ── Top Bar ── */
+  .topbar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .topbar-left h1 { font-size: 18px; font-weight: 600; color: var(--text-primary); }
+  .topbar-left p { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
+  .topbar-actions { display: flex; gap: 10px; }
+  .btn {
+    padding: 8px 18px;
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.15s;
+  }
+  .btn-outline {
+    background: var(--surface);
+    border-color: var(--border);
+    color: var(--text-secondary);
+  }
+  .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+  .btn-primary {
+    background: var(--primary);
+    color: #fff;
+  }
+  .btn-primary:hover { background: var(--primary-dark); }
+  .btn-primary .icon { margin-right: 6px; }
+
+  /* ── Layout ── */
+  .layout { display: flex; min-height: calc(100vh - 57px); }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    width: var(--sidebar-w);
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 24px 16px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .sidebar-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+    padding: 0 8px;
+  }
+  .step-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background 0.15s;
+    position: relative;
+  }
+  .step-item:hover { background: var(--bg); }
+  .step-item.active { background: var(--primary-light); }
+  .step-item.active .step-label { color: var(--primary); font-weight: 600; }
+  .step-item.completed .step-num { background: var(--success); color: #fff; border-color: var(--success); }
+  .step-item.completed .step-label { color: var(--text-secondary); }
+  .step-num {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 600;
+    color: var(--text-muted);
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .step-item.active .step-num { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
+  .step-meta { flex: 1; }
+  .step-sublabel { font-size: 10px; color: var(--text-muted); }
+  .step-label { font-size: 13px; color: var(--text-secondary); }
+  .step-arrow { color: var(--primary); font-size: 12px; }
+  .step-check { color: var(--success); font-size: 14px; }
+
+  /* ── Product Summary Card ── */
+  .summary-card {
+    margin-top: auto;
+    background: var(--bg);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    border: 1px solid var(--border);
+  }
+  .summary-card h4 { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 8px; }
+  .summary-row { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 12px; }
+  .summary-row span:first-child { color: var(--text-muted); }
+  .summary-row span:last-child { font-weight: 500; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+  .badge-draft { background: #FEF3C7; color: #92400E; }
+  .badge-active { background: var(--success-light); color: var(--success); }
+
+  /* ── Main Content ── */
+  .main {
+    flex: 1;
+    padding: 32px;
+    overflow-y: auto;
+  }
+
+  .form-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    max-width: 860px;
+  }
+
+  .form-card-header {
+    padding: 22px 28px 18px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .form-card-header .header-icon {
+    width: 40px; height: 40px;
+    background: var(--primary-light);
+    border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .form-card-header h2 { font-size: 16px; font-weight: 600; }
+  .form-card-header p { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+  /* ── Sections ── */
+  .form-section {
+    padding: 22px 28px;
+    border-bottom: 1px solid var(--border);
+  }
+  .form-section:last-of-type { border-bottom: none; }
+
+  .section-heading {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-heading::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── Form Grid ── */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .span-2 { grid-column: span 2; }
+
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .req { color: var(--error); }
+  .field-hint { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+  input[type="number"], input[type="text"], select {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--text-primary);
+    background: var(--surface);
+    transition: border-color 0.15s, box-shadow 0.15s;
+    outline: none;
+  }
+  input:focus, select:focus {
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+  }
+  input::placeholder { color: var(--text-muted); }
+
+  .input-with-unit {
+    position: relative;
+  }
+  .input-with-unit input { padding-right: 50px; }
+  .input-unit {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 500;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* ── Checkbox Grid ── */
+  .checkbox-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .checkbox-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+
+  .checkbox-tile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .checkbox-tile:hover { border-color: var(--primary); background: var(--primary-light); }
+  .checkbox-tile.checked { border-color: var(--primary); background: var(--primary-light); }
+  .checkbox-tile input[type="checkbox"] { display: none; }
+  .check-box {
+    width: 18px; height: 18px;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.15s;
+    background: var(--surface);
+  }
+  .checkbox-tile.checked .check-box {
+    background: var(--primary);
+    border-color: var(--primary);
+  }
+  .check-icon { color: #fff; font-size: 11px; display: none; }
+  .checkbox-tile.checked .check-icon { display: block; }
+  .tile-label { font-size: 13px; font-weight: 500; }
+  .tile-sub { font-size: 11px; color: var(--text-muted); }
+
+  /* ── Toggle Card ── */
+  .toggle-card {
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .toggle-card.active { border-color: var(--primary); }
+
+  .toggle-card-header {
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    background: var(--surface);
+    transition: background 0.15s;
+  }
+  .toggle-card.active .toggle-card-header { background: var(--primary-light); }
+
+  .toggle-switch {
+    width: 38px; height: 22px;
+    background: var(--border);
+    border-radius: 11px;
+    position: relative;
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+  .toggle-switch.on { background: var(--primary); }
+  .toggle-switch::after {
+    content: '';
+    position: absolute;
+    width: 16px; height: 16px;
+    background: #fff;
+    border-radius: 50%;
+    top: 3px; left: 3px;
+    transition: transform 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+  .toggle-switch.on::after { transform: translateX(16px); }
+
+  .toggle-card-title { font-size: 13px; font-weight: 600; flex: 1; }
+  .toggle-card-desc { font-size: 12px; color: var(--text-muted); }
+
+  .toggle-card-body {
+    padding: 18px 16px;
+    border-top: 1px solid var(--border);
+    display: none;
+    background: #FAFBFD;
+  }
+  .toggle-card.active .toggle-card-body { display: block; }
+
+  /* ── FCL Tiers ── */
+  .fcl-tier {
+    display: grid;
+    grid-template-columns: 24px 1fr 1fr auto;
+    gap: 10px;
+    align-items: center;
+    padding: 10px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    margin-bottom: 8px;
+  }
+  .tier-num {
+    width: 22px; height: 22px;
+    background: var(--primary);
+    color: #fff;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+  }
+  .tier-label { font-size: 12px; font-weight: 500; }
+  .tier-req { font-size: 11px; color: var(--text-muted); }
+  .tier-remove { color: var(--text-muted); cursor: pointer; padding: 4px; font-size: 14px; }
+  .tier-remove:hover { color: var(--error); }
+
+  .add-tier-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--primary);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 6px 0;
+    border: none;
+    background: none;
+    font-family: inherit;
+  }
+  .add-tier-btn:hover { opacity: 0.8; }
+
+  /* ── Info Banner ── */
+  .info-banner {
+    background: #EFF6FF;
+    border: 1px solid #BFDBFE;
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    display: flex;
+    gap: 10px;
+    font-size: 12px;
+    color: #1E40AF;
+    margin-bottom: 16px;
+  }
+  .info-banner .icon { flex-shrink: 0; font-size: 14px; }
+
+  .warn-banner {
+    background: var(--warning-light);
+    border: 1px solid #FDE68A;
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    display: flex;
+    gap: 10px;
+    font-size: 12px;
+    color: #92400E;
+    margin-top: 12px;
+  }
+
+  /* ── Age Range Visual ── */
+  .age-range-visual {
+    background: var(--bg);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+  .age-pill {
+    background: var(--primary);
+    color: #fff;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: 'DM Mono', monospace;
+  }
+  .age-line { flex: 1; height: 2px; background: var(--primary); border-radius: 2px; }
+  .age-mid { font-size: 11px; color: var(--text-muted); }
+
+  /* ── Form Footer ── */
+  .form-footer {
+    padding: 18px 28px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--bg);
+  }
+  .step-indicator { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+  .footer-actions { display: flex; gap: 10px; }
+
+  .divider { height: 1px; background: var(--border); margin: 14px 0; }
+
+  /* ── Nationality Section ── */
+  .tag-input-area {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 8px 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    min-height: 42px;
+    cursor: text;
+  }
+  .tag {
+    background: var(--primary-light);
+    color: var(--primary);
+    border-radius: 4px;
+    padding: 3px 8px;
+    font-size: 12px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .tag-x { cursor: pointer; opacity: 0.6; font-size: 10px; }
+  .tag-x:hover { opacity: 1; }
+</style>
 </head>
 <body>
-  <div id="root"></div>
-  
-  <script type="text/babel">
-    const { useState } = React;
 
-    const CheckIcon = ({ size = 14 }) => (
-      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-        <path d="M20 6L9 17l-5-5"/>
-      </svg>
-    );
+<!-- Top Bar -->
+<div class="topbar">
+  <div class="topbar-left">
+    <h1>Product Configuration</h1>
+    <p>Configure new insurance product</p>
+  </div>
+  <div class="topbar-actions">
+    <button class="btn btn-outline">Save as Draft</button>
+    <button class="btn btn-primary"><span class="icon">✓</span> Save &amp; Activate</button>
+  </div>
+</div>
 
-    const ChevronRight = () => (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="m9 18 6-6-6-6"/>
-      </svg>
-    );
+<div class="layout">
 
-    const ChevronLeft = () => (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="m15 18-6-6 6-6"/>
-      </svg>
-    );
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-title">Configuration Steps</div>
 
-    const AlertIcon = () => (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0zM12 9v4M12 17h.01"/>
-      </svg>
-    );
+    <div class="step-item completed">
+      <div class="step-num">✓</div>
+      <div class="step-meta">
+        <div class="step-sublabel">Step 1</div>
+        <div class="step-label">Product Master</div>
+      </div>
+    </div>
 
-    const CalendarIcon = () => (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
-      </svg>
-    );
+    <div class="step-item active">
+      <div class="step-num">2</div>
+      <div class="step-meta">
+        <div class="step-sublabel">Step 2</div>
+        <div class="step-label">Eligibility Rules</div>
+      </div>
+      <span class="step-arrow">›</span>
+    </div>
 
-    const sampleMembers = [
-      { id: 1, staffNo: 'EMP-001', name: 'James Mwa', idNo: '12345678', dob: '15-03-1985', age: 39, gender: 'Male', occupation: 'Class I', salary: 1800000, status: 'eligible' },
-      { id: 2, staffNo: 'EMP-002', name: 'Grace Achir', idNo: '23456789', dob: '22-07-1990', age: 34, gender: 'Female', occupation: 'Class I', salary: 1200000, status: 'eligible' },
-      { id: 3, staffNo: 'EMP-003', name: 'Peter Kamai', idNo: '34567890', dob: '10-01-1958', age: 67, gender: 'Male', occupation: 'Class I', salary: 950000, status: 'excluded' },
-    ];
+    <div class="step-item">
+      <div class="step-num">3</div>
+      <div class="step-meta">
+        <div class="step-sublabel">Step 3</div>
+        <div class="step-label">Benefits &amp; Coverage</div>
+      </div>
+    </div>
 
-    function App() {
-      const [selectedMethod, setSelectedMethod] = useState('upload');
-      const [dragOver, setDragOver] = useState(false);
-      const [showMembers, setShowMembers] = useState(true);
+    <div class="step-item">
+      <div class="step-num">4</div>
+      <div class="step-meta">
+        <div class="step-sublabel">Step 4</div>
+        <div class="step-label">Premium &amp; Rating</div>
+      </div>
+    </div>
 
-      return (
-        <div className="page-container">
-          <div className="sidebar">
-            <div className="sidebar-title">Quote Creation Steps</div>
-            
-            <div className="step-item completed">
-              <div className="step-number"><CheckIcon size={14} /></div>
-              <div className="step-content">
-                <div className="step-label">Customer & Distribution</div>
-                <div className="step-desc">Customer details, channel</div>
-              </div>
-            </div>
-            
-            <div className="step-item completed">
-              <div className="step-number"><CheckIcon size={14} /></div>
-              <div className="step-content">
-                <div className="step-label">Product Selection</div>
-                <div className="step-desc">Product, scheme type</div>
-              </div>
-            </div>
-            
-            <div className="step-item completed">
-              <div className="step-number"><CheckIcon size={14} /></div>
-              <div className="step-content">
-                <div className="step-label">Scheme Details</div>
-                <div className="step-desc">Dates, coverage parameters</div>
-              </div>
-            </div>
-            
-            <div className="step-item completed">
-              <div className="step-number"><CheckIcon size={14} /></div>
-              <div className="step-content">
-                <div className="step-label">Coverage Selection</div>
-                <div className="step-desc">Benefits configuration</div>
-              </div>
-            </div>
-            
-            <div className="step-item active">
-              <div className="step-number">5</div>
-              <div className="step-content">
-                <div className="step-label">Member Data</div>
-                <div className="step-desc">Upload or add members</div>
-              </div>
-            </div>
-            
-            <div className="step-item inactive">
-              <div className="step-number">6</div>
-              <div className="step-content">
-                <div className="step-label">Premium Computation</div>
-                <div className="step-desc">Calculate & confirm premium</div>
-              </div>
-            </div>
-            
-            <div className="step-item inactive">
-              <div className="step-number">7</div>
-              <div className="step-content">
-                <div className="step-label">Review & Send</div>
-                <div className="step-desc">Validation, send quote</div>
-              </div>
-            </div>
-            
-            <div className="summary-card">
-              <div className="summary-card-title">Quote Summary</div>
-              <div className="summary-row">
-                <span className="summary-label">Quote No</span>
-                <span className="summary-value">QT-2025-00234</span>
-              </div>
-              <div className="summary-row">
-                <span className="summary-label">Product</span>
-                <span className="summary-value">GRP-BASIC-001</span>
-              </div>
-              <div className="summary-row">
-                <span className="summary-label">Status</span>
-                <span className="summary-badge">Draft</span>
-              </div>
-              <div className="summary-divider"></div>
-              <div className="summary-row">
-                <span className="summary-label">Scheme</span>
-                <span className="summary-value">—</span>
-              </div>
-              <div className="summary-row">
-                <span className="summary-label">Members</span>
-                <span className="summary-value">—</span>
-              </div>
-              <div className="summary-row">
-                <span className="summary-label">Validity</span>
-                <span className="summary-value">—</span>
-              </div>
-              <div className="summary-divider"></div>
-              <div className="summary-premium">
-                <span className="summary-premium-label">Est. Premium</span>
-                <span className="summary-premium-value">KES —</span>
-              </div>
+    <div class="step-item">
+      <div class="step-num">5</div>
+      <div class="step-meta">
+        <div class="step-sublabel">Step 5</div>
+        <div class="step-label">Commission &amp; Tax</div>
+      </div>
+    </div>
+
+    <div class="step-item">
+      <div class="step-num">6</div>
+      <div class="step-meta">
+        <div class="step-sublabel">Step 6</div>
+        <div class="step-label">Documents</div>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <h4>Product Summary</h4>
+      <div class="summary-row"><span>Code</span><span style="font-family:'DM Mono',monospace;font-size:11px">GRP-BASIC-001</span></div>
+      <div class="summary-row"><span>Name</span><span>Group Life Basic</span></div>
+      <div class="summary-row"><span>Status</span><span><span class="badge badge-draft">Draft</span></span></div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+    <div class="form-card">
+
+      <!-- Card Header -->
+      <div class="form-card-header">
+        <div class="header-icon">👥</div>
+        <div>
+          <h2>Eligibility Rules Configuration</h2>
+          <p>Define who qualifies for this product and under what conditions</p>
+        </div>
+      </div>
+
+      <!-- Section 1: Age Eligibility -->
+      <div class="form-section">
+        <div class="section-heading">Age Eligibility</div>
+        <div class="form-grid">
+          <div class="field">
+            <label>Minimum Entry Age <span class="req">*</span></label>
+            <div class="input-with-unit">
+              <input type="number" value="18" id="minAge" oninput="updateAgeVisual()">
+              <span class="input-unit">yrs</span>
             </div>
           </div>
-          
-          <div className="main-content">
-            <div className="content-card">
-              <div className="content-header">
-                <div className="content-icon">👥</div>
-                <div>
-                  <h1 className="content-title">Member Data</h1>
-                  <p className="content-desc">Add, upload or import all members to be covered under this quote</p>
+          <div class="field">
+            <label>Maximum Entry Age <span class="req">*</span></label>
+            <div class="input-with-unit">
+              <input type="number" value="65" id="maxAge" oninput="updateAgeVisual()">
+              <span class="input-unit">yrs</span>
+            </div>
+          </div>
+          <div class="field">
+            <label>Minimum Exit Age</label>
+            <div class="input-with-unit">
+              <input type="number" value="60">
+              <span class="input-unit">yrs</span>
+            </div>
+            <span class="field-hint">Earliest age member can exit the scheme</span>
+          </div>
+          <div class="field">
+            <label>Maximum Exit Age <span class="req">*</span></label>
+            <div class="input-with-unit">
+              <input type="number" value="70">
+              <span class="input-unit">yrs</span>
+            </div>
+            <span class="field-hint">Cover ceases at this age (also used as medical trigger)</span>
+          </div>
+        </div>
+
+        <!-- Age Visual -->
+        <div class="age-range-visual">
+          <span class="age-pill" id="ageMinPill">18</span>
+          <div class="age-line"></div>
+          <span class="age-mid">Cover Active</span>
+          <div class="age-line"></div>
+          <span class="age-pill" id="ageMaxPill">65</span>
+        </div>
+      </div>
+
+      <!-- Section 2: Employment Eligibility -->
+      <div class="form-section">
+        <div class="section-heading">Employment Eligibility</div>
+        <div class="field" style="margin-bottom:12px">
+          <label>Eligible Employment Types <span class="req">*</span></label>
+        </div>
+        <div class="checkbox-grid">
+          <label class="checkbox-tile checked" onclick="toggleTile(this)">
+            <input type="checkbox" checked>
+            <div class="check-box"><span class="check-icon">✓</span></div>
+            <div>
+              <div class="tile-label">Permanent</div>
+              <div class="tile-sub">Full-time confirmed employees</div>
+            </div>
+          </label>
+          <label class="checkbox-tile" onclick="toggleTile(this)">
+            <input type="checkbox">
+            <div class="check-box"><span class="check-icon">✓</span></div>
+            <div>
+              <div class="tile-label">Contract</div>
+              <div class="tile-sub">Fixed-term contract workers</div>
+            </div>
+          </label>
+          <label class="checkbox-tile" onclick="toggleTile(this)">
+            <input type="checkbox">
+            <div class="check-box"><span class="check-icon">✓</span></div>
+            <div>
+              <div class="tile-label">Daily Wage</div>
+              <div class="tile-sub">Casual / piece-rate workers</div>
+            </div>
+          </label>
+          <label class="checkbox-tile" onclick="toggleTile(this)">
+            <input type="checkbox">
+            <div class="check-box"><span class="check-icon">✓</span></div>
+            <div>
+              <div class="tile-label">Self-Employed</div>
+              <div class="tile-sub">Business owners / freelancers</div>
+            </div>
+          </label>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="form-grid" style="margin-top:4px">
+          <div class="field">
+            <label>Minimum Service Period</label>
+            <div class="input-with-unit">
+              <input type="number" value="0" placeholder="0">
+              <span class="input-unit">days</span>
+            </div>
+            <span class="field-hint">Waiting period before employee is eligible to join</span>
+          </div>
+          <div class="field">
+            <label>Minimum Working Hours / Week</label>
+            <div class="input-with-unit">
+              <input type="number" placeholder="e.g., 20">
+              <span class="input-unit">hrs</span>
+            </div>
+            <span class="field-hint">For part-time eligibility threshold</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 3: Group Size -->
+      <div class="form-section">
+        <div class="section-heading">Group / Scheme Size</div>
+        <div class="form-grid">
+          <div class="field">
+            <label>Minimum Group Size <span class="req">*</span></label>
+            <input type="number" value="10">
+            <span class="field-hint">Minimum members required to form a valid scheme</span>
+          </div>
+          <div class="field">
+            <label>Maximum Group Size</label>
+            <input type="number" value="1000">
+            <span class="field-hint">Leave blank for unlimited</span>
+          </div>
+          <div class="field">
+            <label>Minimum Participation Rate <span class="req">*</span></label>
+            <div class="input-with-unit">
+              <input type="number" value="75">
+              <span class="input-unit">%</span>
+            </div>
+            <span class="field-hint">% of eligible employees who must enroll</span>
+          </div>
+          <div class="field">
+            <label>Dependent Coverage</label>
+            <select>
+              <option value="">Not Allowed</option>
+              <option value="spouse">Spouse Only</option>
+              <option value="children">Children Only</option>
+              <option value="both">Spouse &amp; Children</option>
+              <option value="extended">Extended Family</option>
+            </select>
+            <span class="field-hint">Whether member's dependants can be covered</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 4: Sum Assured Limits -->
+      <div class="form-section">
+        <div class="section-heading">Sum Assured Limits</div>
+        <div class="form-grid">
+          <div class="field">
+            <label>Minimum Sum Assured <span class="req">*</span></label>
+            <div class="input-with-unit">
+              <input type="number" value="50000" placeholder="50,000">
+              <span class="input-unit">KES</span>
+            </div>
+          </div>
+          <div class="field">
+            <label>Maximum Sum Assured <span class="req">*</span></label>
+            <div class="input-with-unit">
+              <input type="number" value="5000000" placeholder="5,000,000">
+              <span class="input-unit">KES</span>
+            </div>
+          </div>
+          <div class="field">
+            <label>Sum Assured Basis <span class="req">*</span></label>
+            <select>
+              <option value="">Select Basis</option>
+              <option>Flat Amount</option>
+              <option>Multiple of Salary</option>
+              <option>Salary Band</option>
+              <option>Loan Outstanding Balance</option>
+              <option>Original Loan Amount</option>
+            </select>
+            <span class="field-hint">How the sum assured is determined per member</span>
+          </div>
+          <div class="field">
+            <label>Salary Multiple (if applicable)</label>
+            <div class="input-with-unit">
+              <input type="number" placeholder="e.g., 3" step="0.5">
+              <span class="input-unit">×</span>
+            </div>
+            <span class="field-hint">e.g., 3× annual salary</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 5: Medical Underwriting / FCL -->
+      <div class="form-section">
+        <div class="section-heading">Medical Underwriting &amp; Free Cover Limit</div>
+
+        <div class="info-banner">
+          <span class="icon">ℹ️</span>
+          <span>Medical underwriting is triggered by thresholds, not a simple on/off switch. Configure FCL and age triggers below — these become the default for all schemes under this product and can be overridden at policy level with approval.</span>
+        </div>
+
+        <!-- Toggle Card: FCL Rules -->
+        <div class="toggle-card active" id="fclCard" style="margin-bottom:12px">
+          <div class="toggle-card-header" onclick="toggleCard('fclCard')">
+            <div class="toggle-switch on" id="fclToggle"></div>
+            <div>
+              <div class="toggle-card-title">Enable Free Cover Limit (FCL) Rules</div>
+              <div class="toggle-card-desc">Define SA thresholds that trigger different levels of medical evidence</div>
+            </div>
+          </div>
+          <div class="toggle-card-body">
+            <div class="form-grid" style="margin-bottom:16px">
+              <div class="field">
+                <label>Free Cover Limit (FCL) <span class="req">*</span></label>
+                <div class="input-with-unit">
+                  <input type="number" value="5000000" placeholder="5,000,000">
+                  <span class="input-unit">KES</span>
+                </div>
+                <span class="field-hint">SA up to this amount → Guaranteed Issue, no medical needed</span>
+              </div>
+              <div class="field">
+                <label>FCL Basis</label>
+                <select>
+                  <option>Per Member</option>
+                  <option>Per Group (aggregate)</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:10px">Evidence Tiers Above FCL</div>
+
+            <div class="fcl-tier">
+              <div class="tier-num">1</div>
+              <div>
+                <div class="tier-label">FCL → 10,000,000</div>
+                <div class="tier-req">Health Declaration Form only</div>
+              </div>
+              <select style="font-size:12px">
+                <option>Health Declaration Form</option>
+                <option>Non-Medical Questionnaire</option>
+                <option>Blood Test</option>
+                <option>Full Medical Exam</option>
+                <option>Doctor's Report</option>
+              </select>
+              <span class="tier-remove" onclick="this.closest('.fcl-tier').remove()">✕</span>
+            </div>
+
+            <div class="fcl-tier">
+              <div class="tier-num">2</div>
+              <div>
+                <div class="tier-label">10,000,000 → 20,000,000</div>
+                <div class="tier-req">Full Medical Examination</div>
+              </div>
+              <select style="font-size:12px">
+                <option>Health Declaration Form</option>
+                <option>Non-Medical Questionnaire</option>
+                <option>Blood Test</option>
+                <option selected>Full Medical Exam</option>
+                <option>Doctor's Report</option>
+              </select>
+              <span class="tier-remove" onclick="this.closest('.fcl-tier').remove()">✕</span>
+            </div>
+
+            <div class="fcl-tier">
+              <div class="tier-num">3</div>
+              <div>
+                <div class="tier-label">Above 20,000,000</div>
+                <div class="tier-req">Full Medical + Specialist Report</div>
+              </div>
+              <select style="font-size:12px">
+                <option>Health Declaration Form</option>
+                <option>Non-Medical Questionnaire</option>
+                <option>Blood Test</option>
+                <option>Full Medical Exam</option>
+                <option selected>Doctor's Report</option>
+              </select>
+              <span class="tier-remove" onclick="this.closest('.fcl-tier').remove()">✕</span>
+            </div>
+
+            <button class="add-tier-btn" onclick="addTier()">＋ Add Evidence Tier</button>
+          </div>
+        </div>
+
+        <!-- Toggle Card: Age Trigger -->
+        <div class="toggle-card" id="ageCard">
+          <div class="toggle-card-header" onclick="toggleCard('ageCard')">
+            <div class="toggle-switch" id="ageToggle"></div>
+            <div>
+              <div class="toggle-card-title">Age-Based Medical Trigger</div>
+              <div class="toggle-card-desc">Members above a certain age always require medical evidence regardless of SA</div>
+            </div>
+          </div>
+          <div class="toggle-card-body">
+            <div class="form-grid">
+              <div class="field">
+                <label>Medical Required Above Age <span class="req">*</span></label>
+                <div class="input-with-unit">
+                  <input type="number" value="55" placeholder="55">
+                  <span class="input-unit">yrs</span>
                 </div>
               </div>
-              
-              <div className="section">
-                <div className="section-title">Input Method</div>
-                <div className="method-grid">
-                  <div className={`method-card ${selectedMethod === 'upload' ? 'selected' : ''}`} onClick={() => setSelectedMethod('upload')}>
-                    <div className="method-icon">📁</div>
-                    <div className="method-title">Upload Excel / CSV</div>
-                    <div className="method-desc">Bulk upload member schedule</div>
-                  </div>
-                  <div className={`method-card ${selectedMethod === 'manual' ? 'selected' : ''}`} onClick={() => setSelectedMethod('manual')}>
-                    <div className="method-icon">✏️</div>
-                    <div className="method-title">Manual Entry</div>
-                    <div className="method-desc">Add members one by one</div>
-                  </div>
-                  <div className={`method-card ${selectedMethod === 'hr' ? 'selected' : ''}`} onClick={() => setSelectedMethod('hr')}>
-                    <div className="method-icon">🔗</div>
-                    <div className="method-title">HR System Import</div>
-                    <div className="method-desc">Connect to HRIS / payroll</div>
-                  </div>
+              <div class="field">
+                <label>Evidence Required</label>
+                <select>
+                  <option>Full Medical Examination</option>
+                  <option>Blood Test + ECG</option>
+                  <option>Doctor's Report</option>
+                  <option>Health Declaration Form</option>
+                </select>
+              </div>
+            </div>
+            <div class="warn-banner">
+              <span>⚠️</span>
+              <span>Age trigger applies in addition to SA tiers. A member aged 56 with SA of 3M (below FCL) will still require medical evidence.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 6: Nationality & Residency -->
+      <div class="form-section">
+        <div class="section-heading">Nationality &amp; Residency</div>
+        <div class="form-grid">
+          <div class="field">
+            <label>Residency Requirement</label>
+            <select>
+              <option value="">No Restriction</option>
+              <option>Resident Only</option>
+              <option>Citizen Only</option>
+              <option>Resident or Citizen</option>
+              <option>Work Permit Holders Allowed</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Excluded Nationalities</label>
+            <div class="tag-input-area">
+              <span class="tag">US Persons <span class="tag-x">✕</span></span>
+              <span style="font-size:12px;color:var(--text-muted);align-self:center">+ Add</span>
+            </div>
+            <span class="field-hint">Nationalities excluded due to regulatory / reinsurance restrictions</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 7: Lien & Special Conditions -->
+      <div class="form-section">
+        <div class="section-heading">Lien &amp; Special Conditions</div>
+
+        <div class="toggle-card" id="lienCard" style="margin-bottom:12px">
+          <div class="toggle-card-header" onclick="toggleCard('lienCard')">
+            <div class="toggle-switch" id="lienToggle"></div>
+            <div>
+              <div class="toggle-card-title">Enable Lien / Exclusion Clause</div>
+              <div class="toggle-card-desc">Apply a lien period during which certain claims may be limited or excluded</div>
+            </div>
+          </div>
+          <div class="toggle-card-body">
+            <div class="form-grid">
+              <div class="field">
+                <label>Lien Period <span class="req">*</span></label>
+                <div class="input-with-unit">
+                  <input type="number" placeholder="e.g., 12">
+                  <span class="input-unit">mths</span>
                 </div>
               </div>
-              
-              {selectedMethod === 'upload' && (
-                <div 
-                  className={`upload-area ${dragOver ? 'dragover' : ''}`}
-                  onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
-                  onDragLeave={() => setDragOver(false)}
-                  onDrop={(e) => { e.preventDefault(); setDragOver(false); setShowMembers(true); }}
-                  onClick={() => setShowMembers(true)}
-                >
-                  <div className="upload-icon">📂</div>
-                  <div className="upload-text">Drop your member schedule here or <a href="#" onClick={(e) => e.preventDefault()}>browse files</a></div>
-                  <div className="upload-hint">Accepts .xlsx, .csv — max 10MB · <a href="#" onClick={(e) => e.preventDefault()}>Download template</a></div>
+              <div class="field">
+                <label>Lien Applies To</label>
+                <select>
+                  <option>Natural Death Only</option>
+                  <option>All Causes</option>
+                  <option>Pre-existing Conditions</option>
+                </select>
+              </div>
+              <div class="field span-2">
+                <label>Lien Benefit (% of SA payable during lien period)</label>
+                <div class="input-with-unit">
+                  <input type="number" value="50" placeholder="50">
+                  <span class="input-unit">%</span>
                 </div>
-              )}
-              
-              {showMembers && (
-                <div className="section" style={{ marginTop: '32px' }}>
-                  <div className="section-title">Member List</div>
-                  
-                  <div className="member-list-header">
-                    <div className="member-stats">
-                      <span className="total">47 members loaded</span>
-                      <span>·</span>
-                      <span className="eligible">44 eligible</span>
-                      <span>·</span>
-                      <span className="medical">2 require medical</span>
-                      <span>·</span>
-                      <span className="excluded">1 excluded (age)</span>
-                    </div>
-                    <div className="member-actions">
-                      <button className="btn btn-secondary btn-sm">Export</button>
-                      <button className="btn btn-primary btn-sm">+ Add Member</button>
-                    </div>
-                  </div>
-                  
-                  <div className="table-container">
-                    <table className="member-table">
-                      <thead>
-                        <tr>
-                          <th>#</th>
-                          <th>Staff No.</th>
-                          <th>Full Name</th>
-                          <th>ID / Passport</th>
-                          <th>DOB</th>
-                          <th>Age</th>
-                          <th>Gender</th>
-                          <th>Occupation Class</th>
-                          <th>Annual Salary</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {sampleMembers.map((member, idx) => (
-                          <tr key={member.id} className={member.status}>
-                            <td>{idx + 1}</td>
-                            <td>{member.staffNo}</td>
-                            <td style={{ fontWeight: '500' }}>{member.name}</td>
-                            <td>{member.idNo}</td>
-                            <td>
-                              <div className="date-cell">
-                                {member.dob}
-                                <button className="date-picker-btn"><CalendarIcon /></button>
-                              </div>
-                            </td>
-                            <td><span className={`age-text ${member.age > 65 ? 'error' : ''}`}>{member.age}</span></td>
-                            <td>
-                              <select className="inline-select" defaultValue={member.gender}>
-                                <option>Male</option>
-                                <option>Female</option>
-                              </select>
-                            </td>
-                            <td>
-                              <select className="inline-select" defaultValue={member.occupation}>
-                                <option>Class I</option>
-                                <option>Class II</option>
-                                <option>Class III</option>
-                                <option>Class IV</option>
-                              </select>
-                            </td>
-                            <td style={{ textAlign: 'right' }}>{member.salary.toLocaleString()}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                  
-                  <div className="scroll-indicator">
-                    <div className="scroll-arrow"><ChevronLeft /></div>
-                    <div className="scroll-track"><div className="scroll-thumb"></div></div>
-                    <div className="scroll-arrow"><ChevronRight /></div>
-                  </div>
-                  
-                  <div className="alert warning">
-                    <AlertIcon />
-                    <div><strong>1 member excluded</strong> (age above product maximum of 65 years). <strong>Sum assured for EMP-001 exceeds FCL</strong> — medical evidence required before cover can be bound.</div>
-                  </div>
-                  
-                  <div className="validation-section">
-                    <div className="section-title">Enrolment Validation Summary</div>
-                    <div className="validation-grid">
-                      <div className="validation-card eligible">
-                        <div className="validation-value">44</div>
-                        <div className="validation-label">Eligible Members</div>
-                      </div>
-                      <div className="validation-card medical">
-                        <div className="validation-value">2</div>
-                        <div className="validation-label">Require Medical</div>
-                      </div>
-                      <div className="validation-card excluded">
-                        <div className="validation-value">1</div>
-                        <div className="validation-label">Excluded</div>
-                      </div>
-                      <div className="validation-card rate">
-                        <div className="validation-value">93%</div>
-                        <div className="validation-label">Participation Rate</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-              
-              <div className="footer">
-                <button className="btn btn-secondary"><ChevronLeft /> Previous</button>
-                <div className="footer-center">Step 5 of 7</div>
-                <button className="btn btn-primary">Next — Compute Premium <ChevronRight /></button>
+                <span class="field-hint">e.g., 50% of SA paid if death occurs within lien period</span>
               </div>
             </div>
           </div>
         </div>
-      );
-    }
 
-    ReactDOM.render(<App />, document.getElementById('root'));
-  </script>
+        <div class="toggle-card" id="preCard">
+          <div class="toggle-card-header" onclick="toggleCard('preCard')">
+            <div class="toggle-switch" id="preToggle"></div>
+            <div>
+              <div class="toggle-card-title">Pre-existing Condition Exclusion</div>
+              <div class="toggle-card-desc">Exclude claims arising from conditions that existed before policy commencement</div>
+            </div>
+          </div>
+          <div class="toggle-card-body">
+            <div class="form-grid">
+              <div class="field">
+                <label>Exclusion Period <span class="req">*</span></label>
+                <div class="input-with-unit">
+                  <input type="number" value="24">
+                  <span class="input-unit">mths</span>
+                </div>
+                <span class="field-hint">Conditions diagnosed within this period before inception are excluded</span>
+              </div>
+              <div class="field">
+                <label>Applies To</label>
+                <select>
+                  <option>All Members</option>
+                  <option>Late Entrants Only</option>
+                  <option>Members Above FCL</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="form-footer">
+        <button class="btn btn-outline">← Previous</button>
+        <span class="step-indicator">Step 2 of 6</span>
+        <button class="btn btn-primary">Next →</button>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script>
+  function toggleTile(el) {
+    el.classList.toggle('checked');
+  }
+
+  function toggleCard(id) {
+    const card = document.getElementById(id);
+    const toggle = card.querySelector('.toggle-switch');
+    card.classList.toggle('active');
+    toggle.classList.toggle('on');
+  }
+
+  function updateAgeVisual() {
+    const min = document.getElementById('minAge').value || '18';
+    const max = document.getElementById('maxAge').value || '65';
+    document.getElementById('ageMinPill').textContent = min;
+    document.getElementById('ageMaxPill').textContent = max;
+  }
+
+  let tierCount = 3;
+  function addTier() {
+    tierCount++;
+    const container = document.querySelector('.add-tier-btn');
+    const tier = document.createElement('div');
+    tier.className = 'fcl-tier';
+    tier.innerHTML = `
+      <div class="tier-num">${tierCount}</div>
+      <div>
+        <div class="tier-label">New Tier ${tierCount}</div>
+        <div class="tier-req">Select evidence type</div>
+      </div>
+      <select style="font-size:12px">
+        <option>Health Declaration Form</option>
+        <option>Non-Medical Questionnaire</option>
+        <option>Blood Test</option>
+        <option>Full Medical Exam</option>
+        <option>Doctor's Report</option>
+      </select>
+      <span class="tier-remove" onclick="this.closest('.fcl-tier').remove()">✕</span>
+    `;
+    container.parentNode.insertBefore(tier, container);
+  }
+</script>
 </body>
 </html>
