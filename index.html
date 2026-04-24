@@ -3,476 +3,253 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Create Quote - Step 4: Coverage Selection | InsureCore</title>
+  <title>Create Quote - Member Data | InsureCore</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   
   <style>
     * { font-family: 'DM Sans', sans-serif; box-sizing: border-box; }
-    body { margin: 0; padding: 0; }
+    body { margin: 0; padding: 0; background: #f8fafc; }
     
-    :root {
-      --primary: #1e40af;
-      --primary-light: #3b82f6;
-      --primary-dark: #1e3a8a;
-      --success: #10b981;
-      --success-light: #d1fae5;
-      --warning: #f59e0b;
-      --warning-light: #fef3c7;
-      --danger: #ef4444;
-      --danger-light: #fef2f2;
-      --purple: #8b5cf6;
-      --purple-light: #ede9fe;
-      --surface: #f8fafc;
-      --border: #e2e8f0;
-      --text-primary: #0f172a;
-      --text-secondary: #64748b;
-      --text-muted: #94a3b8;
+    .page-container { display: flex; min-height: 100vh; }
+    
+    .sidebar {
+      width: 280px;
+      background: white;
+      border-right: 1px solid #e2e8f0;
+      padding: 24px;
+      flex-shrink: 0;
     }
     
-    .info-card {
-      background: #f0f9ff;
-      border: 1px solid #bae6fd;
-      border-radius: 8px;
-      padding: 12px 16px;
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      font-size: 13px;
-      color: #0369a1;
-      line-height: 1.5;
-      margin-bottom: 20px;
-    }
-    
-    .product-context-bar {
-      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-      border-radius: 10px;
-      padding: 16px 20px;
-      margin-bottom: 20px;
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 16px;
-    }
-    
-    .context-item {
-      text-align: center;
-    }
-    
-    .context-label {
-      font-size: 10px;
+    .sidebar-title {
+      font-size: 11px;
+      font-weight: 600;
       color: #94a3b8;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      margin-bottom: 4px;
+      margin-bottom: 16px;
     }
     
-    .context-value {
-      font-size: 14px;
-      font-weight: 600;
-      color: white;
-    }
-    
-    .context-value.highlight {
-      color: #fbbf24;
-    }
-    
-    .context-value .override-text {
-      font-size: 11px;
-      color: #fbbf24;
-      display: block;
-    }
-    
-    .stepper {
+    .step-item {
       display: flex;
-      gap: 8px;
-      margin-bottom: 32px;
-      flex-wrap: wrap;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 0;
+      position: relative;
     }
     
-    .step {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-size: 13px;
-      font-weight: 500;
-      white-space: nowrap;
+    .step-item:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: 15px;
+      top: 44px;
+      width: 2px;
+      height: calc(100% - 20px);
+      background: #e2e8f0;
     }
     
-    .step.completed { background: var(--success-light); color: #065f46; }
-    .step.active { background: var(--primary); color: white; }
-    .step.inactive { background: var(--surface); color: var(--text-secondary); border: 1px solid var(--border); }
+    .step-item.completed:not(:last-child)::after { background: #10b981; }
     
     .step-number {
-      width: 22px;
-      height: 22px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 600;
+      flex-shrink: 0;
+      z-index: 1;
     }
     
-    .step.completed .step-number { background: #065f46; color: white; }
-    .step.active .step-number { background: rgba(255,255,255,0.2); }
-    .step.inactive .step-number { background: #e2e8f0; }
+    .step-item.completed .step-number { background: #d1fae5; color: #065f46; }
+    .step-item.active .step-number { background: #1e40af; color: white; }
+    .step-item.inactive .step-number { background: #f1f5f9; color: #94a3b8; }
     
-    .btn-primary {
-      background: var(--primary);
-      color: white;
-      padding: 12px 24px;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 14px;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      border: none;
-    }
+    .step-content { flex: 1; padding-top: 4px; }
+    .step-label { font-size: 14px; font-weight: 600; color: #0f172a; margin-bottom: 2px; }
+    .step-item.inactive .step-label { color: #94a3b8; }
+    .step-desc { font-size: 12px; color: #94a3b8; }
     
-    .btn-primary:hover {
-      background: var(--primary-dark);
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(30, 64, 175, 0.25);
-    }
-    
-    .btn-secondary {
-      background: white;
-      color: var(--text-primary);
-      padding: 12px 24px;
-      border-radius: 8px;
-      font-weight: 500;
-      font-size: 14px;
-      cursor: pointer;
-      border: 1px solid var(--border);
-      transition: all 0.2s;
-    }
-    
-    .btn-secondary:hover { background: var(--surface); border-color: #cbd5e1; }
-    
-    .btn-outline {
-      background: transparent;
-      color: var(--primary);
-      padding: 12px 24px;
-      border-radius: 8px;
-      font-weight: 500;
-      font-size: 14px;
-      cursor: pointer;
-      border: 1px solid var(--primary);
-      transition: all 0.2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-    
-    .btn-outline:hover { background: #eff6ff; }
-    
-    @media (max-width: 900px) {
-      .product-context-bar { grid-template-columns: repeat(3, 1fr); }
-      .benefit-params { grid-template-columns: repeat(2, 1fr) !important; }
-    }
-    
-    @media (max-width: 600px) {
-      .product-context-bar { grid-template-columns: repeat(2, 1fr); }
-      .benefit-params { grid-template-columns: 1fr !important; }
-    }
-    
-    .page-header { margin-bottom: 24px; }
-    .page-title-row { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
-    .page-title { font-size: 24px; font-weight: 700; color: var(--text-primary); margin: 0; }
-    .page-badge { background: #dbeafe; color: var(--primary); padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
-    .page-description { color: var(--text-secondary); font-size: 14px; margin: 0; line-height: 1.5; }
-    
-    .action-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    .summary-card {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-radius: 12px;
+      padding: 16px;
       margin-top: 24px;
-      padding-top: 24px;
-      border-top: 1px solid var(--border);
     }
     
-    .action-bar-right { display: flex; gap: 12px; }
-    
-    /* Badge Styles */
-    .badge {
-      font-size: 10px;
+    .summary-card-title {
+      font-size: 11px;
       font-weight: 600;
-      padding: 3px 8px;
-      border-radius: 4px;
+      color: #0369a1;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
+      margin-bottom: 12px;
     }
     
-    .badge-mandatory { background: var(--success-light); color: #065f46; }
-    .badge-optional { background: #e0f2fe; color: #0369a1; }
-    .badge-selected { background: var(--primary); color: white; }
-    .badge-locked { background: #f1f5f9; color: var(--text-secondary); }
-    .badge-product { background: var(--purple-light); color: var(--purple); }
-    .badge-hard-cap { background: var(--danger-light); color: #b91c1c; }
-    .badge-override { background: var(--warning-light); color: #b45309; }
-    
-    /* Benefit Card Styles */
-    .benefit-card {
-      border: 2px solid var(--border);
-      border-radius: 12px;
-      margin-bottom: 16px;
-      overflow: hidden;
-      transition: all 0.2s;
-      background: white;
-    }
-    
-    .benefit-card.selected {
-      border-color: var(--primary);
-      box-shadow: 0 4px 12px rgba(30, 64, 175, 0.1);
-    }
-    
-    .benefit-card.mandatory {
-      border-color: var(--success);
-      background: linear-gradient(135deg, #f0fdf4 0%, white 100%);
-    }
-    
-    .benefit-header {
-      display: flex;
-      align-items: center;
-      padding: 16px 20px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    
-    .benefit-header:hover { background: var(--surface); }
-    .benefit-card.mandatory .benefit-header:hover { background: #ecfdf5; }
-    
-    .benefit-checkbox {
-      width: 24px;
-      height: 24px;
-      border: 2px solid var(--border);
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-right: 16px;
-      flex-shrink: 0;
-      transition: all 0.2s;
-      background: white;
-    }
-    
-    .benefit-card.selected .benefit-checkbox {
-      background: var(--primary);
-      border-color: var(--primary);
-      color: white;
-    }
-    
-    .benefit-card.mandatory .benefit-checkbox {
-      background: var(--success);
-      border-color: var(--success);
-      color: white;
-    }
-    
-    .benefit-info { flex: 1; }
-    
-    .benefit-title {
-      font-size: 16px;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: 4px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-    
-    .benefit-subtitle {
-      font-size: 13px;
-      color: var(--text-secondary);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-    
-    .benefit-subtitle .override-warning {
-      color: #b45309;
-      font-weight: 500;
-    }
-    
-    .benefit-premium {
-      text-align: right;
-      margin-left: 16px;
-    }
-    
-    .premium-value {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--success);
-    }
-    
-    .premium-label {
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-    
-    .benefit-cta {
-      font-size: 13px;
-      color: var(--primary);
-      font-weight: 500;
-      cursor: pointer;
-    }
-    
-    .benefit-details {
-      padding: 0 20px 20px;
-      border-top: 1px solid var(--border);
-      background: var(--surface);
-    }
-    
-    .benefit-card.mandatory .benefit-details {
-      background: #f0fdf4;
-      border-top-color: #bbf7d0;
-    }
-    
-    .benefit-card.selected .benefit-details {
-      background: #eff6ff;
-      border-top-color: #bfdbfe;
-    }
-    
-    .benefit-params {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-      padding-top: 16px;
-    }
-    
-    .benefit-param label {
-      font-size: 12px;
-      color: var(--text-secondary);
-      margin-bottom: 6px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-    
-    .benefit-param input,
-    .benefit-param select {
-      width: 100%;
-      padding: 8px 12px;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      font-size: 14px;
-      background: white;
-      color: var(--text-primary);
-    }
-    
-    .benefit-param input:focus,
-    .benefit-param select:focus {
-      outline: none;
-      border-color: var(--primary-light);
-      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
-    }
-    
-    .benefit-param input:disabled,
-    .benefit-param select:disabled {
-      background: #f1f5f9;
-      color: var(--text-secondary);
-      cursor: not-allowed;
-    }
-    
-    .benefit-param .param-hint {
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-top: 4px;
-    }
-    
-    .benefit-param .param-hint.warning {
-      color: #b45309;
-    }
-    
-    .input-with-suffix {
-      position: relative;
-    }
-    
-    .input-with-suffix input {
-      padding-right: 45px;
-    }
-    
-    .input-with-suffix .suffix {
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 13px;
-      color: var(--text-muted);
-      font-weight: 500;
-    }
-    
-    .section-divider {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin: 24px 0 16px;
-      padding-bottom: 8px;
-      border-bottom: 1px dashed var(--border);
-    }
-    
-    .summary-bar {
-      background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
-      border-radius: 12px;
-      padding: 20px 24px;
-      margin-top: 24px;
+    .summary-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      flex-wrap: wrap;
-      gap: 16px;
+      padding: 6px 0;
+      font-size: 13px;
     }
     
-    .summary-left {
-      display: flex;
-      gap: 32px;
-      flex-wrap: wrap;
+    .summary-label { color: #64748b; }
+    .summary-value { font-weight: 600; color: #0f172a; }
+    .summary-badge { background: #fef3c7; color: #92400e; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+    .summary-divider { border-top: 1px solid #bae6fd; margin: 12px 0; }
+    .summary-premium { display: flex; justify-content: space-between; align-items: center; padding-top: 4px; }
+    .summary-premium-label { font-size: 13px; color: #0369a1; font-weight: 500; }
+    .summary-premium-value { font-size: 16px; font-weight: 700; color: #1e40af; }
+    
+    .main-content { flex: 1; padding: 32px; overflow-y: auto; }
+    
+    .content-card {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
     }
     
-    .summary-item {
+    .content-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+    .content-icon { width: 48px; height: 48px; background: #eff6ff; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+    .content-title { font-size: 20px; font-weight: 700; color: #0f172a; margin: 0 0 4px 0; }
+    .content-desc { font-size: 14px; color: #64748b; margin: 0; }
+    
+    .section { margin-bottom: 24px; }
+    .section-title { font-size: 11px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px; }
+    
+    .method-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    
+    .method-card {
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.2s;
       text-align: left;
     }
     
-    .summary-label {
-      font-size: 11px;
-      color: rgba(255,255,255,0.7);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 4px;
+    .method-card:hover { border-color: #3b82f6; background: #fafbff; }
+    .method-card.selected { border-color: #1e40af; background: #eff6ff; }
+    
+    .method-icon { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 12px; }
+    .method-card:nth-child(1) .method-icon { background: #fef3c7; }
+    .method-card:nth-child(2) .method-icon { background: #fce7f3; }
+    .method-card:nth-child(3) .method-icon { background: #e0e7ff; }
+    
+    .method-title { font-size: 15px; font-weight: 600; color: #0f172a; margin-bottom: 4px; }
+    .method-desc { font-size: 13px; color: #64748b; }
+    
+    .upload-area {
+      border: 2px dashed #e2e8f0;
+      border-radius: 12px;
+      padding: 40px;
+      text-align: center;
+      background: #fafbfc;
+      transition: all 0.2s;
+      cursor: pointer;
+      margin-top: 24px;
     }
     
-    .summary-value {
-      font-size: 18px;
-      font-weight: 700;
-      color: white;
+    .upload-area:hover { border-color: #3b82f6; background: #f8faff; }
+    .upload-area.dragover { border-color: #1e40af; background: #eff6ff; }
+    .upload-icon { font-size: 48px; margin-bottom: 16px; }
+    .upload-text { font-size: 14px; color: #64748b; margin-bottom: 8px; }
+    .upload-text a { color: #1e40af; font-weight: 600; text-decoration: none; }
+    .upload-text a:hover { text-decoration: underline; }
+    .upload-hint { font-size: 13px; color: #94a3b8; }
+    .upload-hint a { color: #1e40af; font-weight: 500; }
+    
+    .member-list-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #e2e8f0;
     }
     
-    .summary-value.warning {
-      color: #fbbf24;
+    .member-stats { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+    .member-stats .total { font-weight: 600; color: #0f172a; }
+    .member-stats .eligible { color: #10b981; }
+    .member-stats .medical { color: #f59e0b; }
+    .member-stats .excluded { color: #ef4444; }
+    .member-actions { display: flex; gap: 8px; }
+    
+    .table-container { overflow-x: auto; border: 1px solid #e2e8f0; border-radius: 8px; }
+    .member-table { width: 100%; border-collapse: collapse; min-width: 950px; }
+    .member-table th { background: #f8fafc; padding: 12px 16px; text-align: left; font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e2e8f0; white-space: nowrap; }
+    .member-table td { padding: 12px 16px; border-bottom: 1px solid #e2e8f0; font-size: 14px; color: #0f172a; vertical-align: middle; }
+    .member-table tr:hover { background: #f8fafc; }
+    .member-table tr.excluded { background: #fef2f2; }
+    .member-table tr.medical { background: #fffbeb; }
+    .member-table tr:last-child td { border-bottom: none; }
+    .age-text { font-weight: 500; }
+    .age-text.error { color: #ef4444; }
+    
+    .inline-select {
+      padding: 6px 28px 6px 10px;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      font-size: 13px;
+      color: #0f172a;
+      background: white;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
     }
     
-    .expand-icon {
-      transition: transform 0.2s;
-    }
+    .inline-select:focus { outline: none; border-color: #3b82f6; }
+    .date-cell { display: flex; align-items: center; gap: 8px; }
+    .date-picker-btn { background: none; border: none; color: #94a3b8; cursor: pointer; padding: 4px; }
+    .date-picker-btn:hover { color: #1e40af; }
     
-    .expand-icon.expanded {
-      transform: rotate(180deg);
-    }
+    .scroll-indicator { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 12px; }
+    .scroll-track { width: 200px; height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden; }
+    .scroll-thumb { width: 60%; height: 100%; background: #cbd5e1; border-radius: 3px; }
+    .scroll-arrow { width: 24px; height: 24px; background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #64748b; }
+    .scroll-arrow:hover { background: #e2e8f0; }
+    
+    .alert { display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; border-radius: 8px; font-size: 13px; line-height: 1.5; margin-top: 16px; }
+    .alert.warning { background: #fffbeb; border: 1px solid #fcd34d; color: #92400e; }
+    .alert-icon { flex-shrink: 0; margin-top: 1px; }
+    
+    .validation-section { margin-top: 24px; }
+    .validation-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .validation-card { border-radius: 12px; padding: 20px; text-align: center; border: 1px solid; }
+    .validation-card.eligible { background: #f0fdf4; border-color: #86efac; }
+    .validation-card.medical { background: #fffbeb; border-color: #fcd34d; }
+    .validation-card.excluded { background: #fef2f2; border-color: #fca5a5; }
+    .validation-card.rate { background: #eff6ff; border-color: #93c5fd; }
+    .validation-value { font-size: 32px; font-weight: 700; margin-bottom: 4px; }
+    .validation-card.eligible .validation-value { color: #10b981; }
+    .validation-card.medical .validation-value { color: #f59e0b; }
+    .validation-card.excluded .validation-value { color: #ef4444; }
+    .validation-card.rate .validation-value { color: #3b82f6; }
+    .validation-label { font-size: 13px; font-weight: 500; color: #64748b; }
+    
+    .footer { display: flex; align-items: center; justify-content: space-between; margin-top: 32px; padding-top: 24px; border-top: 1px solid #e2e8f0; }
+    .footer-center { font-size: 13px; color: #94a3b8; }
+    
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s; border: none; }
+    .btn-primary { background: #1e40af; color: white; }
+    .btn-primary:hover { background: #1e3a8a; }
+    .btn-secondary { background: white; color: #0f172a; border: 1px solid #e2e8f0; }
+    .btn-secondary:hover { background: #f8fafc; }
+    .btn-sm { padding: 8px 14px; font-size: 13px; }
+    
+    @media (max-width: 1100px) { .validation-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 900px) { .sidebar { display: none; } .method-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -481,485 +258,299 @@
   <script type="text/babel">
     const { useState } = React;
 
-    // Icons
     const CheckIcon = ({ size = 14 }) => (
       <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
         <path d="M20 6L9 17l-5-5"/>
       </svg>
     );
 
-    const InfoIcon = () => (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>
-      </svg>
-    );
-
-    const ChevronDown = ({ className }) => (
-      <svg className={className} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="m6 9 6 6 6-6"/>
-      </svg>
-    );
-
     const ChevronRight = () => (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <path d="m9 18 6-6-6-6"/>
       </svg>
     );
 
     const ChevronLeft = () => (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <path d="m15 18-6-6 6-6"/>
       </svg>
     );
 
     const AlertIcon = () => (
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0zM12 9v4M12 17h.01"/>
       </svg>
     );
 
-    // Benefit Card Component
-    const BenefitCard = ({ 
-      benefit, 
-      isSelected, 
-      isMandatory, 
-      isExpanded, 
-      onToggle, 
-      onExpand,
-      config,
-      onConfigChange
-    }) => {
-      const cardClass = `benefit-card ${isSelected ? 'selected' : ''} ${isMandatory ? 'mandatory' : ''}`;
-      
-      return (
-        <div className={cardClass}>
-          <div className="benefit-header" onClick={() => isMandatory ? onExpand() : onToggle()}>
-            <div className="benefit-checkbox">
-              {(isSelected || isMandatory) && <CheckIcon size={14} />}
-            </div>
-            <div className="benefit-info">
-              <div className="benefit-title">
-                {benefit.name}
-                {isMandatory && <span className="badge badge-mandatory">Mandatory</span>}
-                {!isMandatory && <span className="badge badge-optional">Optional</span>}
-                {isMandatory && <span className="badge badge-locked">Locked</span>}
-                {isSelected && !isMandatory && <span className="badge badge-selected">Selected</span>}
-              </div>
-              <div className="benefit-subtitle">
-                {benefit.description}
-                {config.hasOverride && (
-                  <span className="override-warning">
-                    <AlertIcon /> Override: {config.overrideText}
-                  </span>
-                )}
-              </div>
-            </div>
-            {(isSelected || isMandatory) ? (
-              <div className="benefit-premium">
-                <div className="premium-value">~KES {config.premium?.toLocaleString()}</div>
-                <div className="premium-label">net risk prem</div>
-              </div>
-            ) : (
-              <div className="benefit-cta" onClick={(e) => { e.stopPropagation(); onToggle(); }}>
-                Click to add
-              </div>
-            )}
-            {(isSelected || isMandatory) && (
-              <div style={{ marginLeft: '16px', cursor: 'pointer' }} onClick={(e) => { e.stopPropagation(); onExpand(); }}>
-                <ChevronDown className={`expand-icon ${isExpanded ? 'expanded' : ''}`} />
-              </div>
-            )}
-          </div>
-          
-          {(isSelected || isMandatory) && isExpanded && (
-            <div className="benefit-details">
-              <div className="benefit-params">
-                {benefit.params.map((param, idx) => (
-                  <div className="benefit-param" key={idx}>
-                    <label>
-                      {param.label}
-                      {param.required && <span style={{ color: '#ef4444' }}>*</span>}
-                      {param.locked && <span className="badge badge-locked" style={{ marginLeft: '4px' }}>Locked</span>}
-                      {param.fromProduct && <span className="badge badge-product" style={{ marginLeft: '4px' }}>From Product</span>}
-                      {param.hardCap && <span className="badge badge-hard-cap" style={{ marginLeft: '4px' }}>Hard Cap</span>}
-                    </label>
-                    {param.type === 'select' ? (
-                      <select 
-                        value={config[param.key] || param.default}
-                        onChange={(e) => onConfigChange(param.key, e.target.value)}
-                        disabled={param.locked}
-                      >
-                        {param.options.map(opt => (
-                          <option key={opt.value} value={opt.value}>{opt.label}</option>
-                        ))}
-                      </select>
-                    ) : (
-                      <div className="input-with-suffix">
-                        <input
-                          type={param.type || 'text'}
-                          value={config[param.key] || param.default}
-                          onChange={(e) => onConfigChange(param.key, e.target.value)}
-                          disabled={param.locked}
-                          placeholder={param.placeholder}
-                        />
-                        {param.suffix && <span className="suffix">{param.suffix}</span>}
-                      </div>
-                    )}
-                    {param.hint && (
-                      <div className={`param-hint ${param.hintType || ''}`}>{param.hint}</div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      );
-    };
+    const CalendarIcon = () => (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+      </svg>
+    );
+
+    const sampleMembers = [
+      { id: 1, staffNo: 'EMP-001', name: 'James Mwa', idNo: '12345678', dob: '15-03-1985', age: 39, gender: 'Male', occupation: 'Class I', salary: 1800000, status: 'eligible' },
+      { id: 2, staffNo: 'EMP-002', name: 'Grace Achir', idNo: '23456789', dob: '22-07-1990', age: 34, gender: 'Female', occupation: 'Class I', salary: 1200000, status: 'eligible' },
+      { id: 3, staffNo: 'EMP-003', name: 'Peter Kamai', idNo: '34567890', dob: '10-01-1958', age: 67, gender: 'Male', occupation: 'Class I', salary: 950000, status: 'excluded' },
+    ];
 
     function App() {
-      // Product context from previous steps
-      const productContext = {
-        code: 'GRP-BASIC-001',
-        saBasis: 'Salary Multiple',
-        defaultMultiple: 3,
-        fcl: 5000000,
-        maxSA: 10000000
-      };
-
-      // Benefits configuration
-      const benefits = {
-        death: {
-          id: 'death',
-          name: 'Death Benefit',
-          description: 'Lump sum payment on death from natural causes or accident',
-          mandatory: true,
-          params: [
-            { key: 'saBasis', label: 'SA Basis', type: 'text', default: 'Salary Multiple', locked: true },
-            { key: 'saMultiple', label: 'SA Multiple', type: 'number', default: '3', required: true, suffix: '×', hint: 'Default is 3×. UW approval required at policy creation.', hintType: 'warning' },
-            { key: 'minSA', label: 'Min SA', type: 'text', default: '50000', suffix: 'KES', locked: true },
-            { key: 'maxSA', label: 'Max SA', type: 'text', default: '10000000', suffix: 'KES', hardCap: true }
-          ]
-        },
-        adb: {
-          id: 'adb',
-          name: 'Accidental Death Benefit (ADB)',
-          description: 'Additional payment if death occurs due to accident',
-          mandatory: false,
-          params: [
-            { key: 'adbMultiple', label: 'ADB Multiple', type: 'number', default: '2', suffix: '×', hint: 'Product allows 1× to 3×' },
-            { key: 'maxAdbSA', label: 'Max ADB SA', type: 'text', default: '10000000', suffix: 'KES', hardCap: true },
-            { key: 'waitingPeriod', label: 'Waiting Period', type: 'select', default: 'none', options: [
-              { value: 'none', label: 'None' },
-              { value: '30', label: '30 days' },
-              { value: '90', label: '90 days' }
-            ]},
-            { key: 'exclusions', label: 'Exclusions', type: 'select', default: 'standard', options: [
-              { value: 'standard', label: 'Standard' },
-              { value: 'extended', label: 'Extended' }
-            ]}
-          ]
-        },
-        funeral: {
-          id: 'funeral',
-          name: 'Funeral Benefit',
-          description: 'Fixed lump sum payable within 24hrs of death notification',
-          mandatory: false,
-          params: [
-            { key: 'employeeAmount', label: 'Employee Amount', type: 'text', default: '50000', suffix: 'KES', hint: 'Default KES 50,000' },
-            { key: 'spouseAmount', label: 'Spouse Amount', type: 'text', default: '30000', suffix: 'KES' },
-            { key: 'childAmount', label: 'Child Amount', type: 'text', default: '20000', suffix: 'KES' },
-            { key: 'parentAmount', label: 'Parent Amount', type: 'text', default: '20000', suffix: 'KES' }
-          ]
-        },
-        tpd: {
-          id: 'tpd',
-          name: 'Total Permanent Disability (TPD)',
-          description: 'Lump sum for permanent, irreversible incapacity',
-          mandatory: false,
-          params: [
-            { key: 'tpdMultiple', label: 'TPD Multiple', type: 'number', default: '3', suffix: '×', hint: 'Usually same as Death Benefit' },
-            { key: 'maxTpdSA', label: 'Max TPD SA', type: 'text', default: '10000000', suffix: 'KES', hardCap: true },
-            { key: 'waitingPeriod', label: 'Illness Waiting', type: 'select', default: '180', options: [
-              { value: '90', label: '90 days' },
-              { value: '180', label: '180 days' },
-              { value: '365', label: '365 days' }
-            ]},
-            { key: 'definition', label: 'TPD Definition', type: 'select', default: 'own', options: [
-              { value: 'own', label: 'Own Occupation' },
-              { value: 'any', label: 'Any Occupation' }
-            ]}
-          ]
-        },
-        ttd: {
-          id: 'ttd',
-          name: 'Total Temporary Disability (TTD)',
-          description: 'Weekly earnings replacement during recovery (up to 52 weeks)',
-          mandatory: false,
-          params: [
-            { key: 'weeklyBenefit', label: 'Weekly Benefit', type: 'select', default: '100', options: [
-              { value: '75', label: '75% of weekly earnings' },
-              { value: '100', label: '100% of weekly earnings' }
-            ]},
-            { key: 'maxWeeks', label: 'Max Weeks', type: 'number', default: '52', suffix: 'wks', hint: 'Maximum 52 weeks' },
-            { key: 'deferredPeriod', label: 'Deferred Period', type: 'select', default: '14', options: [
-              { value: '7', label: '7 days' },
-              { value: '14', label: '14 days' },
-              { value: '30', label: '30 days' }
-            ]},
-            { key: 'maxWeeklyAmount', label: 'Max Weekly Amount', type: 'text', default: '100000', suffix: 'KES' }
-          ]
-        },
-        ppd: {
-          id: 'ppd',
-          name: 'Permanent Partial Disability (PPD)',
-          description: 'Percentage payout based on continental scale table',
-          mandatory: false,
-          params: [
-            { key: 'basis', label: 'Basis', type: 'text', default: '% of Death Benefit', locked: true },
-            { key: 'scale', label: 'Scale Table', type: 'select', default: 'continental', options: [
-              { value: 'continental', label: 'Continental Scale' },
-              { value: 'custom', label: 'Custom Scale' }
-            ]},
-            { key: 'maxPPD', label: 'Max PPD Payout', type: 'text', default: '100', suffix: '%', hint: '100% = full death benefit' },
-            { key: 'waitingPeriod', label: 'Waiting Period', type: 'select', default: 'none', options: [
-              { value: 'none', label: 'None' },
-              { value: '30', label: '30 days' }
-            ]}
-          ]
-        },
-        ci: {
-          id: 'ci',
-          name: 'Critical Illness (CI)',
-          description: 'Lump sum on diagnosis of specified critical conditions',
-          mandatory: false,
-          params: [
-            { key: 'ciPercentage', label: 'CI Percentage', type: 'text', default: '30', suffix: '%', hint: '30% of Death Benefit', locked: true },
-            { key: 'maxCI', label: 'Max CI Amount', type: 'text', default: '2000000', suffix: 'KES', hardCap: true },
-            { key: 'waitingPeriod', label: 'Waiting Period', type: 'select', default: '90', options: [
-              { value: '30', label: '30 days' },
-              { value: '90', label: '90 days' },
-              { value: '180', label: '180 days' }
-            ]},
-            { key: 'conditions', label: 'Conditions Covered', type: 'select', default: 'standard', options: [
-              { value: 'standard', label: 'Standard (10 conditions)' },
-              { value: 'extended', label: 'Extended (20 conditions)' },
-              { value: 'comprehensive', label: 'Comprehensive (36 conditions)' }
-            ]}
-          ]
-        },
-        education: {
-          id: 'education',
-          name: 'Education Benefit',
-          description: 'Lump sum per child (up to 4 children, ages 0-21)',
-          mandatory: false,
-          params: [
-            { key: 'amountPerChild', label: 'Amount per Child', type: 'text', default: '100000', suffix: 'KES' },
-            { key: 'maxChildren', label: 'Max Children', type: 'number', default: '4', hint: 'Maximum 4 children per employee' },
-            { key: 'maxAge', label: 'Max Child Age', type: 'number', default: '21', suffix: 'yrs' },
-            { key: 'paymentMode', label: 'Payment Mode', type: 'select', default: 'lumpsum', options: [
-              { value: 'lumpsum', label: 'Lump Sum' },
-              { value: 'annual', label: 'Annual Installments' }
-            ]}
-          ]
-        }
-      };
-
-      // State
-      const [selectedBenefits, setSelectedBenefits] = useState(['death', 'adb', 'funeral']);
-      const [expandedBenefits, setExpandedBenefits] = useState(['death']);
-      const [benefitConfigs, setBenefitConfigs] = useState({
-        death: { saMultiple: '4', premium: 285120, hasOverride: true, overrideText: 'SA Multiple 4× (default 3×)' },
-        adb: { adbMultiple: '2', premium: 38400 },
-        funeral: { employeeAmount: '75000', premium: 12600, hasOverride: true, overrideText: 'KES 75,000 (default 50,000)' },
-        tpd: { premium: 142560 },
-        ttd: { premium: 85200 },
-        ppd: { premium: 42600 },
-        ci: { premium: 95800 },
-        education: { premium: 48000 }
-      });
-
-      const toggleBenefit = (benefitId) => {
-        if (benefits[benefitId].mandatory) return;
-        
-        setSelectedBenefits(prev => 
-          prev.includes(benefitId) 
-            ? prev.filter(id => id !== benefitId)
-            : [...prev, benefitId]
-        );
-        
-        // Auto-expand when selecting
-        if (!selectedBenefits.includes(benefitId)) {
-          setExpandedBenefits(prev => [...prev, benefitId]);
-        }
-      };
-
-      const toggleExpand = (benefitId) => {
-        setExpandedBenefits(prev =>
-          prev.includes(benefitId)
-            ? prev.filter(id => id !== benefitId)
-            : [...prev, benefitId]
-        );
-      };
-
-      const updateConfig = (benefitId, key, value) => {
-        setBenefitConfigs(prev => ({
-          ...prev,
-          [benefitId]: {
-            ...prev[benefitId],
-            [key]: value
-          }
-        }));
-      };
-
-      // Calculate totals
-      const selectedCount = selectedBenefits.length;
-      const totalPremium = selectedBenefits.reduce((sum, id) => sum + (benefitConfigs[id]?.premium || 0), 0);
-      const overrideCount = selectedBenefits.filter(id => benefitConfigs[id]?.hasOverride).length;
+      const [selectedMethod, setSelectedMethod] = useState('upload');
+      const [dragOver, setDragOver] = useState(false);
+      const [showMembers, setShowMembers] = useState(true);
 
       return (
-        <div style={{ background: '#f1f5f9', minHeight: '100vh', padding: '24px' }}>
-          <div style={{ maxWidth: '960px', margin: '0 auto' }}>
+        <div className="page-container">
+          <div className="sidebar">
+            <div className="sidebar-title">Quote Creation Steps</div>
             
-            {/* Page Header */}
-            <div className="page-header">
-              <div className="page-title-row">
-                <h1 className="page-title">Create Quote</h1>
-                <span className="page-badge">Group Life</span>
-              </div>
-              <p className="page-description">
-                Customize covers and sum assured parameters. Changes that exceed product maximums will require UW approval.
-              </p>
-            </div>
-            
-            {/* Stepper */}
-            <div className="stepper">
-              <div className="step completed">
-                <span className="step-number"><CheckIcon size={12} /></span>
-                Customer & Product
-              </div>
-              <div className="step completed">
-                <span className="step-number"><CheckIcon size={12} /></span>
-                Scheme Details
-              </div>
-              <div className="step active">
-                <span className="step-number">3</span>
-                Coverage Selection
-              </div>
-              <div className="step inactive">
-                <span className="step-number">4</span>
-                Premium Computation
-              </div>
-              <div className="step inactive">
-                <span className="step-number">5</span>
-                Review & Send
+            <div className="step-item completed">
+              <div className="step-number"><CheckIcon size={14} /></div>
+              <div className="step-content">
+                <div className="step-label">Customer & Distribution</div>
+                <div className="step-desc">Customer details, channel</div>
               </div>
             </div>
             
-            {/* Product Context Bar */}
-            <div className="product-context-bar">
-              <div className="context-item">
-                <div className="context-label">Product</div>
-                <div className="context-value">{productContext.code}</div>
+            <div className="step-item completed">
+              <div className="step-number"><CheckIcon size={14} /></div>
+              <div className="step-content">
+                <div className="step-label">Product Selection</div>
+                <div className="step-desc">Product, scheme type</div>
               </div>
-              <div className="context-item">
-                <div className="context-label">SA Basis</div>
-                <div className="context-value">{productContext.saBasis}</div>
+            </div>
+            
+            <div className="step-item completed">
+              <div className="step-number"><CheckIcon size={14} /></div>
+              <div className="step-content">
+                <div className="step-label">Scheme Details</div>
+                <div className="step-desc">Dates, coverage parameters</div>
               </div>
-              <div className="context-item">
-                <div className="context-label">Default Multiple</div>
-                <div className="context-value highlight">
-                  {productContext.defaultMultiple}×
-                  <span className="override-text">(overriding to 4×)</span>
+            </div>
+            
+            <div className="step-item completed">
+              <div className="step-number"><CheckIcon size={14} /></div>
+              <div className="step-content">
+                <div className="step-label">Coverage Selection</div>
+                <div className="step-desc">Benefits configuration</div>
+              </div>
+            </div>
+            
+            <div className="step-item active">
+              <div className="step-number">5</div>
+              <div className="step-content">
+                <div className="step-label">Member Data</div>
+                <div className="step-desc">Upload or add members</div>
+              </div>
+            </div>
+            
+            <div className="step-item inactive">
+              <div className="step-number">6</div>
+              <div className="step-content">
+                <div className="step-label">Premium Computation</div>
+                <div className="step-desc">Calculate & confirm premium</div>
+              </div>
+            </div>
+            
+            <div className="step-item inactive">
+              <div className="step-number">7</div>
+              <div className="step-content">
+                <div className="step-label">Review & Send</div>
+                <div className="step-desc">Validation, send quote</div>
+              </div>
+            </div>
+            
+            <div className="summary-card">
+              <div className="summary-card-title">Quote Summary</div>
+              <div className="summary-row">
+                <span className="summary-label">Quote No</span>
+                <span className="summary-value">QT-2025-00234</span>
+              </div>
+              <div className="summary-row">
+                <span className="summary-label">Product</span>
+                <span className="summary-value">GRP-BASIC-001</span>
+              </div>
+              <div className="summary-row">
+                <span className="summary-label">Status</span>
+                <span className="summary-badge">Draft</span>
+              </div>
+              <div className="summary-divider"></div>
+              <div className="summary-row">
+                <span className="summary-label">Scheme</span>
+                <span className="summary-value">—</span>
+              </div>
+              <div className="summary-row">
+                <span className="summary-label">Members</span>
+                <span className="summary-value">—</span>
+              </div>
+              <div className="summary-row">
+                <span className="summary-label">Validity</span>
+                <span className="summary-value">—</span>
+              </div>
+              <div className="summary-divider"></div>
+              <div className="summary-premium">
+                <span className="summary-premium-label">Est. Premium</span>
+                <span className="summary-premium-value">KES —</span>
+              </div>
+            </div>
+          </div>
+          
+          <div className="main-content">
+            <div className="content-card">
+              <div className="content-header">
+                <div className="content-icon">👥</div>
+                <div>
+                  <h1 className="content-title">Member Data</h1>
+                  <p className="content-desc">Add, upload or import all members to be covered under this quote</p>
                 </div>
               </div>
-              <div className="context-item">
-                <div className="context-label">FCL</div>
-                <div className="context-value">KES {productContext.fcl.toLocaleString()}</div>
-              </div>
-              <div className="context-item">
-                <div className="context-label">Max SA</div>
-                <div className="context-value">KES {productContext.maxSA.toLocaleString()}</div>
-              </div>
-            </div>
-            
-            {/* Info Card */}
-            <div className="info-card">
-              <InfoIcon />
-              <span>
-                Coverage defaults are drawn from product <strong>{productContext.code}</strong>. 
-                You can adjust SA multiples and optional covers here. Changes that exceed product maximums will require UW approval at policy creation.
-              </span>
-            </div>
-            
-            {/* Mandatory Benefits Section */}
-            <div className="section-divider">Core Benefits (Mandatory)</div>
-            
-            <BenefitCard
-              benefit={benefits.death}
-              isSelected={true}
-              isMandatory={true}
-              isExpanded={expandedBenefits.includes('death')}
-              onToggle={() => {}}
-              onExpand={() => toggleExpand('death')}
-              config={benefitConfigs.death}
-              onConfigChange={(key, value) => updateConfig('death', key, value)}
-            />
-            
-            {/* Optional Benefits Section */}
-            <div className="section-divider">Optional Benefits</div>
-            
-            {Object.entries(benefits).filter(([id]) => id !== 'death').map(([id, benefit]) => (
-              <BenefitCard
-                key={id}
-                benefit={benefit}
-                isSelected={selectedBenefits.includes(id)}
-                isMandatory={false}
-                isExpanded={expandedBenefits.includes(id)}
-                onToggle={() => toggleBenefit(id)}
-                onExpand={() => toggleExpand(id)}
-                config={benefitConfigs[id] || {}}
-                onConfigChange={(key, value) => updateConfig(id, key, value)}
-              />
-            ))}
-            
-            {/* Summary Bar */}
-            <div className="summary-bar">
-              <div className="summary-left">
-                <div className="summary-item">
-                  <div className="summary-label">Benefits Selected</div>
-                  <div className="summary-value">{selectedCount} of {Object.keys(benefits).length}</div>
-                </div>
-                <div className="summary-item">
-                  <div className="summary-label">Est. Net Risk Premium</div>
-                  <div className="summary-value">~KES {totalPremium.toLocaleString()}</div>
-                </div>
-                {overrideCount > 0 && (
-                  <div className="summary-item">
-                    <div className="summary-label">Overrides</div>
-                    <div className="summary-value warning">⚠ {overrideCount} override{overrideCount > 1 ? 's' : ''}</div>
+              
+              <div className="section">
+                <div className="section-title">Input Method</div>
+                <div className="method-grid">
+                  <div className={`method-card ${selectedMethod === 'upload' ? 'selected' : ''}`} onClick={() => setSelectedMethod('upload')}>
+                    <div className="method-icon">📁</div>
+                    <div className="method-title">Upload Excel / CSV</div>
+                    <div className="method-desc">Bulk upload member schedule</div>
                   </div>
-                )}
+                  <div className={`method-card ${selectedMethod === 'manual' ? 'selected' : ''}`} onClick={() => setSelectedMethod('manual')}>
+                    <div className="method-icon">✏️</div>
+                    <div className="method-title">Manual Entry</div>
+                    <div className="method-desc">Add members one by one</div>
+                  </div>
+                  <div className={`method-card ${selectedMethod === 'hr' ? 'selected' : ''}`} onClick={() => setSelectedMethod('hr')}>
+                    <div className="method-icon">🔗</div>
+                    <div className="method-title">HR System Import</div>
+                    <div className="method-desc">Connect to HRIS / payroll</div>
+                  </div>
+                </div>
+              </div>
+              
+              {selectedMethod === 'upload' && (
+                <div 
+                  className={`upload-area ${dragOver ? 'dragover' : ''}`}
+                  onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+                  onDragLeave={() => setDragOver(false)}
+                  onDrop={(e) => { e.preventDefault(); setDragOver(false); setShowMembers(true); }}
+                  onClick={() => setShowMembers(true)}
+                >
+                  <div className="upload-icon">📂</div>
+                  <div className="upload-text">Drop your member schedule here or <a href="#" onClick={(e) => e.preventDefault()}>browse files</a></div>
+                  <div className="upload-hint">Accepts .xlsx, .csv — max 10MB · <a href="#" onClick={(e) => e.preventDefault()}>Download template</a></div>
+                </div>
+              )}
+              
+              {showMembers && (
+                <div className="section" style={{ marginTop: '32px' }}>
+                  <div className="section-title">Member List</div>
+                  
+                  <div className="member-list-header">
+                    <div className="member-stats">
+                      <span className="total">47 members loaded</span>
+                      <span>·</span>
+                      <span className="eligible">44 eligible</span>
+                      <span>·</span>
+                      <span className="medical">2 require medical</span>
+                      <span>·</span>
+                      <span className="excluded">1 excluded (age)</span>
+                    </div>
+                    <div className="member-actions">
+                      <button className="btn btn-secondary btn-sm">Export</button>
+                      <button className="btn btn-primary btn-sm">+ Add Member</button>
+                    </div>
+                  </div>
+                  
+                  <div className="table-container">
+                    <table className="member-table">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Staff No.</th>
+                          <th>Full Name</th>
+                          <th>ID / Passport</th>
+                          <th>DOB</th>
+                          <th>Age</th>
+                          <th>Gender</th>
+                          <th>Occupation Class</th>
+                          <th>Annual Salary</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {sampleMembers.map((member, idx) => (
+                          <tr key={member.id} className={member.status}>
+                            <td>{idx + 1}</td>
+                            <td>{member.staffNo}</td>
+                            <td style={{ fontWeight: '500' }}>{member.name}</td>
+                            <td>{member.idNo}</td>
+                            <td>
+                              <div className="date-cell">
+                                {member.dob}
+                                <button className="date-picker-btn"><CalendarIcon /></button>
+                              </div>
+                            </td>
+                            <td><span className={`age-text ${member.age > 65 ? 'error' : ''}`}>{member.age}</span></td>
+                            <td>
+                              <select className="inline-select" defaultValue={member.gender}>
+                                <option>Male</option>
+                                <option>Female</option>
+                              </select>
+                            </td>
+                            <td>
+                              <select className="inline-select" defaultValue={member.occupation}>
+                                <option>Class I</option>
+                                <option>Class II</option>
+                                <option>Class III</option>
+                                <option>Class IV</option>
+                              </select>
+                            </td>
+                            <td style={{ textAlign: 'right' }}>{member.salary.toLocaleString()}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  
+                  <div className="scroll-indicator">
+                    <div className="scroll-arrow"><ChevronLeft /></div>
+                    <div className="scroll-track"><div className="scroll-thumb"></div></div>
+                    <div className="scroll-arrow"><ChevronRight /></div>
+                  </div>
+                  
+                  <div className="alert warning">
+                    <AlertIcon />
+                    <div><strong>1 member excluded</strong> (age above product maximum of 65 years). <strong>Sum assured for EMP-001 exceeds FCL</strong> — medical evidence required before cover can be bound.</div>
+                  </div>
+                  
+                  <div className="validation-section">
+                    <div className="section-title">Enrolment Validation Summary</div>
+                    <div className="validation-grid">
+                      <div className="validation-card eligible">
+                        <div className="validation-value">44</div>
+                        <div className="validation-label">Eligible Members</div>
+                      </div>
+                      <div className="validation-card medical">
+                        <div className="validation-value">2</div>
+                        <div className="validation-label">Require Medical</div>
+                      </div>
+                      <div className="validation-card excluded">
+                        <div className="validation-value">1</div>
+                        <div className="validation-label">Excluded</div>
+                      </div>
+                      <div className="validation-card rate">
+                        <div className="validation-value">93%</div>
+                        <div className="validation-label">Participation Rate</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
+              <div className="footer">
+                <button className="btn btn-secondary"><ChevronLeft /> Previous</button>
+                <div className="footer-center">Step 5 of 7</div>
+                <button className="btn btn-primary">Next — Compute Premium <ChevronRight /></button>
               </div>
             </div>
-            
-            {/* Action Buttons */}
-            <div className="action-bar">
-              <button className="btn-outline" type="button">
-                <ChevronLeft /> Back to Scheme Details
-              </button>
-              <div style={{ fontSize: '13px', color: '#64748b' }}>Step 3 of 5</div>
-              <div className="action-bar-right">
-                <button className="btn-secondary" type="button">
-                  💾 Save Draft
-                </button>
-                <button className="btn-primary" type="button">
-                  Next — Premium Computation
-                  <ChevronRight />
-                </button>
-              </div>
-            </div>
-            
           </div>
         </div>
       );
