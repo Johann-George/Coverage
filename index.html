@@ -1,1706 +1,1141 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Policy Administration — Group Life</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-/* ─── Design tokens — exact match to policy-creation-final-v2 ─── */
-:root {
-  --canvas:   #F2F3F7;
-  --white:    #FFFFFF;
-  --slate-0:  #0D1117;
-  --slate-1:  #151C28;
-  --slate-2:  #1E2840;
-  --slate-3:  #2D3958;
-  --slate-4:  #4A587A;
-  --slate-5:  #7585A2;
-  --slate-6:  #AAB4C8;
-  --slate-7:  #D4DAE8;
-  --slate-8:  #EEF0F6;
-  --accent:   #2F6FFF;
-  --accent-l: #EBF0FF;
-  --accent-m: #A8C0FF;
-  --ok:    #0B8C5C;
-  --ok-l:  #E8F8F2;
-  --ok-m:  #7DDCB4;
-  --warn:  #C47B0A;
-  --warn-l:#FEF6E6;
-  --warn-m:#F5CC74;
-  --err:   #C42828;
-  --err-l: #FEEDED;
-  --err-m: #F5A0A0;
-  --purple:   #6B3BDD;
-  --purple-l: #F0EBFF;
-  --purple-m: #C4ADFF;
-  --teal:     #0A7E86;
-  --teal-l:   #E6F7F8;
-  --teal-m:   #7DDDE2;
-  --radius:    8px;
-  --radius-sm: 5px;
-  --radius-lg: 12px;
-  --shadow:    0 1px 3px rgba(13,17,23,.07), 0 1px 2px rgba(13,17,23,.05);
-  --shadow-md: 0 4px 18px rgba(13,17,23,.10), 0 2px 6px rgba(13,17,23,.06);
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{font-size:14px}
-body{
-  font-family:'IBM Plex Sans',sans-serif;
-  background:var(--canvas);
-  color:var(--slate-1);
-  line-height:1.5;
-  height:100vh;
-  overflow:hidden;
-  display:flex;
-  flex-direction:column;
-}
-
-/* ═══ TOP BAR ═══ */
-.topbar{
-  flex-shrink:0;background:var(--slate-0);height:50px;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 22px;border-bottom:1px solid var(--slate-2);
-}
-.topbar-left{display:flex;align-items:center;gap:14px}
-.brand{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:#fff;letter-spacing:.04em}
-.tb-sep{width:1px;height:18px;background:var(--slate-3)}
-.tb-crumb{font-size:11px;color:var(--slate-5);display:flex;align-items:center;gap:6px}
-.tb-crumb span{color:var(--slate-6)}
-.tb-crumb a{color:var(--slate-5);text-decoration:none;cursor:pointer}
-.tb-crumb a:hover{color:var(--slate-6)}
-.topbar-right{display:flex;align-items:center;gap:8px}
-.btn{
-  font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:500;
-  padding:6px 14px;border-radius:var(--radius-sm);
-  border:1px solid transparent;cursor:pointer;transition:all .15s;
-}
-.btn-ghost{background:transparent;border-color:var(--slate-3);color:var(--slate-6)}
-.btn-ghost:hover{border-color:var(--slate-5);color:#fff}
-.btn-primary{background:var(--accent);color:#fff}
-.btn-primary:hover{background:#1A5AEE}
-.btn-ok{background:var(--ok);color:#fff}
-.btn-ok:hover{background:#096B47}
-.btn-sm{padding:5px 11px;font-size:11px}
-.btn-icon{display:flex;align-items:center;gap:5px}
-.btn-warn{background:var(--warn);color:#fff}
-.btn-outline{background:transparent;border-color:var(--slate-7);color:var(--slate-3)}
-.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
-
-/* ═══ SHELL ═══ */
-.shell{flex:1;display:flex;overflow:hidden}
-
-/* ═══ SIDE NAV ═══ */
-.sidenav{
-  width:220px;flex-shrink:0;
-  background:var(--slate-1);
-  border-right:1px solid var(--slate-2);
-  display:flex;flex-direction:column;overflow:hidden;
-}
-.sidenav-inner{flex:1;overflow-y:auto;padding:14px 10px 10px}
-.sidenav-inner::-webkit-scrollbar{width:3px}
-.sidenav-inner::-webkit-scrollbar-thumb{background:var(--slate-3);border-radius:3px}
-
-/* module section header */
-.nav-module{
-  display:flex;align-items:center;gap:7px;
-  padding:5px 8px 4px;
-  font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
-  color:var(--slate-4);margin-bottom:4px;margin-top:10px;
-}
-.nav-module:first-child{margin-top:0}
-.nav-module-line{flex:1;height:1px;background:var(--slate-2)}
-
-/* nav item */
-.nav-item{
-  display:flex;align-items:center;gap:9px;
-  padding:7px 8px;border-radius:var(--radius-sm);
-  cursor:pointer;border:none;background:transparent;
-  width:100%;text-align:left;margin-bottom:1px;
-  transition:background .12s;font-family:inherit;
-}
-.nav-item:hover{background:var(--slate-2)}
-.nav-item.active{background:rgba(47,111,255,.15);border:1px solid rgba(47,111,255,.22)}
-.nav-item .ni-icon{font-size:13px;width:20px;text-align:center;flex-shrink:0;opacity:.6}
-.nav-item.active .ni-icon{opacity:1}
-.nav-item .ni-text{font-size:12px;font-weight:500;color:var(--slate-6)}
-.nav-item.active .ni-text{color:#fff;font-weight:600}
-.nav-item .ni-badge{
-  margin-left:auto;font-family:'IBM Plex Mono',monospace;
-  font-size:9px;padding:1px 6px;border-radius:3px;
-  background:var(--slate-2);color:var(--slate-5);
-}
-.nav-item.active .ni-badge{background:rgba(47,111,255,.2);color:var(--accent-m)}
-.nav-item .ni-dot{
-  width:5px;height:5px;border-radius:50%;margin-left:auto;flex-shrink:0;
-}
-
-/* sub items */
-.nav-sub{padding-left:18px;margin-bottom:2px}
-.nav-sub .nav-item{padding:5px 8px}
-.nav-sub .ni-text{font-size:11px;font-weight:400;color:var(--slate-5)}
-.nav-sub .nav-item.active .ni-text{color:#fff;font-weight:500}
-
-/* bottom snap */
-.sidenav-footer{
-  flex-shrink:0;border-top:1px solid var(--slate-2);
-  padding:10px 12px;background:var(--slate-0);
-}
-.sf-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--slate-4);margin-bottom:6px}
-.sf-row{display:flex;justify-content:space-between;font-size:10px;margin-bottom:3px}
-.sf-row .k{color:var(--slate-5)} .sf-row .v{color:var(--slate-6);font-weight:500;font-family:'IBM Plex Mono',monospace}
-
-/* ═══ MAIN ═══ */
-.main-area{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
-
-/* module tab bar */
-.mod-tabs{
-  flex-shrink:0;background:var(--white);
-  border-bottom:1px solid var(--slate-7);
-  display:flex;align-items:stretch;
-  padding:0 24px;gap:0;
-}
-.mtab{
-  padding:0 18px;height:44px;
-  display:flex;align-items:center;gap:7px;
-  font-size:12px;font-weight:500;color:var(--slate-5);
-  cursor:pointer;border-bottom:2px solid transparent;
-  transition:all .15s;white-space:nowrap;
-  border:none;background:transparent;font-family:inherit;
-}
-.mtab:hover{color:var(--slate-2);border-bottom-color:var(--slate-7)}
-.mtab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}
-.mtab-count{
-  font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:500;
-  padding:1px 6px;border-radius:10px;
-  background:var(--slate-8);color:var(--slate-5);
-}
-.mtab.active .mtab-count{background:var(--accent-l);color:var(--accent)}
-.mod-tab-actions{margin-left:auto;display:flex;align-items:center;gap:8px;padding:0 0 0 20px;border-left:1px solid var(--slate-7)}
-
-/* tab panels */
-.tab-panel{display:none;flex:1;overflow:hidden;flex-direction:column}
-.tab-panel.active{display:flex}
-
-/* list header toolbar */
-.list-toolbar{
-  flex-shrink:0;padding:14px 24px;
-  border-bottom:1px solid var(--slate-7);
-  background:var(--white);
-  display:flex;align-items:center;gap:10px;
-}
-.search-wrap{
-  position:relative;flex:1;max-width:320px;
-}
-.search-wrap input{
-  padding:7px 11px 7px 32px;
-  border:1px solid var(--slate-7);
-  border-radius:var(--radius-sm);
-  font-size:12px;
-}
-.search-ico{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--slate-5);font-size:13px;pointer-events:none}
-.filter-pill{
-  display:flex;align-items:center;gap:5px;
-  padding:5px 11px;border-radius:20px;
-  font-size:11px;font-weight:500;cursor:pointer;
-  border:1px solid var(--slate-7);color:var(--slate-4);
-  background:var(--white);transition:all .12s;
-}
-.filter-pill:hover{border-color:var(--slate-6);color:var(--slate-2)}
-.filter-pill.active{background:var(--accent-l);border-color:var(--accent-m);color:var(--accent)}
-.toolbar-right{margin-left:auto;display:flex;align-items:center;gap:8px}
-
-/* list scroll area */
-.list-scroll{flex:1;overflow-y:auto;padding:16px 24px 32px}
-.list-scroll::-webkit-scrollbar{width:4px}
-.list-scroll::-webkit-scrollbar-thumb{background:var(--slate-7);border-radius:3px}
-
-/* ═══ STAT ROW ═══ */
-.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
-.stat{
-  background:var(--white);border:1px solid var(--slate-7);
-  border-radius:var(--radius);padding:12px 14px;box-shadow:var(--shadow);
-}
-.stat-n{font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:500;line-height:1}
-.stat-l{font-size:10px;color:var(--slate-4);margin-top:4px;font-weight:500}
-.stat-trend{font-size:9px;margin-top:3px}
-.stat-blue .stat-n{color:var(--accent)}
-.stat-ok .stat-n{color:var(--ok)}
-.stat-warn .stat-n{color:var(--warn)}
-.stat-err .stat-n{color:var(--err)}
-.stat-purple .stat-n{color:var(--purple)}
-.trend-up{color:var(--ok)} .trend-dn{color:var(--err)} .trend-flat{color:var(--slate-5)}
-
-/* ═══ TABLE ═══ */
-.data-table{width:100%;border-collapse:collapse;font-size:12px}
-.data-table th{
-  padding:8px 12px;text-align:left;
-  border-bottom:2px solid var(--slate-7);
-  font-size:10px;font-weight:700;text-transform:uppercase;
-  letter-spacing:.07em;color:var(--slate-5);
-  white-space:nowrap;background:var(--white);
-}
-.data-table td{
-  padding:11px 12px;border-bottom:1px solid var(--slate-8);
-  vertical-align:middle;color:var(--slate-2);
-}
-.data-table tr:last-child td{border-bottom:none}
-.data-table tr:hover td{background:var(--canvas)}
-.data-table .td-mono{font-family:'IBM Plex Mono',monospace;font-size:11px}
-.data-table .td-muted{color:var(--slate-5);font-size:11px}
-.data-table .td-actions{display:flex;gap:5px;justify-content:flex-end}
-
-/* customer type icon */
-.ctype{
-  display:inline-flex;align-items:center;gap:5px;
-  font-size:11px;font-weight:500;
-}
-.ctype-badge{
-  width:24px;height:24px;border-radius:5px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:11px;flex-shrink:0;
-}
-.cb-emp{background:#E8F8F2;color:#0B8C5C}   /* employer */
-.cb-brk{background:#EBF0FF;color:#2F6FFF}   /* broker */
-.cb-bnk{background:#F0EBFF;color:#6B3BDD}   /* bank */
-
-/* status badge */
-.status{
-  display:inline-flex;align-items:center;gap:4px;
-  padding:2px 8px;border-radius:10px;
-  font-size:10px;font-weight:600;
-  white-space:nowrap;
-}
-.st-active{background:var(--ok-l);color:var(--ok)}
-.st-draft{background:var(--slate-8);color:var(--slate-4)}
-.st-pending{background:var(--warn-l);color:var(--warn)}
-.st-expired{background:var(--err-l);color:var(--err)}
-.st-converted{background:var(--purple-l);color:var(--purple)}
-.st-kyc{background:var(--teal-l);color:var(--teal)}
-.st-quote{background:var(--accent-l);color:var(--accent)}
-.status-dot{width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0}
-
-/* ═══ CARD SHELL ═══ */
-.card{
-  background:var(--white);border:1px solid var(--slate-7);
-  border-radius:var(--radius-lg);box-shadow:var(--shadow);
-  margin-bottom:14px;overflow:hidden;
-}
-.card-head{
-  padding:13px 18px;border-bottom:1px solid var(--slate-8);
-  display:flex;align-items:center;gap:12px;
-}
-.card-ico{
-  width:32px;height:32px;border-radius:var(--radius-sm);
-  display:flex;align-items:center;justify-content:center;
-  font-size:14px;flex-shrink:0;
-}
-.ico-blue{background:var(--accent-l)} .ico-green{background:var(--ok-l)}
-.ico-purple{background:var(--purple-l)} .ico-teal{background:var(--teal-l)}
-.ico-warn{background:var(--warn-l)}
-.card-head h3{font-family:'Syne',sans-serif;font-size:13px;font-weight:600}
-.card-head p{font-size:11px;color:var(--slate-4);margin-top:1px}
-.card-head-right{margin-left:auto;display:flex;align-items:center;gap:8px}
-.card-body{padding:16px 18px}
-
-/* ═══ FORM ═══ */
-.fg{display:grid;gap:12px}
-.fg-2{grid-template-columns:1fr 1fr}
-.fg-3{grid-template-columns:1fr 1fr 1fr}
-.fg-4{grid-template-columns:1fr 1fr 1fr 1fr}
-.fg-23{grid-template-columns:2fr 3fr}
-.fg-13{grid-template-columns:1fr 3fr}
-.col-2{grid-column:span 2} .col-3{grid-column:span 3}
-.f{display:flex;flex-direction:column;gap:5px}
-.f label{font-size:11px;font-weight:500;color:var(--slate-4);display:flex;align-items:center;gap:5px;flex-wrap:wrap}
-.req{color:var(--err);font-weight:700}
-.f-hint{font-size:10px;color:var(--slate-5)}
-.f-msg{font-size:10px;display:flex;align-items:center;gap:4px;margin-top:1px;line-height:1.4}
-.fmsg-ok{color:var(--ok)} .fmsg-warn{color:var(--warn)} .fmsg-err{color:var(--err)} .fmsg-info{color:var(--accent)}
-input,select,textarea{
-  width:100%;padding:8px 11px;
-  border:1px solid var(--slate-7);border-radius:var(--radius-sm);
-  font-family:'IBM Plex Sans',sans-serif;font-size:12px;color:var(--slate-1);
-  background:var(--white);outline:none;
-  transition:border-color .12s,box-shadow .12s;-webkit-appearance:none;
-}
-input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(47,111,255,.1)}
-input.s-ok{border-color:var(--ok);background:var(--ok-l)}
-input.s-warn{border-color:var(--warn);background:var(--warn-l)}
-input.s-err{border-color:var(--err);background:var(--err-l)}
-input[disabled],select[disabled]{background:var(--slate-8);color:var(--slate-5);cursor:default}
-input::placeholder{color:var(--slate-6)}
-.iu{position:relative} .iu input{padding-right:42px}
-.uu{position:absolute;right:9px;top:50%;transform:translateY(-50%);font-size:10px;color:var(--slate-5);font-family:'IBM Plex Mono',monospace;pointer-events:none}
-.tag{display:inline-flex;align-items:center;padding:1px 7px;border-radius:3px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
-.t-lock{background:var(--slate-8);color:var(--slate-5);border:1px solid var(--slate-7)}
-.t-auto{background:var(--ok-l);color:var(--ok)}
-.t-req{background:var(--err-l);color:var(--err)}
-.t-kyc{background:var(--teal-l);color:var(--teal)}
-.t-brk{background:var(--accent-l);color:var(--accent)}
-
-/* ═══ BANNER ═══ */
-.banner{border-radius:var(--radius-sm);padding:10px 14px;display:flex;gap:10px;font-size:11px;line-height:1.6;margin-bottom:12px}
-.bn-i{font-size:14px;flex-shrink:0;margin-top:1px}
-.ban-info{background:var(--accent-l);border:1px solid var(--accent-m);color:#1040BB}
-.ban-ok{background:var(--ok-l);border:1px solid var(--ok-m);color:#054D32}
-.ban-warn{background:var(--warn-l);border:1px solid var(--warn-m);color:#7A4A00}
-
-/* ═══ DIVIDER ═══ */
-.sec-label{
-  font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;
-  color:var(--slate-5);display:flex;align-items:center;gap:8px;
-  margin:16px 0 10px;
-}
-.sec-label::after{content:'';flex:1;height:1px;background:var(--slate-7)}
-
-/* ═══ STEP HEADER ═══ */
-.step-hd{margin-bottom:18px}
-.step-hd-top{display:flex;align-items:center;gap:10px;margin-bottom:4px}
-.step-chip{
-  font-family:'Syne',sans-serif;font-size:10px;font-weight:700;
-  letter-spacing:.1em;text-transform:uppercase;
-  background:var(--slate-1);color:var(--slate-6);
-  padding:3px 10px;border-radius:4px;border:1px solid var(--slate-2);
-}
-.step-h1{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--slate-0);line-height:1.2}
-.step-desc{font-size:12px;color:var(--slate-4);margin-top:3px;max-width:680px;line-height:1.6}
-
-/* ═══ QUOTE WIZARD ═══ */
-.qwiz-steps{
-  display:flex;align-items:center;gap:0;
-  background:var(--white);border:1px solid var(--slate-7);
-  border-radius:var(--radius);overflow:hidden;
-  margin-bottom:20px;box-shadow:var(--shadow);
-}
-.qws{
-  flex:1;padding:11px 14px;
-  display:flex;align-items:center;gap:9px;
-  border-right:1px solid var(--slate-7);
-  cursor:pointer;transition:background .12s;
-  position:relative;
-}
-.qws:last-child{border-right:none}
-.qws:hover{background:var(--canvas)}
-.qws.active{background:var(--accent-l)}
-.qws.done{background:var(--ok-l)}
-.qws-num{
-  width:22px;height:22px;border-radius:50%;
-  border:1.5px solid var(--slate-6);
-  display:flex;align-items:center;justify-content:center;
-  font-size:10px;font-weight:700;color:var(--slate-5);
-  flex-shrink:0;transition:all .15s;
-}
-.qws.active .qws-num{border-color:var(--accent);color:var(--accent);background:rgba(47,111,255,.1)}
-.qws.done .qws-num{border-color:var(--ok);background:var(--ok);color:#fff}
-.qws-title{font-size:12px;font-weight:500;color:var(--slate-4)}
-.qws.active .qws-title{color:var(--accent);font-weight:600}
-.qws.done .qws-title{color:var(--ok)}
-.qws-sub{font-size:10px;color:var(--slate-5);margin-top:1px}
-.qws.active .qws-sub{color:var(--accent-m)}
-
-/* ═══ QUOTE SUMMARY PANEL ═══ */
-.quote-summary{
-  background:var(--slate-1);border-radius:var(--radius);
-  padding:14px 16px;margin-bottom:14px;
-  border:1px solid var(--slate-2);
-}
-.qs-title{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--slate-4);margin-bottom:10px}
-.qs-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
-.qs-item .k{font-size:9px;color:var(--slate-5);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}
-.qs-item .v{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--slate-6);font-weight:500}
-.qs-item .v.hi{color:#fff}
-.qs-prem{
-  margin-top:10px;padding-top:10px;border-top:1px solid var(--slate-2);
-  display:flex;justify-content:space-between;align-items:center;
-}
-.qs-prem .pk{font-size:11px;color:var(--slate-5)}
-.qs-prem .pv{font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:500;color:#fff}
-.qs-prem .pv small{font-size:11px;color:var(--slate-5);font-weight:400}
-
-/* ═══ CONVERSION FLOW ═══ */
-.conv-track{
-  display:flex;align-items:flex-start;gap:0;
-  margin-bottom:20px;
-}
-.ct-step{
-  flex:1;display:flex;flex-direction:column;align-items:center;
-  position:relative;
-}
-.ct-step::after{
-  content:'';
-  position:absolute;top:16px;left:50%;right:-50%;
-  height:2px;background:var(--slate-7);z-index:0;
-}
-.ct-step:last-child::after{display:none}
-.ct-step.done::after{background:var(--ok)}
-.ct-step.active::after{background:linear-gradient(90deg,var(--ok),var(--slate-7))}
-.ct-circle{
-  width:32px;height:32px;border-radius:50%;
-  border:2px solid var(--slate-7);
-  display:flex;align-items:center;justify-content:center;
-  font-size:13px;background:var(--white);
-  position:relative;z-index:1;
-  transition:all .2s;
-}
-.ct-step.done .ct-circle{border-color:var(--ok);background:var(--ok);color:#fff}
-.ct-step.active .ct-circle{border-color:var(--accent);background:var(--accent-l);color:var(--accent)}
-.ct-label{font-size:10px;font-weight:600;color:var(--slate-5);margin-top:7px;text-align:center}
-.ct-step.done .ct-label{color:var(--ok)}
-.ct-step.active .ct-label{color:var(--accent)}
-.ct-sub{font-size:9px;color:var(--slate-5);text-align:center;margin-top:2px}
-
-/* ═══ DIFF TABLE (quote→policy) ═══ */
-.diff-table{width:100%;border-collapse:collapse;font-size:11px}
-.diff-table th{padding:7px 10px;text-align:left;border-bottom:2px solid var(--slate-7);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--slate-5)}
-.diff-table td{padding:8px 10px;border-bottom:1px solid var(--slate-8);vertical-align:top}
-.diff-table tr:last-child td{border-bottom:none}
-.diff-field{color:var(--slate-2);font-weight:500}
-.diff-old{color:var(--slate-5);font-family:'IBM Plex Mono',monospace}
-.diff-new{color:var(--slate-1);font-family:'IBM Plex Mono',monospace;font-weight:500}
-.diff-badge{display:inline-flex;padding:1px 6px;border-radius:3px;font-size:9px;font-weight:700;text-transform:uppercase}
-.diff-changed{background:var(--warn-l);color:var(--warn)}
-.diff-same{background:var(--slate-8);color:var(--slate-5)}
-.diff-new-field{background:var(--ok-l);color:var(--ok)}
-
-/* ═══ CHECKLIST ═══ */
-.checklist{display:flex;flex-direction:column;gap:5px}
-.chk-item{
-  display:flex;align-items:center;gap:10px;
-  padding:9px 12px;border-radius:var(--radius-sm);
-  border:1px solid var(--slate-7);background:var(--white);
-}
-.chk-item.ok{border-color:var(--ok-m);background:var(--ok-l)}
-.chk-item.warn{border-color:var(--warn-m);background:var(--warn-l)}
-.chk-item.err{border-color:var(--err-m);background:var(--err-l)}
-.chk-ico{font-size:14px;flex-shrink:0}
-.chk-text{flex:1;font-size:12px;color:var(--slate-2)}
-.chk-text strong{font-weight:600}
-.chk-text .sub{font-size:10px;color:var(--slate-4);margin-top:1px}
-.chk-action{font-size:11px;color:var(--accent);cursor:pointer;white-space:nowrap}
-
-/* ═══ CUSTOMER CARD (list item) ═══ */
-.customer-row{
-  background:var(--white);border:1px solid var(--slate-7);
-  border-radius:var(--radius);padding:14px 16px;
-  display:flex;align-items:center;gap:14px;
-  margin-bottom:8px;box-shadow:var(--shadow);
-  transition:box-shadow .15s,border-color .15s;
-  cursor:pointer;
-}
-.customer-row:hover{box-shadow:var(--shadow-md);border-color:var(--slate-6)}
-.cr-avatar{
-  width:42px;height:42px;border-radius:10px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:16px;font-weight:700;flex-shrink:0;
-}
-.av-emp{background:var(--ok-l);color:var(--ok)}
-.av-brk{background:var(--accent-l);color:var(--accent)}
-.av-bnk{background:var(--purple-l);color:var(--purple)}
-.cr-main{flex:1;min-width:0}
-.cr-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--slate-0);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.cr-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.cr-meta-item{font-size:11px;color:var(--slate-5);display:flex;align-items:center;gap:4px}
-.cr-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0}
-
-/* ═══ QUOTE CARD (list) ═══ */
-.quote-card{
-  background:var(--white);border:1px solid var(--slate-7);
-  border-radius:var(--radius);
-  margin-bottom:8px;box-shadow:var(--shadow);
-  transition:all .15s;cursor:pointer;overflow:hidden;
-}
-.quote-card:hover{box-shadow:var(--shadow-md);border-color:var(--slate-6)}
-.qc-head{
-  padding:12px 16px;
-  display:flex;align-items:center;gap:12px;
-  border-bottom:1px solid var(--slate-8);
-}
-.qc-num{
-  font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:500;
-  color:var(--accent);background:var(--accent-l);
-  padding:3px 8px;border-radius:4px;flex-shrink:0;
-}
-.qc-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;flex:1;color:var(--slate-0)}
-.qc-body{padding:10px 16px;display:grid;grid-template-columns:repeat(5,1fr);gap:10px;align-items:center}
-.qc-stat .k{font-size:9px;text-transform:uppercase;letter-spacing:.07em;color:var(--slate-5);margin-bottom:2px}
-.qc-stat .v{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--slate-2);font-weight:500}
-.qc-stat .v.accent{color:var(--accent)}
-.qc-actions{display:flex;gap:5px;justify-content:flex-end}
-
-/* progress bar */
-.progress-bar{
-  height:4px;border-radius:2px;background:var(--slate-8);overflow:hidden;
-}
-.progress-fill{height:100%;border-radius:2px;background:var(--accent);transition:width .3s}
-.progress-fill.ok{background:var(--ok)}
-.progress-fill.warn{background:var(--warn)}
-
-/* ═══ FORM PANEL (drawer-style detail) ═══ */
-.detail-shell{display:flex;flex:1;overflow:hidden;min-height:0}
-.detail-form{flex:1;overflow-y:auto;padding:20px 24px 40px}
-.detail-form::-webkit-scrollbar{width:4px}
-.detail-form::-webkit-scrollbar-thumb{background:var(--slate-7);border-radius:3px}
-.detail-sidebar{
-  width:270px;flex-shrink:0;
-  border-left:1px solid var(--slate-7);
-  background:var(--white);
-  overflow-y:auto;
-  padding:16px;
-}
-
-/* activity feed */
-.activity-feed{display:flex;flex-direction:column;gap:0}
-.af-item{
-  display:flex;gap:10px;padding:8px 0;
-  border-bottom:1px solid var(--slate-8);
-  font-size:11px;
-}
-.af-item:last-child{border-bottom:none}
-.af-dot{
-  width:8px;height:8px;border-radius:50%;flex-shrink:0;
-  margin-top:3px;border:1.5px solid currentColor;
-}
-.af-blue{color:var(--accent)} .af-green{color:var(--ok)}
-.af-warn{color:var(--warn)} .af-purple{color:var(--purple)}
-.af-text{color:var(--slate-3);line-height:1.5}
-.af-text strong{font-weight:500;color:var(--slate-1)}
-.af-time{font-size:9px;color:var(--slate-5);margin-top:2px;font-family:'IBM Plex Mono',monospace}
-
-/* policy conversion highlight box */
-.conv-box{
-  border:2px solid var(--ok-m);border-radius:var(--radius);
-  padding:16px 18px;background:var(--ok-l);margin-bottom:14px;
-}
-.conv-box-title{
-  font-family:'Syne',sans-serif;font-size:14px;font-weight:700;
-  color:var(--ok);margin-bottom:4px;display:flex;align-items:center;gap:7px;
-}
-.conv-box-desc{font-size:12px;color:#054D32;line-height:1.6}
-
-/* empty state */
-.empty{
-  text-align:center;padding:48px 24px;
-}
-.empty-ico{font-size:40px;margin-bottom:12px;opacity:.3}
-.empty-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--slate-3);margin-bottom:6px}
-.empty-desc{font-size:12px;color:var(--slate-5);max-width:300px;margin:0 auto 20px;line-height:1.6}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Quote - Step 1: Customer & Distribution | InsureCore</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    * { font-family: 'DM Sans', sans-serif; box-sizing: border-box; }
+    body { margin: 0; padding: 0; }
+    
+    :root {
+      --primary: #1e40af;
+      --primary-light: #3b82f6;
+      --primary-dark: #1e3a8a;
+      --success: #10b981;
+      --success-light: #d1fae5;
+      --warning: #f59e0b;
+      --warning-light: #fef3c7;
+      --danger: #ef4444;
+      --danger-light: #fef2f2;
+      --surface: #f8fafc;
+      --border: #e2e8f0;
+      --text-primary: #0f172a;
+      --text-secondary: #64748b;
+      --text-muted: #94a3b8;
+    }
+    
+    .form-section {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+    
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .section-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    
+    .form-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      transition: all 0.2s;
+      background: white;
+      color: var(--text-primary);
+    }
+    
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary-light);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    
+    .form-input:disabled {
+      background: #f1f5f9;
+      color: var(--text-secondary);
+      cursor: not-allowed;
+    }
+    
+    .form-input::placeholder {
+      color: var(--text-muted);
+    }
+    
+    .required { color: var(--danger); }
+    
+    .auto-badge {
+      background: #dbeafe;
+      color: var(--primary);
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-left: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .optional-badge {
+      background: var(--success-light);
+      color: #065f46;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    
+    .status-active {
+      background: var(--success-light);
+      color: #065f46;
+    }
+    
+    .status-warning {
+      background: var(--warning-light);
+      color: #92400e;
+    }
+    
+    .status-danger {
+      background: var(--danger-light);
+      color: #991b1b;
+    }
+    
+    .channel-card {
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+      position: relative;
+    }
+    
+    .channel-card:hover {
+      border-color: var(--primary-light);
+      background: #f8fafc;
+      transform: translateY(-2px);
+    }
+    
+    .channel-card.selected {
+      border-color: var(--primary);
+      background: #eff6ff;
+      box-shadow: 0 4px 12px rgba(30, 64, 175, 0.15);
+    }
+    
+    .channel-card .check-mark {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 24px;
+      height: 24px;
+      background: var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+    
+    .recipient-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    
+    .add-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--primary);
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      padding: 8px 0;
+      border: none;
+      background: none;
+      transition: opacity 0.2s;
+    }
+    
+    .add-btn:hover { opacity: 0.7; }
+    
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .toggle-switch {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      background: #cbd5e1;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: 0.2s;
+      border: none;
+    }
+    
+    .toggle-switch.active {
+      background: var(--primary);
+    }
+    
+    .toggle-switch::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: white;
+      border-radius: 50%;
+      top: 2px;
+      left: 2px;
+      transition: 0.2s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+    
+    .toggle-switch.active::after {
+      left: 22px;
+    }
+    
+    .info-card {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-radius: 8px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 13px;
+      color: #0369a1;
+      line-height: 1.5;
+    }
+    
+    .info-card svg {
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    
+    .warning-card {
+      background: #fffbeb;
+      border: 1px solid #fcd34d;
+      border-radius: 8px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 13px;
+      color: #92400e;
+      line-height: 1.5;
+    }
+    
+    .create-customer-link {
+      background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%);
+      border: 2px dashed var(--primary-light);
+      border-radius: 12px;
+      padding: 32px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .create-customer-link:hover {
+      border-style: solid;
+      background: linear-gradient(135deg, #dbeafe 0%, #dcfce7 100%);
+      transform: translateY(-2px);
+    }
+    
+    .stepper {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+    
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    
+    .step.active {
+      background: var(--primary);
+      color: white;
+    }
+    
+    .step.inactive {
+      background: var(--surface);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+    
+    .step-number {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    
+    .step.active .step-number {
+      background: rgba(255,255,255,0.2);
+    }
+    
+    .step.inactive .step-number {
+      background: #e2e8f0;
+    }
+    
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: none;
+    }
+    
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(30, 64, 175, 0.25);
+    }
+    
+    .btn-secondary {
+      background: white;
+      color: var(--text-primary);
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+    
+    .btn-secondary:hover {
+      background: var(--surface);
+      border-color: #cbd5e1;
+    }
+    
+    .btn-icon {
+      background: none;
+      border: none;
+      padding: 6px;
+      cursor: pointer;
+      color: var(--danger);
+      border-radius: 6px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .btn-icon:hover {
+      background: var(--danger-light);
+    }
+    
+    .override-link {
+      margin-left: 8px;
+      color: var(--primary);
+      font-size: 12px;
+      cursor: pointer;
+      border: none;
+      background: none;
+      padding: 0;
+      text-decoration: none;
+    }
+    
+    .override-link:hover {
+      text-decoration: underline;
+    }
+    
+    .search-wrapper {
+      position: relative;
+    }
+    
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+    
+    .search-input {
+      padding-left: 42px;
+    }
+    
+    .validation-success {
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--success);
+    }
+    
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+    
+    @media (max-width: 768px) {
+      .grid-2, .grid-3, .grid-4 {
+        grid-template-columns: 1fr;
+      }
+      
+      .stepper {
+        gap: 6px;
+      }
+      
+      .step {
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+    }
+    
+    .page-header {
+      margin-bottom: 24px;
+    }
+    
+    .page-title-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    
+    .page-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0;
+    }
+    
+    .page-badge {
+      background: #dbeafe;
+      color: var(--primary);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    
+    .page-description {
+      color: var(--text-secondary);
+      font-size: 14px;
+      margin: 0;
+      line-height: 1.5;
+    }
+    
+    .section-title {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    
+    .section-description {
+      margin: 4px 0 0;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    
+    .action-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+    
+    .action-bar-right {
+      display: flex;
+      gap: 12px;
+    }
+  </style>
 </head>
 <body>
+  <div id="root"></div>
+  
+  <script type="text/babel">
+    const { useState, useEffect } = React;
 
-<!-- ════════════════ TOP BAR ════════════════ -->
-<div class="topbar">
-  <div class="topbar-left">
-    <div class="brand">INSURECORE</div>
-    <div class="tb-sep"></div>
-    <div class="tb-crumb">
-      <a>Policy Admin</a>
-      <span>›</span>
-      <span>Customers, Quotes & Policies</span>
-    </div>
-  </div>
-  <div class="topbar-right">
-    <button class="btn btn-ghost btn-sm">🔔</button>
-    <button class="btn btn-ghost btn-sm">KE · Nairobi</button>
-    <button class="btn btn-primary btn-sm btn-icon">＋ New</button>
-  </div>
-</div>
+    // Icon Components
+    const CheckIcon = () => (
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+        <path d="M20 6L9 17l-5-5"/>
+      </svg>
+    );
 
-<!-- ════════════════ SHELL ════════════════ -->
-<div class="shell">
+    const SearchIcon = () => (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+    );
 
-  <!-- ══ SIDE NAV ══ -->
-  <div class="sidenav">
-    <div class="sidenav-inner">
+    const PlusIcon = () => (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M12 5v14M5 12h14"/>
+      </svg>
+    );
 
-      <div class="nav-module">Dashboard <div class="nav-module-line"></div></div>
-      <button class="nav-item" onclick="navTo(this)">
-        <span class="ni-icon">📊</span>
-        <span class="ni-text">Overview</span>
-      </button>
-      <button class="nav-item" onclick="navTo(this)">
-        <span class="ni-icon">📋</span>
-        <span class="ni-text">My Workspace</span>
-        <span class="ni-badge">4</span>
-      </button>
+    const TrashIcon = () => (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M10 11v6M14 11v6"/>
+      </svg>
+    );
 
-      <div class="nav-module">Product Config <div class="nav-module-line"></div></div>
-      <button class="nav-item" onclick="navTo(this)">
-        <span class="ni-icon">⚙️</span>
-        <span class="ni-text">Products</span>
-        <span class="ni-badge">12</span>
-      </button>
-      <button class="nav-item" onclick="navTo(this)">
-        <span class="ni-icon">📐</span>
-        <span class="ni-text">Rate Tables</span>
-      </button>
+    const InfoIcon = () => (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>
+      </svg>
+    );
 
-      <div class="nav-module">Policy Administration <div class="nav-module-line"></div></div>
-      <button class="nav-item active" onclick="navTo(this)">
-        <span class="ni-icon">🏢</span>
-        <span class="ni-text">Customers</span>
-        <span class="ni-badge">247</span>
-      </button>
-      <div class="nav-sub">
-        <button class="nav-item active" onclick="navTo(this)">
-          <span class="ni-text">Employers</span>
-          <span class="ni-badge">182</span>
-        </button>
-        <button class="nav-item" onclick="navTo(this)">
-          <span class="ni-text">Brokers</span>
-          <span class="ni-badge">43</span>
-        </button>
-        <button class="nav-item" onclick="navTo(this)">
-          <span class="ni-text">Banks / Bancassurance</span>
-          <span class="ni-badge">22</span>
-        </button>
-      </div>
-      <button class="nav-item" onclick="navTo(this)">
-        <span class="ni-icon">💬</span>
-        <span class="ni-text">Quotations</span>
-        <span class="ni-badge">31</span>
-      </button>
-      <button class="nav-item" onclick="navTo(this)">
-        <span class="ni-icon">📄</span>
-        <span class="ni-text">Policies</span>
-        <span class="ni-badge">189</span>
-      </button>
-      <button class="nav-item" onclick="navTo(this)">
-        <span class="ni-icon">🔄</span>
-        <span class="ni-text">Renewals</span>
-        <div class="ni-dot" style="background:var(--warn)"></div>
-      </button>
+    const ChevronRight = () => (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="m9 18 6-6-6-6"/>
+      </svg>
+    );
 
-      <div class="nav-module">Claims <div class="nav-module-line"></div></div>
-      <button class="nav-item" onclick="navTo(this)">
-        <span class="ni-icon">⚡</span>
-        <span class="ni-text">Claims Register</span>
-        <div class="ni-dot" style="background:var(--err)"></div>
-      </button>
-      <button class="nav-item" onclick="navTo(this)">
-        <span class="ni-icon">🔍</span>
-        <span class="ni-text">Underwriting</span>
-      </button>
+    const ExternalLinkIcon = () => (
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/>
+      </svg>
+    );
 
-      <div class="nav-module">Finance <div class="nav-module-line"></div></div>
-      <button class="nav-item" onclick="navTo(this)">
-        <span class="ni-icon">💰</span>
-        <span class="ni-text">Premium Register</span>
-      </button>
-      <button class="nav-item" onclick="navTo(this)">
-        <span class="ni-icon">📈</span>
-        <span class="ni-text">Reports</span>
-      </button>
-    </div>
-    <div class="sidenav-footer">
-      <div class="sf-label">Portfolio Snapshot</div>
-      <div class="sf-row"><span class="k">In-Force</span><span class="v">189</span></div>
-      <div class="sf-row"><span class="k">Lives Covered</span><span class="v">48,320</span></div>
-      <div class="sf-row"><span class="k">Open Claims</span><span class="v">14</span></div>
-      <div class="sf-row"><span class="k">Prem YTD</span><span class="v">KES 42.1M</span></div>
-    </div>
-  </div>
+    function App() {
+      // State Management
+      const [customerType, setCustomerType] = useState('direct');
+      const [searchQuery, setSearchQuery] = useState('Safaricom');
+      const [customerFound, setCustomerFound] = useState(true);
+      const [sameAsContact, setSameAsContact] = useState(false);
+      const [recipients, setRecipients] = useState([
+        { id: 1, name: 'Grace Wanjiku', email: 'grace.w@safaricom.co.ke', phone: '+254 722 123 456', role: 'HR Manager' }
+      ]);
+      const [selectedBroker, setSelectedBroker] = useState('aon');
+      const [commissionOverride, setCommissionOverride] = useState(false);
+      const [customCommission, setCustomCommission] = useState('');
+      
+      // Mock Data
+      const customerData = {
+        legalName: 'Safaricom PLC',
+        kraPin: 'P051234567X',
+        industry: 'Telecommunications',
+        relationshipManager: 'James Mwangi',
+        kycStatus: 'Active',
+        riskFlag: null
+      };
+      
+      const brokers = [
+        { id: 'aon', name: 'Aon Minet Kenya Ltd', code: 'AON-001', commission: 7.5, class: 'A' },
+        { id: 'marsh', name: 'Marsh Kenya', code: 'MRS-002', commission: 6.5, class: 'B' },
+        { id: 'wib', name: 'Willis Towers Watson', code: 'WTW-003', commission: 7.0, class: 'A' }
+      ];
+      
+      const banks = [
+        'Equity Bank',
+        'KCB Bank',
+        'Co-operative Bank',
+        'NCBA Bank',
+        'Absa Bank Kenya',
+        'Stanbic Bank',
+        'Standard Chartered',
+        'I&M Bank',
+        'DTB Bank'
+      ];
+      
+      // Handlers
+      const handleSearchChange = (e) => {
+        const value = e.target.value;
+        setSearchQuery(value);
+        setCustomerFound(value.toLowerCase().includes('safaricom'));
+      };
+      
+      const addRecipient = () => {
+        setRecipients([...recipients, { 
+          id: Date.now(), 
+          name: '', 
+          email: '', 
+          phone: '', 
+          role: '' 
+        }]);
+      };
+      
+      const removeRecipient = (id) => {
+        if (recipients.length > 1) {
+          setRecipients(recipients.filter(r => r.id !== id));
+        }
+      };
+      
+      const updateRecipient = (id, field, value) => {
+        setRecipients(recipients.map(r => 
+          r.id === id ? { ...r, [field]: value } : r
+        ));
+      };
+      
+      const getSelectedBroker = () => brokers.find(b => b.id === selectedBroker);
+      
+      const getCurrentCommission = () => {
+        if (commissionOverride && customCommission) {
+          return customCommission;
+        }
+        const broker = getSelectedBroker();
+        return broker ? broker.commission : '';
+      };
 
-  <!-- ══ MAIN AREA ══ -->
-  <div class="main-area">
-
-    <!-- Module Tab Bar -->
-    <div class="mod-tabs">
-      <button class="mtab active" onclick="switchTab('customers',this)">
-        🏢 Customers
-        <span class="mtab-count">247</span>
-      </button>
-      <button class="mtab" onclick="switchTab('quotes',this)">
-        💬 Quotations
-        <span class="mtab-count">31</span>
-      </button>
-      <button class="mtab" onclick="switchTab('newquote',this)">
-        ＋ New Quote
-      </button>
-      <button class="mtab" onclick="switchTab('convert',this)">
-        🔄 Convert to Policy
-      </button>
-      <div class="mod-tab-actions">
-        <button class="btn btn-outline btn-sm">Export</button>
-        <button class="btn btn-primary btn-sm btn-icon" onclick="switchTab('newcustomer',this)">＋ Add Customer</button>
-      </div>
-    </div>
-
-
-    <!-- ════════ TAB: CUSTOMERS ════════ -->
-    <div class="tab-panel active" id="tab-customers">
-      <!-- filter toolbar -->
-      <div class="list-toolbar">
-        <div class="search-wrap">
-          <span class="search-ico">🔍</span>
-          <input type="text" placeholder="Search by name, KRA PIN, contact…">
-        </div>
-        <button class="filter-pill active">All <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;margin-left:3px">247</span></button>
-        <button class="filter-pill">🏭 Employers <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;margin-left:3px">182</span></button>
-        <button class="filter-pill">🤝 Brokers <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;margin-left:3px">43</span></button>
-        <button class="filter-pill">🏦 Banks <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;margin-left:3px">22</span></button>
-        <button class="filter-pill">⚠ KYC Pending <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;margin-left:3px">8</span></button>
-        <div class="toolbar-right">
-          <button class="btn btn-outline btn-sm">Sort ↕</button>
-          <button class="btn btn-outline btn-sm">Filter ▾</button>
-        </div>
-      </div>
-
-      <div class="list-scroll">
-        <!-- Stat row -->
-        <div class="stat-row" style="grid-template-columns:repeat(5,1fr)">
-          <div class="stat stat-blue"><div class="stat-n">247</div><div class="stat-l">Total Customers</div></div>
-          <div class="stat stat-ok"><div class="stat-n">182</div><div class="stat-l">Employers</div></div>
-          <div class="stat"><div class="stat-n" style="color:var(--accent)">43</div><div class="stat-l">Brokers</div></div>
-          <div class="stat"><div class="stat-n" style="color:var(--purple)">22</div><div class="stat-l">Banks</div></div>
-          <div class="stat stat-warn"><div class="stat-n">8</div><div class="stat-l">KYC Pending</div></div>
-        </div>
-
-        <!-- Customer list -->
-        <!-- Employer -->
-        <div class="customer-row" onclick="switchTab('customerdetail',null)">
-          <div class="cr-avatar av-emp">🏭</div>
-          <div class="cr-main">
-            <div class="cr-name">Safaricom PLC</div>
-            <div class="cr-meta">
-              <span class="cr-meta-item">🏷 <span class="tag t-auto" style="font-size:9px">Employer</span></span>
-              <span class="cr-meta-item">📋 KRA: P051234567X</span>
-              <span class="cr-meta-item">🏭 Telecom · Nairobi</span>
-              <span class="cr-meta-item">👤 Mary Wanjiku, HR Director</span>
-            </div>
-          </div>
-          <div class="cr-right">
-            <span class="status st-active"><span class="status-dot"></span>Active · KYC ✓</span>
-            <span style="font-size:10px;color:var(--slate-5)">3 policies · 4,200 lives</span>
-            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent)">KES 8.4M premium</span>
-          </div>
-        </div>
-
-        <!-- Broker -->
-        <div class="customer-row">
-          <div class="cr-avatar av-brk">🤝</div>
-          <div class="cr-main">
-            <div class="cr-name">Aon Minet Kenya Ltd</div>
-            <div class="cr-meta">
-              <span class="cr-meta-item">🏷 <span class="tag t-brk">Broker</span></span>
-              <span class="cr-meta-item">📋 IRA Lic: IB-00234</span>
-              <span class="cr-meta-item">📅 Expires: 31 Dec 2025</span>
-              <span class="cr-meta-item">📍 Nairobi CBD</span>
-            </div>
-          </div>
-          <div class="cr-right">
-            <span class="status st-active"><span class="status-dot"></span>Active · Licensed</span>
-            <span style="font-size:10px;color:var(--slate-5)">17 schemes referred</span>
-            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent)">7.5% comm. class A</span>
-          </div>
-        </div>
-
-        <!-- Bank -->
-        <div class="customer-row">
-          <div class="cr-avatar av-bnk">🏦</div>
-          <div class="cr-main">
-            <div class="cr-name">Equity Bank Kenya</div>
-            <div class="cr-meta">
-              <span class="cr-meta-item">🏷 <span class="tag" style="background:var(--purple-l);color:var(--purple)">Bank</span></span>
-              <span class="cr-meta-item">📋 CBK Code: EBL001</span>
-              <span class="cr-meta-item">🔗 Bancassurance Agreement</span>
-              <span class="cr-meta-item">📍 Equity Centre, Upperhill</span>
-            </div>
-          </div>
-          <div class="cr-right">
-            <span class="status st-active"><span class="status-dot"></span>Active · MOU Signed</span>
-            <span style="font-size:10px;color:var(--slate-5)">Credit Life · 12 schemes</span>
-            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent)">2.5% referral fee</span>
-          </div>
-        </div>
-
-        <!-- KYC Pending Employer -->
-        <div class="customer-row">
-          <div class="cr-avatar av-emp">🏭</div>
-          <div class="cr-main">
-            <div class="cr-name">Kenya Breweries Ltd</div>
-            <div class="cr-meta">
-              <span class="cr-meta-item">🏷 <span class="tag t-auto">Employer</span></span>
-              <span class="cr-meta-item">📋 KRA: P052345678Y</span>
-              <span class="cr-meta-item">🏭 Manufacturing · Thika</span>
-            </div>
-          </div>
-          <div class="cr-right">
-            <span class="status st-pending"><span class="status-dot"></span>KYC Pending</span>
-            <span style="font-size:10px;color:var(--slate-5)">Awaiting PIN cert.</span>
-            <button class="btn btn-outline btn-sm" style="margin-top:3px">Upload Docs</button>
-          </div>
-        </div>
-
-        <!-- Draft / New -->
-        <div class="customer-row">
-          <div class="cr-avatar av-brk">🤝</div>
-          <div class="cr-main">
-            <div class="cr-name">Old Mutual Insurance Brokers</div>
-            <div class="cr-meta">
-              <span class="cr-meta-item">🏷 <span class="tag t-brk">Broker</span></span>
-              <span class="cr-meta-item">📋 IRA Lic: IB-00891</span>
-              <span class="cr-meta-item">📅 Expires: 28 Feb 2026</span>
-            </div>
-          </div>
-          <div class="cr-right">
-            <span class="status st-draft"><span class="status-dot"></span>Profile Incomplete</span>
-            <span style="font-size:10px;color:var(--slate-5)">4 of 7 sections done</span>
-            <div class="progress-bar" style="width:100px;margin-top:4px"><div class="progress-fill" style="width:57%;background:var(--warn)"></div></div>
-          </div>
-        </div>
-
-        <div style="text-align:center;padding:16px;font-size:11px;color:var(--slate-5)">Showing 5 of 247 customers — <a style="color:var(--accent);cursor:pointer">Load more</a></div>
-      </div>
-    </div>
-
-
-    <!-- ════════ TAB: QUOTATIONS ════════ -->
-    <div class="tab-panel" id="tab-quotes">
-      <div class="list-toolbar">
-        <div class="search-wrap">
-          <span class="search-ico">🔍</span>
-          <input type="text" placeholder="Search by quote number, employer, product…">
-        </div>
-        <button class="filter-pill active">All <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;margin-left:3px">31</span></button>
-        <button class="filter-pill">📝 Draft <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;margin-left:3px">8</span></button>
-        <button class="filter-pill">📤 Sent <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;margin-left:3px">14</span></button>
-        <button class="filter-pill" style="color:var(--ok)">✓ Accepted <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;margin-left:3px">6</span></button>
-        <button class="filter-pill" style="color:var(--err)">✗ Declined <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;margin-left:3px">3</span></button>
-        <div class="toolbar-right">
-          <button class="btn btn-primary btn-sm" onclick="switchTab('newquote',null)">＋ New Quote</button>
-        </div>
-      </div>
-
-      <div class="list-scroll">
-        <div class="stat-row">
-          <div class="stat stat-blue"><div class="stat-n">KES 12.4M</div><div class="stat-l">Total Quoted Premium</div><div class="stat-trend trend-up">↑ 18% vs last month</div></div>
-          <div class="stat stat-ok"><div class="stat-n">6</div><div class="stat-l">Accepted Quotes</div></div>
-          <div class="stat stat-warn"><div class="stat-n">14</div><div class="stat-l">Awaiting Decision</div></div>
-          <div class="stat stat-err"><div class="stat-n">3</div><div class="stat-l">Declined / Expired</div></div>
-        </div>
-
-        <!-- Quote cards -->
-        <div class="quote-card" onclick="switchTab('convert',null)">
-          <div class="qc-head">
-            <span class="qc-num">QT-2024-0312</span>
-            <span class="qc-name">Safaricom PLC — Group Life Basic</span>
-            <span class="status st-active" style="flex-shrink:0"><span class="status-dot"></span>Accepted</span>
-            <button class="btn btn-ok btn-sm btn-icon" style="flex-shrink:0" onclick="event.stopPropagation();switchTab('convert',null)">🔄 Convert to Policy</button>
-          </div>
-          <div class="qc-body">
-            <div class="qc-stat"><div class="k">Product</div><div class="v">GRP-BASIC-001</div></div>
-            <div class="qc-stat"><div class="k">Members</div><div class="v">4,200</div></div>
-            <div class="qc-stat"><div class="k">Annual Premium</div><div class="v accent">KES 354,134</div></div>
-            <div class="qc-stat"><div class="k">Validity</div><div class="v">Expires 14 Jan 2025</div></div>
-            <div class="qc-stat"><div class="k">Broker</div><div class="v">Aon Minet Kenya</div></div>
-          </div>
-        </div>
-
-        <div class="quote-card">
-          <div class="qc-head">
-            <span class="qc-num">QT-2024-0309</span>
-            <span class="qc-name">Kenya Breweries Ltd — Group Life Enhanced</span>
-            <span class="status st-pending" style="flex-shrink:0"><span class="status-dot"></span>Awaiting Decision</span>
-            <button class="btn btn-outline btn-sm" style="flex-shrink:0">Send Reminder</button>
-          </div>
-          <div class="qc-body">
-            <div class="qc-stat"><div class="k">Product</div><div class="v">GRP-ENH-002</div></div>
-            <div class="qc-stat"><div class="k">Members</div><div class="v">1,850</div></div>
-            <div class="qc-stat"><div class="k">Annual Premium</div><div class="v accent">KES 228,400</div></div>
-            <div class="qc-stat"><div class="k">Validity</div><div class="v" style="color:var(--warn)">Expires 20 Jan 2025 ⚠</div></div>
-            <div class="qc-stat"><div class="k">Submitted By</div><div class="v">Direct (no broker)</div></div>
-          </div>
-        </div>
-
-        <div class="quote-card">
-          <div class="qc-head">
-            <span class="qc-num">QT-2024-0298</span>
-            <span class="qc-name">Nation Media Group — Credit Life</span>
-            <span class="status st-draft" style="flex-shrink:0"><span class="status-dot"></span>Draft</span>
-            <button class="btn btn-outline btn-sm" style="flex-shrink:0">Continue editing</button>
-          </div>
-          <div class="qc-body">
-            <div class="qc-stat"><div class="k">Product</div><div class="v">CRDLIFE-001</div></div>
-            <div class="qc-stat"><div class="k">Members</div><div class="v">—</div></div>
-            <div class="qc-stat"><div class="k">Est. Premium</div><div class="v" style="color:var(--slate-5)">Not computed</div></div>
-            <div class="qc-stat"><div class="k">Completion</div><div class="v"><div class="progress-bar" style="width:80px;display:inline-block;vertical-align:middle"><div class="progress-fill warn" style="width:40%"></div></div> <span style="font-size:10px;color:var(--slate-5);margin-left:4px">40%</span></div></div>
-            <div class="qc-stat"><div class="k">Bank</div><div class="v">Equity Bank Kenya</div></div>
-          </div>
-        </div>
-
-        <div class="quote-card" style="opacity:.55">
-          <div class="qc-head">
-            <span class="qc-num" style="background:var(--err-l);color:var(--err)">QT-2024-0281</span>
-            <span class="qc-name">Bidco Africa Ltd — Group Life Basic</span>
-            <span class="status st-expired" style="flex-shrink:0"><span class="status-dot"></span>Declined</span>
-            <button class="btn btn-outline btn-sm" style="flex-shrink:0">Clone & Revise</button>
-          </div>
-          <div class="qc-body">
-            <div class="qc-stat"><div class="k">Product</div><div class="v">GRP-BASIC-001</div></div>
-            <div class="qc-stat"><div class="k">Decline Reason</div><div class="v" style="color:var(--err)">Premium too high</div></div>
-            <div class="qc-stat"><div class="k">Quoted Premium</div><div class="v">KES 184,200</div></div>
-            <div class="qc-stat"><div class="k">Quoted On</div><div class="v">12 Dec 2024</div></div>
-            <div class="qc-stat"><div class="k">Broker</div><div class="v">Old Mutual Brokers</div></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-
-    <!-- ════════ TAB: NEW QUOTE ════════ -->
-    <div class="tab-panel" id="tab-newquote">
-      <div class="detail-shell">
-        <div class="detail-form">
-          <!-- Step header -->
-          <div class="step-hd">
-            <div class="step-hd-top">
-              <span class="step-chip">New Quotation</span>
-            </div>
-            <div class="step-h1">Create Quote</div>
-            <div class="step-desc">Build a Group Life quotation. You can save as draft at any time and send to the customer once complete. Accepted quotes convert directly to policies.</div>
-          </div>
-
-          <!-- Quote wizard steps -->
-          <div class="qwiz-steps">
-            <div class="qws done" onclick="qStep(0)">
-              <div class="qws-num">✓</div>
-              <div><div class="qws-title">Customer & Product</div><div class="qws-sub">Safaricom PLC · GRP-BASIC-001</div></div>
-            </div>
-            <div class="qws done" onclick="qStep(1)">
-              <div class="qws-num">✓</div>
-              <div><div class="qws-title">Scheme Details</div><div class="qws-sub">4,200 members · Telecom</div></div>
-            </div>
-            <div class="qws active" onclick="qStep(2)">
-              <div class="qws-num">3</div>
-              <div><div class="qws-title">Coverage Selection</div><div class="qws-sub">Customise covers & SAs</div></div>
-            </div>
-            <div class="qws" onclick="qStep(3)">
-              <div class="qws-num">4</div>
-              <div><div class="qws-title">Premium Computation</div><div class="qws-sub">Review pricing build-up</div></div>
-            </div>
-            <div class="qws" onclick="qStep(4)">
-              <div class="qws-num">5</div>
-              <div><div class="qws-title">Review & Send</div><div class="qws-sub">Finalise &amp; dispatch</div></div>
-            </div>
-          </div>
-
-          <!-- STEP 1: Customer & Product -->
-          <div id="qpanel-0" style="display:none">
-            <div class="card">
-              <div class="card-head">
-                <div class="card-ico ico-green">🏢</div>
-                <div><h3>Customer</h3><p>Link this quote to an existing customer or create a new one</p></div>
+      return (
+        <div style={{ background: '#f1f5f9', minHeight: '100vh', padding: '24px' }}>
+          <div style={{ maxWidth: '960px', margin: '0 auto' }}>
+            
+            {/* Page Header */}
+            <div className="page-header">
+              <div className="page-title-row">
+                <h1 className="page-title">Create Quote</h1>
+                <span className="page-badge">Group Life</span>
               </div>
-              <div class="card-body">
-                <div class="fg fg-2" style="margin-bottom:14px">
-                  <div class="f">
-                    <label>Customer Type <span class="req">*</span></label>
-                    <select>
-                      <option>Employer (Direct)</option>
-                      <option>Via Broker</option>
-                      <option>Via Bank (Bancassurance)</option>
-                    </select>
-                  </div>
-                  <div class="f">
-                    <label>Search Customer <span class="req">*</span></label>
-                    <input type="text" placeholder="Type employer name or KRA PIN…" value="Safaricom PLC">
-                    <div class="f-msg fmsg-ok">✓ Customer found and verified · KYC status: Active</div>
-                  </div>
+              <p className="page-description">
+                Build a Group Life quotation. You can save as draft at any time and send to the customer once complete.
+              </p>
+            </div>
+            
+            {/* Stepper */}
+            <div className="stepper">
+              <div className="step active">
+                <span className="step-number">1</span>
+                Customer & Distribution
+              </div>
+              <div className="step inactive">
+                <span className="step-number">2</span>
+                Product Selection
+              </div>
+              <div className="step inactive">
+                <span className="step-number">3</span>
+                Scheme Details
+              </div>
+              <div className="step inactive">
+                <span className="step-number">4</span>
+                Coverage
+              </div>
+              <div className="step inactive">
+                <span className="step-number">5</span>
+                Pricing
+              </div>
+            </div>
+            
+            {/* Section 1: Customer Type & Channel */}
+            <div className="form-section">
+              <div className="section-header">
+                <div className="section-icon" style={{ background: '#eff6ff', color: '#1e40af' }}>📋</div>
+                <div>
+                  <h3 className="section-title">Customer Type & Channel</h3>
+                  <p className="section-description">Select how this customer is onboarding</p>
                 </div>
-                <div class="fg fg-3">
-                  <div class="f">
-                    <label>KRA PIN <span class="tag t-auto">Auto</span></label>
-                    <input value="P051234567X" disabled>
+              </div>
+              
+              <div className="grid-3">
+                <div 
+                  className={`channel-card ${customerType === 'direct' ? 'selected' : ''}`}
+                  onClick={() => setCustomerType('direct')}
+                >
+                  {customerType === 'direct' && (
+                    <div className="check-mark"><CheckIcon /></div>
+                  )}
+                  <div style={{ fontSize: '32px', marginBottom: '12px' }}>🏢</div>
+                  <div style={{ fontWeight: '600', fontSize: '15px', marginBottom: '4px', color: '#0f172a' }}>
+                    Employer (Direct)
                   </div>
-                  <div class="f">
-                    <label>Industry <span class="tag t-auto">Auto</span></label>
-                    <input value="Telecommunications" disabled>
+                  <div style={{ fontSize: '13px', color: '#64748b' }}>Direct corporate client</div>
+                </div>
+                
+                <div 
+                  className={`channel-card ${customerType === 'broker' ? 'selected' : ''}`}
+                  onClick={() => setCustomerType('broker')}
+                >
+                  {customerType === 'broker' && (
+                    <div className="check-mark"><CheckIcon /></div>
+                  )}
+                  <div style={{ fontSize: '32px', marginBottom: '12px' }}>🤝</div>
+                  <div style={{ fontWeight: '600', fontSize: '15px', marginBottom: '4px', color: '#0f172a' }}>
+                    Via Broker
                   </div>
-                  <div class="f">
-                    <label>Relationship Manager</label>
-                    <select><option>James Mwangi</option></select>
+                  <div style={{ fontSize: '13px', color: '#64748b' }}>Intermediary channel</div>
+                </div>
+                
+                <div 
+                  className={`channel-card ${customerType === 'banca' ? 'selected' : ''}`}
+                  onClick={() => setCustomerType('banca')}
+                >
+                  {customerType === 'banca' && (
+                    <div className="check-mark"><CheckIcon /></div>
+                  )}
+                  <div style={{ fontSize: '32px', marginBottom: '12px' }}>🏦</div>
+                  <div style={{ fontWeight: '600', fontSize: '15px', marginBottom: '4px', color: '#0f172a' }}>
+                    Bancassurance
                   </div>
+                  <div style={{ fontSize: '13px', color: '#64748b' }}>Bank partnership</div>
                 </div>
               </div>
             </div>
-            <div class="card">
-              <div class="card-head">
-                <div class="card-ico ico-blue">⚙️</div>
-                <div><h3>Product Selection</h3><p>Choose which product this quote is for</p></div>
-              </div>
-              <div class="card-body">
-                <div class="fg fg-3">
-                  <div class="f">
-                    <label>Product <span class="req">*</span></label>
-                    <select>
-                      <option>GRP-BASIC-001 — Group Life Basic</option>
-                      <option>GRP-ENH-002 — Group Life Enhanced</option>
-                      <option>CRDLIFE-001 — Credit Life Standard</option>
-                    </select>
-                  </div>
-                  <div class="f">
-                    <label>Intermediary / Broker <span class="tag t-auto">Optional</span></label>
-                    <select><option>Aon Minet Kenya Ltd</option><option value="">No broker (direct)</option></select>
-                    <div class="f-msg fmsg-info">ℹ Commission class A — 7.5% will apply</div>
-                  </div>
-                  <div class="f">
-                    <label>Quote Validity</label>
-                    <select>
-                      <option>30 days</option><option>45 days</option><option>60 days</option>
-                    </select>
-                  </div>
+            
+            {/* Section 2: Customer Search & Selection */}
+            <div className="form-section">
+              <div className="section-header">
+                <div className="section-icon" style={{ background: '#f0fdf4', color: '#16a34a' }}>🔍</div>
+                <div>
+                  <h3 className="section-title">Customer Search & Selection</h3>
+                  <p className="section-description">Find an existing customer or create new</p>
                 </div>
               </div>
-            </div>
-          </div>
-
-          <!-- STEP 2: Scheme Details -->
-          <div id="qpanel-1" style="display:none">
-            <div class="card">
-              <div class="card-head"><div class="card-ico ico-blue">📋</div><div><h3>Scheme Details</h3><p>Member profile and scheme characteristics for rating</p></div></div>
-              <div class="card-body">
-                <div class="fg fg-3">
-                  <div class="f"><label>Total Members <span class="req">*</span></label><div class="iu"><input type="number" value="4200"><span class="uu">lives</span></div></div>
-                  <div class="f"><label>Average Age</label><div class="iu"><input type="number" value="34"><span class="uu">yrs</span></div></div>
-                  <div class="f"><label>Gender Split (% Male)</label><div class="iu"><input type="number" value="62"><span class="uu">%</span></div></div>
-                  <div class="f"><label>Average Salary</label><div class="iu"><input type="number" value="85000"><span class="uu">KES/mo</span></div></div>
-                  <div class="f"><label>Inception Date <span class="req">*</span></label><input type="date" value="2025-02-01"></div>
-                  <div class="f"><label>Policy Period</label><select><option>Annual (12 months)</option><option>24 months</option></select></div>
+              
+              {/* Search Input */}
+              <div style={{ marginBottom: '20px' }}>
+                <label className="form-label">
+                  Search Customer <span className="required">*</span>
+                </label>
+                <div className="search-wrapper">
+                  <input 
+                    type="text" 
+                    className="form-input search-input" 
+                    placeholder="Search by name, KRA PIN, or registration number..."
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                  />
+                  <div className="search-icon">
+                    <SearchIcon />
+                  </div>
                 </div>
-                <div class="sec-label">Claims Experience (if renewal)</div>
-                <div class="fg fg-3">
-                  <div class="f"><label>Prior Year Claims</label><div class="iu"><input type="number" placeholder="0"><span class="uu">KES</span></div></div>
-                  <div class="f"><label>Prior Year Premium</label><div class="iu"><input type="number" placeholder="0"><span class="uu">KES</span></div></div>
-                  <div class="f"><label>Number of Claims</label><input type="number" placeholder="0"></div>
+                {customerFound && searchQuery && (
+                  <div className="validation-success">
+                    <CheckIcon /> 
+                    <span>Customer found and verified</span>
+                    <span style={{ margin: '0 4px' }}>·</span>
+                    <span className="status-badge status-active">KYC: Active</span>
+                  </div>
+                )}
+              </div>
+              
+              {/* Customer Details or Create New */}
+              {customerFound && searchQuery ? (
+                <div className="grid-2">
+                  <div>
+                    <label className="form-label">
+                      Legal Name <span className="auto-badge">AUTO</span>
+                    </label>
+                    <input type="text" className="form-input" value={customerData.legalName} disabled />
+                  </div>
+                  <div>
+                    <label className="form-label">
+                      KRA / Tax PIN <span className="auto-badge">AUTO</span>
+                    </label>
+                    <input type="text" className="form-input" value={customerData.kraPin} disabled />
+                  </div>
+                  <div>
+                    <label className="form-label">
+                      Industry <span className="auto-badge">AUTO</span>
+                    </label>
+                    <input type="text" className="form-input" value={customerData.industry} disabled />
+                  </div>
+                  <div>
+                    <label className="form-label">
+                      Relationship Manager <span className="auto-badge">AUTO</span>
+                    </label>
+                    <input type="text" className="form-input" value={customerData.relationshipManager} disabled />
+                  </div>
+                </div>
+              ) : (
+                <div className="create-customer-link">
+                  <div style={{ fontSize: '40px', marginBottom: '12px' }}>➕</div>
+                  <div style={{ fontWeight: '600', fontSize: '16px', color: '#1e40af', marginBottom: '6px' }}>
+                    Customer not found?
+                  </div>
+                  <div style={{ fontSize: '14px', color: '#64748b', marginBottom: '12px' }}>
+                    Create a new customer record and return to continue this quote
+                  </div>
+                  <span style={{ 
+                    display: 'inline-flex', 
+                    alignItems: 'center', 
+                    gap: '6px',
+                    color: '#1e40af',
+                    fontWeight: '500',
+                    fontSize: '14px'
+                  }}>
+                    Create New Customer <ExternalLinkIcon />
+                  </span>
+                </div>
+              )}
+            </div>
+            
+            {/* Section 3: Quote Recipients */}
+            <div className="form-section">
+              <div className="section-header">
+                <div className="section-icon" style={{ background: '#fef3c7', color: '#d97706' }}>📧</div>
+                <div style={{ flex: 1 }}>
+                  <h3 className="section-title">Quote Recipient(s)</h3>
+                  <p className="section-description">Who should receive this quotation?</p>
+                </div>
+                <div className="toggle-container">
+                  <span style={{ fontSize: '13px', color: '#64748b' }}>Same as customer contact</span>
+                  <button 
+                    className={`toggle-switch ${sameAsContact ? 'active' : ''}`}
+                    onClick={() => setSameAsContact(!sameAsContact)}
+                    type="button"
+                  />
                 </div>
               </div>
-            </div>
-          </div>
-
-          <!-- STEP 3: Coverage Selection (ACTIVE) -->
-          <div id="qpanel-2">
-            <div class="banner ban-info"><span class="bn-i">ℹ</span><div>Coverage defaults are drawn from product <strong>GRP-BASIC-001</strong>. You can adjust SA multiples and optional covers here. Changes that exceed product maximums will require UW approval at policy creation.</div></div>
-
-            <!-- Product defaults reference bar -->
-            <div style="background:var(--slate-1);border-radius:var(--radius-sm);padding:9px 14px;display:flex;flex-wrap:wrap;gap:14px;margin-bottom:14px;border:1px solid var(--slate-2)">
-              <div style="border-right:1px solid var(--slate-2);padding-right:14px"><div style="font-size:9px;text-transform:uppercase;letter-spacing:.07em;color:var(--slate-4);font-weight:600;margin-bottom:2px">Product</div><div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--slate-5)">GRP-BASIC-001</div></div>
-              <div style="border-right:1px solid var(--slate-2);padding-right:14px"><div style="font-size:9px;text-transform:uppercase;letter-spacing:.07em;color:var(--slate-4);font-weight:600;margin-bottom:2px">SA Basis</div><div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--slate-5)">Salary Multiple</div></div>
-              <div style="border-right:1px solid var(--slate-2);padding-right:14px"><div style="font-size:9px;text-transform:uppercase;letter-spacing:.07em;color:var(--slate-4);font-weight:600;margin-bottom:2px">Default Multiple</div><div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#F5CC74">3× <span style="color:var(--slate-5)">(overriding to 4×)</span></div></div>
-              <div style="border-right:1px solid var(--slate-2);padding-right:14px"><div style="font-size:9px;text-transform:uppercase;letter-spacing:.07em;color:var(--slate-4);font-weight:600;margin-bottom:2px">FCL</div><div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--slate-5)">KES 5,000,000</div></div>
-              <div><div style="font-size:9px;text-transform:uppercase;letter-spacing:.07em;color:var(--slate-4);font-weight:600;margin-bottom:2px">Max SA</div><div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--slate-5)">KES 10,000,000</div></div>
-            </div>
-
-            <!-- Coverage rows -->
-            <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">
-              <!-- Death - mandatory -->
-              <div style="border:1.5px solid var(--ok);border-radius:var(--radius);overflow:hidden;background:var(--white)">
-                <div style="padding:11px 14px;display:flex;align-items:center;gap:12px;background:var(--ok-l)">
-                  <div style="width:20px;height:20px;border-radius:5px;background:var(--ok);display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;flex-shrink:0">✓</div>
-                  <div style="flex:1">
-                    <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:600;color:var(--slate-1)">Death Benefit</div>
-                    <div style="display:flex;gap:5px;margin-top:3px"><span class="tag t-auto">Mandatory</span><span class="tag t-lock">Locked</span></div>
+              
+              {recipients.map((recipient, idx) => (
+                <div key={recipient.id} className="recipient-card">
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                    <span style={{ fontSize: '13px', fontWeight: '600', color: '#64748b' }}>
+                      Recipient {idx + 1}
+                    </span>
+                    {recipients.length > 1 && (
+                      <button 
+                        className="btn-icon"
+                        onClick={() => removeRecipient(recipient.id)}
+                        type="button"
+                      >
+                        <TrashIcon />
+                      </button>
+                    )}
                   </div>
-                  <div style="text-align:right">
-                    <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--accent);font-weight:500">~KES 285,120</div>
-                    <div style="font-size:10px;color:var(--slate-5)">net risk prem</div>
-                  </div>
-                </div>
-                <div style="padding:12px 16px;border-top:1px solid var(--slate-7);background:#FAFBFD">
-                  <div class="fg fg-4">
-                    <div class="f"><label>SA Basis <span class="tag t-lock">Locked</span></label><input value="Salary Multiple" disabled></div>
-                    <div class="f">
-                      <label>SA Multiple <span class="req">*</span></label>
-                      <div class="iu"><input type="number" value="4" class="s-warn"><span class="uu">×</span></div>
-                      <div class="f-msg fmsg-warn">⚠ Default is 3×. UW approval required at policy creation.</div>
+                  <div className="grid-4">
+                    <div>
+                      <label className="form-label">Full Name <span className="required">*</span></label>
+                      <input 
+                        type="text" 
+                        className="form-input" 
+                        placeholder="Full name" 
+                        value={recipient.name}
+                        onChange={(e) => updateRecipient(recipient.id, 'name', e.target.value)}
+                      />
                     </div>
-                    <div class="f"><label>Min SA</label><div class="iu"><input type="number" value="50000"><span class="uu">KES</span></div></div>
-                    <div class="f"><label>Max SA <span class="tag t-lock">Product cap</span></label><div class="iu"><input value="10,000,000" disabled class="s-lock"><span class="uu">KES</span></div></div>
+                    <div>
+                      <label className="form-label">Email <span className="required">*</span></label>
+                      <input 
+                        type="email" 
+                        className="form-input" 
+                        placeholder="email@company.com" 
+                        value={recipient.email}
+                        onChange={(e) => updateRecipient(recipient.id, 'email', e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <label className="form-label">Phone</label>
+                      <input 
+                        type="text" 
+                        className="form-input" 
+                        placeholder="+254 7XX XXX XXX" 
+                        value={recipient.phone}
+                        onChange={(e) => updateRecipient(recipient.id, 'phone', e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <label className="form-label">Role</label>
+                      <select 
+                        className="form-input" 
+                        value={recipient.role}
+                        onChange={(e) => updateRecipient(recipient.id, 'role', e.target.value)}
+                      >
+                        <option value="">Select role</option>
+                        <option value="HR Manager">HR Manager</option>
+                        <option value="Finance">Finance</option>
+                        <option value="Broker Rep">Broker Rep</option>
+                        <option value="Admin">Admin</option>
+                        <option value="CEO/MD">CEO/MD</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              
+              <button className="add-btn" onClick={addRecipient} type="button">
+                <PlusIcon /> Add another recipient
+              </button>
+            </div>
+            
+            {/* Section 4: Intermediary / Broker (Conditional) */}
+            {(customerType === 'broker' || customerType === 'direct') && (
+              <div className="form-section">
+                <div className="section-header">
+                  <div className="section-icon" style={{ background: '#fae8ff', color: '#a855f7' }}>🤝</div>
+                  <div style={{ flex: 1 }}>
+                    <h3 className="section-title">Intermediary / Broker</h3>
+                    <p className="section-description">
+                      {customerType === 'broker' 
+                        ? 'Select the broker handling this quote' 
+                        : 'Optional: Link a broker to this quote'}
+                    </p>
+                  </div>
+                  {customerType === 'direct' && (
+                    <span className="optional-badge">OPTIONAL</span>
+                  )}
+                </div>
+                
+                <div className="grid-3" style={{ marginBottom: '16px' }}>
+                  <div>
+                    <label className="form-label">
+                      Broker Name {customerType === 'broker' && <span className="required">*</span>}
+                    </label>
+                    <select 
+                      className="form-input" 
+                      value={selectedBroker} 
+                      onChange={(e) => {
+                        setSelectedBroker(e.target.value);
+                        setCommissionOverride(false);
+                        setCustomCommission('');
+                      }}
+                    >
+                      <option value="">Select broker</option>
+                      {brokers.map(b => (
+                        <option key={b.id} value={b.id}>{b.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="form-label">
+                      Broker Code <span className="auto-badge">AUTO</span>
+                    </label>
+                    <input 
+                      type="text" 
+                      className="form-input" 
+                      value={selectedBroker ? getSelectedBroker()?.code || '' : ''} 
+                      disabled 
+                    />
+                  </div>
+                  <div>
+                    <label className="form-label">
+                      Commission Class <span className="auto-badge">AUTO</span>
+                    </label>
+                    <input 
+                      type="text" 
+                      className="form-input" 
+                      value={selectedBroker ? `Class ${getSelectedBroker()?.class || ''}` : ''} 
+                      disabled 
+                    />
+                  </div>
+                </div>
+                
+                {selectedBroker && (
+                  <>
+                    <div className="grid-2" style={{ marginBottom: '16px' }}>
+                      <div>
+                        <label className="form-label">
+                          Commission % 
+                          <span className="auto-badge">DEFAULT</span>
+                          <button 
+                            className="override-link"
+                            onClick={() => {
+                              setCommissionOverride(!commissionOverride);
+                              if (!commissionOverride) {
+                                setCustomCommission(getSelectedBroker()?.commission.toString() || '');
+                              }
+                            }}
+                            type="button"
+                          >
+                            {commissionOverride ? '↩ Reset to default' : '✏️ Override'}
+                          </button>
+                        </label>
+                        <input 
+                          type="text" 
+                          className="form-input" 
+                          value={commissionOverride ? customCommission : `${getSelectedBroker()?.commission || ''}%`}
+                          onChange={(e) => setCustomCommission(e.target.value)}
+                          disabled={!commissionOverride}
+                          style={{ maxWidth: '150px' }}
+                          placeholder="e.g. 7.5"
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="info-card">
+                      <InfoIcon />
+                      <span>
+                        Commission class <strong>{getSelectedBroker()?.class}</strong> applies — {getCurrentCommission()}% will apply. 
+                        Regulatory cap: <strong>10%</strong>
+                      </span>
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+            
+            {/* Section 5: Bancassurance (Conditional) */}
+            {customerType === 'banca' && (
+              <div className="form-section">
+                <div className="section-header">
+                  <div className="section-icon" style={{ background: '#ecfdf5', color: '#059669' }}>🏦</div>
+                  <div>
+                    <h3 className="section-title">Bancassurance Partner</h3>
+                    <p className="section-description">Bank channel partnership details</p>
+                  </div>
+                </div>
+                
+                <div className="grid-3">
+                  <div>
+                    <label className="form-label">Bank Name <span className="required">*</span></label>
+                    <select className="form-input">
+                      <option value="">Select bank</option>
+                      {banks.map(bank => (
+                        <option key={bank} value={bank}>{bank}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="form-label">Branch <span className="required">*</span></label>
+                    <input type="text" className="form-input" placeholder="e.g. Westlands" />
+                  </div>
+                  <div>
+                    <label className="form-label">Channel Partner Code <span className="required">*</span></label>
+                    <input type="text" className="form-input" placeholder="e.g. EQT-BNC-001" />
                   </div>
                 </div>
               </div>
-
-              <!-- ADB - optional selected -->
-              <div style="border:1.5px solid var(--accent);border-radius:var(--radius);overflow:hidden;background:var(--white)">
-                <div style="padding:11px 14px;display:flex;align-items:center;gap:12px;background:var(--accent-l);cursor:pointer" onclick="this.parentElement.querySelector('.cov-expand').classList.toggle('show')">
-                  <div style="width:20px;height:20px;border:2px solid var(--accent);border-radius:5px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;flex-shrink:0">✓</div>
-                  <div style="flex:1">
-                    <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:600;color:var(--slate-1)">Accidental Death Benefit (ADB)</div>
-                    <div style="display:flex;gap:5px;margin-top:3px"><span class="tag" style="background:var(--accent-l);color:var(--accent);border:1px solid var(--accent-m)">Selected</span><span style="font-size:10px;color:var(--slate-5)">2× salary multiple</span></div>
-                  </div>
-                  <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--accent)">~KES 38,400 ▾</div>
+            )}
+            
+            {/* Section 6: Customer Bank Details */}
+            <div className="form-section">
+              <div className="section-header">
+                <div className="section-icon" style={{ background: '#fef2f2', color: '#dc2626' }}>💳</div>
+                <div style={{ flex: 1 }}>
+                  <h3 className="section-title">Customer Bank Details</h3>
+                  <p className="section-description">For refunds / dividend payments</p>
                 </div>
-                <div class="cov-expand show" style="padding:12px 16px;border-top:1px solid var(--slate-7);background:#FAFBFD">
-                  <div class="fg fg-4">
-                    <div class="f"><label>ADB Multiple</label><div class="iu"><input type="number" value="2"><span class="uu">×</span></div></div>
-                    <div class="f"><label>Max ADB SA <span class="tag t-lock">Hard cap</span></label><div class="iu"><input value="10,000,000" disabled class="s-lock"><span class="uu">KES</span></div></div>
-                    <div class="f"><label>Waiting Period</label><input value="None" disabled></div>
-                    <div class="f"><label>Exclusions</label><select><option>Standard</option><option>Hazardous sport only</option></select></div>
-                  </div>
-                </div>
+                <span className="optional-badge">OPTIONAL</span>
               </div>
-
-              <!-- Funeral - optional selected -->
-              <div style="border:1.5px solid var(--accent);border-radius:var(--radius);overflow:hidden;background:var(--white)">
-                <div style="padding:11px 14px;display:flex;align-items:center;gap:12px;background:var(--accent-l)">
-                  <div style="width:20px;height:20px;border:2px solid var(--accent);border-radius:5px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;flex-shrink:0">✓</div>
-                  <div style="flex:1">
-                    <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:600;color:var(--slate-1)">Funeral Benefit</div>
-                    <div style="display:flex;gap:5px;margin-top:3px"><span class="tag" style="background:var(--accent-l);color:var(--accent);border:1px solid var(--accent-m)">Selected</span><span style="font-size:10px;color:var(--warn)">⚠ Override: KES 75,000 (default 50,000)</span></div>
-                  </div>
-                  <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--accent)">~KES 12,600 ▾</div>
-                </div>
+              
+              <div className="info-card" style={{ marginBottom: '16px' }}>
+                <InfoIcon />
+                <span>
+                  Bank details will be auto-fetched from customer records if available. 
+                  You can override if needed.
+                </span>
               </div>
-
-              <!-- TPD - not selected -->
-              <div style="border:1.5px solid var(--slate-7);border-radius:var(--radius);overflow:hidden;background:var(--white)">
-                <div style="padding:11px 14px;display:flex;align-items:center;gap:12px;cursor:pointer" onclick="this.style.background=this.style.background?'':'var(--accent-l)'">
-                  <div style="width:20px;height:20px;border:2px solid var(--slate-6);border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0"></div>
-                  <div style="flex:1">
-                    <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:600;color:var(--slate-4)">Total Permanent Disability (TPD)</div>
-                    <div style="font-size:11px;color:var(--slate-5);margin-top:2px">Optional cover · 180-day illness waiting period</div>
-                  </div>
-                  <span style="font-size:11px;color:var(--slate-5)">Click to add</span>
+              
+              <div className="grid-2">
+                <div>
+                  <label className="form-label">Bank Name</label>
+                  <select className="form-input">
+                    <option value="">Select bank</option>
+                    {banks.map(bank => (
+                      <option key={bank} value={bank}>{bank}</option>
+                    ))}
+                  </select>
                 </div>
-              </div>
-
-              <!-- Critical Illness - not selected -->
-              <div style="border:1.5px solid var(--slate-7);border-radius:var(--radius);overflow:hidden;background:var(--white)">
-                <div style="padding:11px 14px;display:flex;align-items:center;gap:12px;cursor:pointer">
-                  <div style="width:20px;height:20px;border:2px solid var(--slate-6);border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0"></div>
-                  <div style="flex:1">
-                    <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:600;color:var(--slate-4)">Critical Illness (CI)</div>
-                    <div style="font-size:11px;color:var(--slate-5);margin-top:2px">Optional cover · Max SA KES 2,000,000 · 90-day wait</div>
-                  </div>
-                  <span style="font-size:11px;color:var(--slate-5)">Click to add</span>
+                <div>
+                  <label className="form-label">Branch</label>
+                  <input type="text" className="form-input" placeholder="e.g. Upperhill" />
+                </div>
+                <div>
+                  <label className="form-label">Account Number</label>
+                  <input type="text" className="form-input" placeholder="Account number" />
+                </div>
+                <div>
+                  <label className="form-label">Account Name</label>
+                  <input type="text" className="form-input" placeholder="As per bank records" />
                 </div>
               </div>
             </div>
-
-            <div style="display:flex;justify-content:flex-end;gap:8px;padding-top:4px">
-              <button class="btn btn-ghost btn-sm">← Back</button>
-              <button class="btn btn-outline btn-sm">Save Draft</button>
-              <button class="btn btn-primary btn-sm" onclick="qStep(3)">Next: Compute Premium →</button>
-            </div>
-          </div>
-
-          <!-- STEP 4: Premium -->
-          <div id="qpanel-3" style="display:none">
-            <div class="card">
-              <div class="card-head"><div class="card-ico ico-blue">💰</div><div><h3>Premium Build-up</h3><p>Indicative premium for the quote — based on product rates and scheme profile</p></div></div>
-              <div class="card-body">
-                <div style="background:var(--slate-0);border-radius:var(--radius-sm);padding:16px 18px;font-family:'IBM Plex Mono',monospace;font-size:11px;line-height:2;border:1px solid var(--slate-2)">
-                  <div style="color:var(--slate-5)">── Risk premium computation ───────────────────</div>
-                  <div style="display:flex;justify-content:space-between"><span style="color:var(--slate-5)">Net Risk Premium (Death 4×, 4,200 lives)</span><span style="color:#fff">KES 285,120</span></div>
-                  <div style="display:flex;justify-content:space-between"><span style="color:var(--slate-5)">+ ADB (2×) Add-on</span><span style="color:#fff">KES  38,400</span></div>
-                  <div style="display:flex;justify-content:space-between"><span style="color:var(--slate-5)">+ Funeral Benefit (75K)</span><span style="color:#F5CC74">KES  12,600  ⚠override</span></div>
-                  <div style="color:var(--slate-5);margin-top:4px">── Loadings ───────────────────────────────────</div>
-                  <div style="display:flex;justify-content:space-between"><span style="color:var(--slate-5)">+ Admin Loading (12%)</span><span style="color:#fff">KES  40,334</span></div>
-                  <div style="display:flex;justify-content:space-between"><span style="color:var(--slate-5)">+ Profit Loading (8%)</span><span style="color:#fff">KES  26,889</span></div>
-                  <div style="display:flex;justify-content:space-between"><span style="color:var(--slate-5)">+ Reinsurance (5%)</span><span style="color:#fff">KES  16,806</span></div>
-                  <div style="display:flex;justify-content:space-between"><span style="color:var(--slate-5)">+ SA Override Loading (4× vs 3×)</span><span style="color:#F5CC74">KES   9,504  ⚠override</span></div>
-                  <div style="display:flex;justify-content:space-between"><span style="color:var(--slate-5)">− Group Discount (5%)</span><span style="color:var(--ok-m)">KES −18,590</span></div>
-                  <div style="color:var(--slate-5);margin-top:4px">── Statutory ──────────────────────────────────</div>
-                  <div style="display:flex;justify-content:space-between"><span style="color:var(--slate-5)">+ IRA Levy (0.25%)</span><span style="color:#fff">KES     890</span></div>
-                  <div style="display:flex;justify-content:space-between"><span style="color:var(--slate-5)">+ Stamp Duty</span><span style="color:#fff">KES      40</span></div>
-                  <div style="border-top:1px solid var(--slate-2);margin-top:8px;padding-top:8px;display:flex;justify-content:space-between"><span style="color:#fff;font-weight:600">TOTAL ANNUAL PREMIUM</span><span style="color:#2F6FFF;font-size:14px;font-weight:600">KES 411,993</span></div>
-                  <div style="display:flex;justify-content:space-between"><span style="color:var(--slate-5)">Net to Insurer (after 7.5% comm + WHT)</span><span style="color:var(--ok-m)">KES 375,918</span></div>
-                </div>
+            
+            {/* Action Buttons */}
+            <div className="action-bar">
+              <button className="btn-secondary" type="button">
+                💾 Save as Draft
+              </button>
+              <div className="action-bar-right">
+                <button className="btn-secondary" type="button">
+                  Cancel
+                </button>
+                <button className="btn-primary" type="button">
+                  Continue to Product Selection
+                  <ChevronRight />
+                </button>
               </div>
             </div>
-            <div style="display:flex;justify-content:flex-end;gap:8px">
-              <button class="btn btn-ghost btn-sm">← Back</button>
-              <button class="btn btn-outline btn-sm">Save Draft</button>
-              <button class="btn btn-primary btn-sm" onclick="qStep(4)">Next: Review & Send →</button>
-            </div>
-          </div>
-
-          <!-- STEP 5: Review & Send -->
-          <div id="qpanel-4" style="display:none">
-            <div class="banner ban-ok"><span class="bn-i">✓</span><div>Quote is ready to send. Review all details below. Once sent, the customer will have <strong>30 days</strong> to accept. When accepted, use "Convert to Policy" to bind cover.</div></div>
-            <div class="card">
-              <div class="card-head"><div class="card-ico ico-green">📋</div><div><h3>Quote Summary</h3><p>QT-2024-0312 · Safaricom PLC</p></div></div>
-              <div class="card-body">
-                <div class="fg fg-3">
-                  <div class="f"><label>Customer</label><input value="Safaricom PLC" disabled></div>
-                  <div class="f"><label>Product</label><input value="GRP-BASIC-001 — Group Life Basic" disabled></div>
-                  <div class="f"><label>Broker</label><input value="Aon Minet Kenya Ltd" disabled></div>
-                  <div class="f"><label>Members</label><input value="4,200" disabled></div>
-                  <div class="f"><label>Annual Premium</label><input value="KES 411,993" disabled class="s-ok"></div>
-                  <div class="f"><label>Valid Until</label><input value="14 Jan 2025" disabled></div>
-                </div>
-                <div class="sec-label">Delivery</div>
-                <div class="fg fg-2">
-                  <div class="f"><label>Send To</label><input value="mary.wanjiku@safaricom.co.ke" class="s-ok"></div>
-                  <div class="f"><label>CC Broker</label><input value="account@aonminet.co.ke"></div>
-                </div>
-              </div>
-            </div>
-            <div style="display:flex;justify-content:flex-end;gap:8px">
-              <button class="btn btn-ghost btn-sm">← Back</button>
-              <button class="btn btn-outline btn-sm">Save as Draft</button>
-              <button class="btn btn-ok btn-sm btn-icon">📤 Send Quote</button>
-            </div>
+            
           </div>
         </div>
-
-        <!-- sidebar activity -->
-        <div class="detail-sidebar">
-          <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--slate-4);margin-bottom:12px">Quote Activity</div>
-          <div class="activity-feed">
-            <div class="af-item"><div class="af-dot af-green"></div><div><div class="af-text"><strong>Step 1 & 2 complete</strong></div><div class="af-time">just now</div></div></div>
-            <div class="af-item"><div class="af-dot af-blue"></div><div><div class="af-text">Coverage: <strong>Death 4×</strong> — override noted, UW approval needed at policy stage</div><div class="af-time">3 min ago</div></div></div>
-            <div class="af-item"><div class="af-dot af-warn"></div><div><div class="af-text"><strong>Funeral override</strong> KES 75K vs product default 50K</div><div class="af-time">3 min ago</div></div></div>
-            <div class="af-item"><div class="af-dot af-green"></div><div><div class="af-text">KYC verified for Safaricom PLC</div><div class="af-time">yesterday</div></div></div>
-          </div>
-          <div style="margin-top:16px;border-top:1px solid var(--slate-7);padding-top:12px">
-            <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--slate-4);margin-bottom:8px">UW Flags</div>
-            <div style="background:var(--warn-l);border:1px solid var(--warn-m);border-radius:var(--radius-sm);padding:9px 11px;font-size:11px;color:#7A4A00;margin-bottom:6px">⚠ Death SA 4× exceeds product default 3× — UW sign-off required at policy bind</div>
-            <div style="background:var(--warn-l);border:1px solid var(--warn-m);border-radius:var(--radius-sm);padding:9px 11px;font-size:11px;color:#7A4A00">⚠ Funeral KES 75K exceeds default 50K — override justification needed</div>
-          </div>
-          <div style="margin-top:16px;border-top:1px solid var(--slate-7);padding-top:12px">
-            <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--slate-4);margin-bottom:8px">Indicative Premium</div>
-            <div style="background:var(--slate-1);border-radius:var(--radius-sm);padding:10px 12px">
-              <div style="font-family:'IBM Plex Mono',monospace;font-size:20px;font-weight:500;color:#fff;line-height:1">KES 411,993</div>
-              <div style="font-size:10px;color:var(--slate-5);margin-top:4px">Annual · incl. levies</div>
-              <div style="font-size:9px;color:var(--slate-5);margin-top:2px">Indicative — subject to UW confirmation</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-
-    <!-- ════════ TAB: CONVERT TO POLICY ════════ -->
-    <div class="tab-panel" id="tab-convert">
-      <div class="detail-shell">
-        <div class="detail-form">
-
-          <div class="step-hd">
-            <div class="step-hd-top"><span class="step-chip">Quote → Policy</span></div>
-            <div class="step-h1">Convert Quote to Policy</div>
-            <div class="step-desc">Review the accepted quote, confirm any changes, complete the remaining policy requirements and bind cover. The policy number will be generated on binding.</div>
-          </div>
-
-          <!-- Conversion tracker -->
-          <div class="conv-track" style="margin-bottom:24px">
-            <div class="ct-step done">
-              <div class="ct-circle">✓</div>
-              <div class="ct-label">Quote Created</div>
-              <div class="ct-sub">QT-2024-0312</div>
-            </div>
-            <div class="ct-step done">
-              <div class="ct-circle">✓</div>
-              <div class="ct-label">Quote Sent</div>
-              <div class="ct-sub">14 Dec 2024</div>
-            </div>
-            <div class="ct-step done">
-              <div class="ct-circle">✓</div>
-              <div class="ct-label">Customer Accepted</div>
-              <div class="ct-sub">3 Jan 2025</div>
-            </div>
-            <div class="ct-step active">
-              <div class="ct-circle">4</div>
-              <div class="ct-label">Bind & Issue Policy</div>
-              <div class="ct-sub">You are here</div>
-            </div>
-            <div class="ct-step">
-              <div class="ct-circle">5</div>
-              <div class="ct-label">Documents Issued</div>
-              <div class="ct-sub">Policy schedule</div>
-            </div>
-          </div>
-
-          <!-- Accepted quote box -->
-          <div class="conv-box">
-            <div class="conv-box-title">✓ Accepted Quote — Ready to Convert</div>
-            <div class="conv-box-desc">QT-2024-0312 · Safaricom PLC · Accepted 3 Jan 2025 by Mary Wanjiku (HR Director). Annual premium KES 411,993. Valid until 14 Jan 2025.</div>
-          </div>
-
-          <!-- What's changing -->
-          <div class="card">
-            <div class="card-head">
-              <div class="card-ico ico-warn">🔍</div>
-              <div><h3>Quote → Policy: What Changes</h3><p>Review any differences between the quote and final policy terms</p></div>
-            </div>
-            <div class="card-body">
-              <table class="diff-table">
-                <thead>
-                  <tr><th>Field</th><th>Quote Value</th><th>Policy Value</th><th>Status</th></tr>
-                </thead>
-                <tbody>
-                  <tr><td class="diff-field">Inception Date</td><td class="diff-old">Indicative: 1 Feb 2025</td><td class="diff-new">1 Feb 2025</td><td><span class="diff-badge diff-same">Confirmed</span></td></tr>
-                  <tr><td class="diff-field">Annual Premium</td><td class="diff-old">KES 411,993 (indicative)</td><td class="diff-new">KES 411,993</td><td><span class="diff-badge diff-same">No change</span></td></tr>
-                  <tr><td class="diff-field">Death SA Multiple</td><td class="diff-old">4× (with UW flag)</td><td class="diff-new">4× — UW approved ✓</td><td><span class="diff-badge diff-new-field">UW Approved</span></td></tr>
-                  <tr><td class="diff-field">IRA Filing Reference</td><td class="diff-old">— Not required for quote</td><td class="diff-new"><input type="text" placeholder="e.g. IRA/GRP/2025/0041" style="padding:5px 8px;font-size:11px"></td><td><span class="diff-badge diff-changed">Required</span></td></tr>
-                  <tr><td class="diff-field">Policy Number</td><td class="diff-old">— (assigned on bind)</td><td class="diff-new" style="font-family:'IBM Plex Mono',monospace;color:var(--ok)">GL-2025-004201 (auto)</td><td><span class="diff-badge diff-new-field">Auto-assigned</span></td></tr>
-                  <tr><td class="diff-field">Payment Reference</td><td class="diff-old">—</td><td class="diff-new"><input type="text" placeholder="e.g. TRX-2025-012345" style="padding:5px 8px;font-size:11px"></td><td><span class="diff-badge diff-new-field">Required before bind</span></td></tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- Binding checklist -->
-          <div class="card">
-            <div class="card-head">
-              <div class="card-ico ico-green">✓</div>
-              <div><h3>Pre-bind Checklist</h3><p>All items must be green before the policy can be issued</p></div>
-            </div>
-            <div class="card-body">
-              <div class="checklist">
-                <div class="chk-item ok">
-                  <span class="chk-ico">✅</span>
-                  <div class="chk-text"><strong>Customer KYC verified</strong><div class="sub">Safaricom PLC — KYC complete, PIN validated</div></div>
-                </div>
-                <div class="chk-item ok">
-                  <span class="chk-ico">✅</span>
-                  <div class="chk-text"><strong>Broker licence active</strong><div class="sub">Aon Minet Kenya Ltd — IRA Lic IB-00234 valid until 31 Dec 2025</div></div>
-                </div>
-                <div class="chk-item ok">
-                  <span class="chk-ico">✅</span>
-                  <div class="chk-text"><strong>UW approved — Death SA 4×</strong><div class="sub">Approved by James Kariuki (Senior UW) — 5 Jan 2025</div></div>
-                </div>
-                <div class="chk-item ok">
-                  <span class="chk-ico">✅</span>
-                  <div class="chk-text"><strong>Member schedule uploaded</strong><div class="sub">4,200 members validated — 3 medical evidence cases pending (separate track)</div></div>
-                </div>
-                <div class="chk-item warn">
-                  <span class="chk-ico">⚠️</span>
-                  <div class="chk-text"><strong>IRA filing reference missing</strong><div class="sub">Required for group life products. Enter reference above.</div></div>
-                  <span class="chk-action">Enter now</span>
-                </div>
-                <div class="chk-item warn">
-                  <span class="chk-ico">⚠️</span>
-                  <div class="chk-text"><strong>Premium payment not yet confirmed</strong><div class="sub">Policy can be bound but cover is provisional until first premium is receipted within grace period.</div></div>
-                  <span class="chk-action">Record payment</span>
-                </div>
-                <div class="chk-item err">
-                  <span class="chk-ico">🚫</span>
-                  <div class="chk-text"><strong>Medical evidence pending — 2 members</strong><div class="sub">Members Ochieng D. and Munyiri K. have SA above FCL. Medical reports not yet received. Policy can be issued but these 2 lives will be excluded until evidence received.</div></div>
-                  <span class="chk-action">View members</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Policy terms confirmation -->
-          <div class="card">
-            <div class="card-head"><div class="card-ico ico-blue">📋</div><div><h3>Confirm Policy Terms</h3><p>Final editable fields before binding</p></div></div>
-            <div class="card-body">
-              <div class="fg fg-3">
-                <div class="f"><label>Policy Number <span class="tag t-auto">Auto</span></label><input value="GL-2025-004201" disabled class="s-ok"><div class="f-msg fmsg-ok">✓ Auto-generated on bind</div></div>
-                <div class="f"><label>Inception Date <span class="req">*</span></label><input type="date" value="2025-02-01"></div>
-                <div class="f"><label>Expiry Date <span class="tag t-auto">Auto</span></label><input value="31 Jan 2026" disabled></div>
-                <div class="f"><label>Payment Frequency</label><select><option>Annual</option><option>Semi-annual</option><option>Quarterly</option></select></div>
-                <div class="f"><label>Premium Due Date</label><input type="date" value="2025-02-01"></div>
-                <div class="f"><label>Grace Period</label><select><option>30 days (default)</option><option>60 days</option></select></div>
-              </div>
-              <div class="sec-label">Delivery</div>
-              <div class="fg fg-2">
-                <div class="f"><label>Policy Schedule — Send To</label><input value="mary.wanjiku@safaricom.co.ke"></div>
-                <div class="f"><label>Member Certificates — Send To</label><input value="mary.wanjiku@safaricom.co.ke"></div>
-              </div>
-            </div>
-          </div>
-
-          <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0 20px">
-            <button class="btn btn-ghost btn-sm">← Back to Quotes</button>
-            <div style="display:flex;gap:8px">
-              <button class="btn btn-outline btn-sm">Save Progress</button>
-              <button class="btn btn-warn btn-sm" style="opacity:.5" title="Resolve blockers first">🔒 Bind Policy (2 blockers)</button>
-              <button class="btn btn-ok btn-sm btn-icon" style="display:none">🛡 Bind Policy & Issue Documents</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- right sidebar -->
-        <div class="detail-sidebar">
-          <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--slate-4);margin-bottom:10px">Quote Summary</div>
-          <div style="background:var(--slate-1);border-radius:var(--radius-sm);padding:12px;margin-bottom:12px;border:1px solid var(--slate-2)">
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent);margin-bottom:8px">QT-2024-0312</div>
-            <div style="font-size:10px;color:var(--slate-5);display:flex;justify-content:space-between;margin-bottom:3px"><span>Customer</span><span style="color:var(--slate-6)">Safaricom PLC</span></div>
-            <div style="font-size:10px;color:var(--slate-5);display:flex;justify-content:space-between;margin-bottom:3px"><span>Product</span><span style="color:var(--slate-6)">GRP-BASIC-001</span></div>
-            <div style="font-size:10px;color:var(--slate-5);display:flex;justify-content:space-between;margin-bottom:3px"><span>Members</span><span style="color:var(--slate-6)">4,200</span></div>
-            <div style="font-size:10px;color:var(--slate-5);display:flex;justify-content:space-between;margin-bottom:3px"><span>Broker</span><span style="color:var(--slate-6)">Aon Minet</span></div>
-            <div style="border-top:1px solid var(--slate-2);margin-top:8px;padding-top:8px;display:flex;justify-content:space-between">
-              <span style="font-size:10px;color:var(--slate-5)">Annual Premium</span>
-              <span style="font-family:'IBM Plex Mono',monospace;font-size:14px;color:#fff;font-weight:500">KES 411,993</span>
-            </div>
-          </div>
-
-          <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--slate-4);margin-bottom:8px">Checklist Status</div>
-          <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:12px">
-            <div style="display:flex;align-items:center;gap:7px;font-size:11px"><span style="color:var(--ok)">✅</span><span style="color:var(--slate-3)">KYC verified</span></div>
-            <div style="display:flex;align-items:center;gap:7px;font-size:11px"><span style="color:var(--ok)">✅</span><span style="color:var(--slate-3)">Broker licensed</span></div>
-            <div style="display:flex;align-items:center;gap:7px;font-size:11px"><span style="color:var(--ok)">✅</span><span style="color:var(--slate-3)">UW approved</span></div>
-            <div style="display:flex;align-items:center;gap:7px;font-size:11px"><span style="color:var(--ok)">✅</span><span style="color:var(--slate-3)">Member schedule</span></div>
-            <div style="display:flex;align-items:center;gap:7px;font-size:11px"><span style="color:var(--warn)">⚠</span><span style="color:var(--slate-4)">IRA reference missing</span></div>
-            <div style="display:flex;align-items:center;gap:7px;font-size:11px"><span style="color:var(--warn)">⚠</span><span style="color:var(--slate-4)">Premium not yet paid</span></div>
-            <div style="display:flex;align-items:center;gap:7px;font-size:11px"><span style="color:var(--err)">🚫</span><span style="color:var(--slate-3)">Medical pending (2)</span></div>
-          </div>
-
-          <div style="background:var(--err-l);border:1px solid var(--err-m);border-radius:var(--radius-sm);padding:9px 11px;font-size:11px;color:#7A1010;margin-bottom:8px">
-            <strong>2 blockers</strong> — resolve before binding
-          </div>
-          <div style="background:var(--warn-l);border:1px solid var(--warn-m);border-radius:var(--radius-sm);padding:9px 11px;font-size:11px;color:#7A4A00">
-            <strong>2 warnings</strong> — can bind but note these
-          </div>
-
-          <div style="margin-top:14px;border-top:1px solid var(--slate-7);padding-top:12px">
-            <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--slate-4);margin-bottom:8px">When Bound</div>
-            <div style="font-size:11px;color:var(--slate-5);line-height:1.7">
-              ✓ Policy GL-2025-004201 issued<br>
-              ✓ Debit note auto-generated<br>
-              ✓ IRA levy calculated<br>
-              ✓ Policy schedule emailed<br>
-              ✓ Member certs. queued<br>
-              ✓ UW referrals created (2 medical cases)
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-
-    <!-- ════════ TAB: CUSTOMER DETAIL ════════ -->
-    <div class="tab-panel" id="tab-customerdetail">
-      <div class="list-toolbar" style="border-bottom:1px solid var(--slate-7)">
-        <button class="btn btn-outline btn-sm" onclick="switchTab('customers',null)">← All Customers</button>
-        <span style="font-size:13px;font-weight:600;font-family:'Syne',sans-serif;margin-left:4px">Safaricom PLC</span>
-        <span class="status st-active" style="margin-left:8px"><span class="status-dot"></span>Active · KYC ✓</span>
-        <div class="toolbar-right">
-          <button class="btn btn-outline btn-sm">Edit Profile</button>
-          <button class="btn btn-primary btn-sm" onclick="switchTab('newquote',null)">＋ New Quote</button>
-        </div>
-      </div>
-      <div class="detail-shell">
-        <div class="detail-form">
-          <!-- Customer type selector tabs -->
-          <div style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap">
-            <div style="background:var(--ok-l);border:1.5px solid var(--ok-m);border-radius:var(--radius);padding:10px 16px;flex:1;min-width:140px;cursor:pointer">
-              <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--ok);margin-bottom:2px">Type</div>
-              <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--slate-1)">🏭 Employer</div>
-              <div style="font-size:10px;color:var(--slate-5)">Direct scheme holder</div>
-            </div>
-            <div style="background:var(--slate-8);border:1.5px solid var(--slate-7);border-radius:var(--radius);padding:10px 16px;flex:1;min-width:140px;cursor:pointer;opacity:.5">
-              <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--slate-4);margin-bottom:2px">Also supported</div>
-              <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--slate-4)">🤝 Broker</div>
-              <div style="font-size:10px;color:var(--slate-5)">Intermediary / distributor</div>
-            </div>
-            <div style="background:var(--slate-8);border:1.5px solid var(--slate-7);border-radius:var(--radius);padding:10px 16px;flex:1;min-width:140px;cursor:pointer;opacity:.5">
-              <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--slate-4);margin-bottom:2px">Also supported</div>
-              <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--slate-4)">🏦 Bank</div>
-              <div style="font-size:10px;color:var(--slate-5)">Bancassurance partner</div>
-            </div>
-          </div>
-
-          <div class="card">
-            <div class="card-head"><div class="card-ico ico-green">🏢</div><div><h3>Employer Profile</h3><p>Core organisation details</p></div><div class="card-head-right"><span class="status st-active"><span class="status-dot"></span>Active</span></div></div>
-            <div class="card-body">
-              <div class="fg fg-3">
-                <div class="f"><label>Employer Name <span class="req">*</span></label><input value="Safaricom PLC"></div>
-                <div class="f"><label>KRA PIN <span class="req">*</span></label><input value="P051234567X" class="s-ok"><div class="f-msg fmsg-ok">✓ Verified with KRA iTax</div></div>
-                <div class="f"><label>Industry <span class="req">*</span></label><select><option>Telecommunications</option></select></div>
-                <div class="f"><label>Physical Address</label><input value="Safaricom House, Waiyaki Way, Westlands"></div>
-                <div class="f"><label>Town / County</label><select><option>Nairobi</option></select></div>
-                <div class="f"><label>Website</label><input value="www.safaricom.co.ke"></div>
-              </div>
-              <div class="sec-label">Primary Contact</div>
-              <div class="fg fg-4">
-                <div class="f"><label>Contact Name</label><input value="Mary Wanjiku"></div>
-                <div class="f"><label>Role</label><input value="HR Director"></div>
-                <div class="f"><label>Email <span class="req">*</span></label><input value="mary.wanjiku@safaricom.co.ke" class="s-ok"></div>
-                <div class="f"><label>Mobile</label><input value="+254 722 123 456"></div>
-              </div>
-            </div>
-          </div>
-
-          <!-- KYC Card -->
-          <div class="card">
-            <div class="card-head"><div class="card-ico ico-teal">🔐</div><div><h3>KYC / AML Status</h3><p>Verification documents and compliance status</p></div><div class="card-head-right"><span class="status st-kyc"><span class="status-dot"></span>KYC Complete</span></div></div>
-            <div class="card-body">
-              <div class="fg fg-3">
-                <div class="f"><label>KYC Status</label><input value="Verified" disabled class="s-ok"></div>
-                <div class="f"><label>Verified By</label><input value="James Mwangi · 10 Nov 2024" disabled></div>
-                <div class="f"><label>Next Review Date</label><input value="10 Nov 2025" disabled></div>
-              </div>
-              <div class="sec-label">Documents on File</div>
-              <div class="fg fg-3">
-                <div style="background:var(--ok-l);border:1px solid var(--ok-m);border-radius:var(--radius-sm);padding:9px 12px;display:flex;align-items:center;gap:8px;font-size:11px;color:var(--slate-2)"><span>📄</span><span><strong>Certificate of Incorporation</strong><div style="font-size:10px;color:var(--slate-5)">Uploaded 10 Nov 2024</div></span></div>
-                <div style="background:var(--ok-l);border:1px solid var(--ok-m);border-radius:var(--radius-sm);padding:9px 12px;display:flex;align-items:center;gap:8px;font-size:11px;color:var(--slate-2)"><span>📄</span><span><strong>KRA PIN Certificate</strong><div style="font-size:10px;color:var(--slate-5)">Uploaded 10 Nov 2024</div></span></div>
-                <div style="background:var(--ok-l);border:1px solid var(--ok-m);border-radius:var(--radius-sm);padding:9px 12px;display:flex;align-items:center;gap:8px;font-size:11px;color:var(--slate-2)"><span>📄</span><span><strong>CR12 — Shareholders</strong><div style="font-size:10px;color:var(--slate-5)">Uploaded 10 Nov 2024</div></span></div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Linked Policies -->
-          <div class="card">
-            <div class="card-head"><div class="card-ico ico-blue">📋</div><div><h3>Linked Policies</h3><p>All active and historical policies for this employer</p></div><div class="card-head-right"><button class="btn btn-primary btn-sm" onclick="switchTab('newquote',null)">＋ New Quote</button></div></div>
-            <div class="card-body" style="padding:0">
-              <table class="data-table">
-                <thead><tr><th>Policy No.</th><th>Product</th><th>Members</th><th>Annual Premium</th><th>Status</th><th>Expiry</th><th></th></tr></thead>
-                <tbody>
-                  <tr><td class="td-mono">GL-2024-003100</td><td>GRP-BASIC-001</td><td>4,200</td><td class="td-mono">KES 384,000</td><td><span class="status st-active"><span class="status-dot"></span>Active</span></td><td class="td-muted">31 Jan 2025</td><td class="td-actions"><button class="btn btn-outline btn-sm">View</button></td></tr>
-                  <tr><td class="td-mono">GL-2023-002450</td><td>GRP-BASIC-001</td><td>3,900</td><td class="td-mono">KES 352,000</td><td><span class="status st-expired"><span class="status-dot"></span>Expired</span></td><td class="td-muted">31 Jan 2024</td><td class="td-actions"><button class="btn btn-outline btn-sm">View</button></td></tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        <div class="detail-sidebar">
-          <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--slate-4);margin-bottom:10px">Employer 360</div>
-          <div style="background:var(--slate-1);border-radius:var(--radius-sm);padding:12px;margin-bottom:12px;border:1px solid var(--slate-2)">
-            <div style="font-size:10px;color:var(--slate-5);display:flex;justify-content:space-between;margin-bottom:4px"><span>Active Policies</span><span style="color:#fff;font-family:'IBM Plex Mono',monospace">1</span></div>
-            <div style="font-size:10px;color:var(--slate-5);display:flex;justify-content:space-between;margin-bottom:4px"><span>Lives Covered</span><span style="color:#fff;font-family:'IBM Plex Mono',monospace">4,200</span></div>
-            <div style="font-size:10px;color:var(--slate-5);display:flex;justify-content:space-between;margin-bottom:4px"><span>Open Claims</span><span style="color:var(--warn-m);font-family:'IBM Plex Mono',monospace">2</span></div>
-            <div style="font-size:10px;color:var(--slate-5);display:flex;justify-content:space-between;margin-bottom:4px"><span>Premium YTD</span><span style="color:var(--ok-m);font-family:'IBM Plex Mono',monospace">KES 384K</span></div>
-            <div style="font-size:10px;color:var(--slate-5);display:flex;justify-content:space-between"><span>Loss Ratio</span><span style="color:var(--ok-m);font-family:'IBM Plex Mono',monospace">34%</span></div>
-          </div>
-          <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--slate-4);margin-bottom:8px">Recent Activity</div>
-          <div class="activity-feed">
-            <div class="af-item"><div class="af-dot af-green"></div><div><div class="af-text">Quote <strong>QT-2024-0312</strong> accepted</div><div class="af-time">3 Jan 2025</div></div></div>
-            <div class="af-item"><div class="af-dot af-blue"></div><div><div class="af-text">Quote sent to Mary Wanjiku</div><div class="af-time">14 Dec 2024</div></div></div>
-            <div class="af-item"><div class="af-dot af-warn"></div><div><div class="af-text">Renewal due: <strong>GL-2024-003100</strong></div><div class="af-time">31 Jan 2025</div></div></div>
-            <div class="af-item"><div class="af-dot af-purple"></div><div><div class="af-text">KYC review completed</div><div class="af-time">10 Nov 2024</div></div></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ════════ TAB: ADD CUSTOMER ════════ -->
-    <div class="tab-panel" id="tab-newcustomer">
-      <div class="list-toolbar">
-        <button class="btn btn-outline btn-sm" onclick="switchTab('customers',null)">← Back to Customers</button>
-        <span style="font-size:13px;font-weight:600;font-family:'Syne',sans-serif;margin-left:8px">Add New Customer</span>
-      </div>
-      <div class="detail-form" style="max-width:760px;padding:20px 24px">
-        <div class="step-hd">
-          <div class="step-hd-top"><span class="step-chip">New Customer</span></div>
-          <div class="step-h1">Add Customer</div>
-          <div class="step-desc">Customers can be employers (scheme holders), brokers (intermediaries), or banks (bancassurance partners). Select the type to see the relevant fields.</div>
-        </div>
-
-        <!-- Customer type selection -->
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px" id="ctypeSelect">
-          <div class="ctype-card" onclick="selectCType('employer',this)" style="border:2px solid var(--accent);background:var(--accent-l);border-radius:var(--radius);padding:16px;cursor:pointer;text-align:center;transition:all .15s">
-            <div style="font-size:28px;margin-bottom:8px">🏭</div>
-            <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--accent)">Employer</div>
-            <div style="font-size:11px;color:var(--slate-4);margin-top:3px">Scheme holder — direct insurance buyer</div>
-          </div>
-          <div class="ctype-card" onclick="selectCType('broker',this)" style="border:2px solid var(--slate-7);background:var(--white);border-radius:var(--radius);padding:16px;cursor:pointer;text-align:center;transition:all .15s">
-            <div style="font-size:28px;margin-bottom:8px">🤝</div>
-            <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--slate-3)">Broker</div>
-            <div style="font-size:11px;color:var(--slate-5);margin-top:3px">IRA-licensed intermediary</div>
-          </div>
-          <div class="ctype-card" onclick="selectCType('bank',this)" style="border:2px solid var(--slate-7);background:var(--white);border-radius:var(--radius);padding:16px;cursor:pointer;text-align:center;transition:all .15s">
-            <div style="font-size:28px;margin-bottom:8px">🏦</div>
-            <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--slate-3)">Bank / Bancassurance</div>
-            <div style="font-size:11px;color:var(--slate-5);margin-top:3px">CBK-regulated bancassurance partner</div>
-          </div>
-        </div>
-
-        <!-- Employer fields -->
-        <div id="form-employer">
-          <div class="card">
-            <div class="card-head"><div class="card-ico ico-green">🏢</div><div><h3>Employer Details</h3></div></div>
-            <div class="card-body">
-              <div class="fg fg-2" style="margin-bottom:12px">
-                <div class="f"><label>Employer / Company Name <span class="req">*</span></label><input placeholder="e.g. Safaricom PLC"></div>
-                <div class="f"><label>KRA PIN <span class="req">*</span></label><input placeholder="e.g. P051234567X"><div class="f-hint">Will be validated against KRA iTax</div></div>
-              </div>
-              <div class="fg fg-3">
-                <div class="f"><label>Industry <span class="req">*</span></label><select><option value="">Select industry…</option><option>Telecommunications</option><option>Banking & Finance</option><option>Manufacturing</option><option>Government / Parastatals</option><option>NGO / International Org</option><option>Retail & FMCG</option><option>Education</option><option>Healthcare</option></select></div>
-                <div class="f"><label>Approximate Staff Count</label><select><option>1–50</option><option>51–200</option><option>201–500</option><option selected>501–2,000</option><option>2,000+</option></select></div>
-                <div class="f"><label>Town / County</label><select><option>Nairobi</option><option>Mombasa</option><option>Kisumu</option><option>Nakuru</option><option>Other</option></select></div>
-                <div class="f col-2"><label>Physical Address</label><input placeholder="Building, Street, Town"></div>
-              </div>
-              <div class="sec-label">Primary Contact</div>
-              <div class="fg fg-4">
-                <div class="f"><label>Full Name <span class="req">*</span></label><input placeholder="Contact name"></div>
-                <div class="f"><label>Role / Title</label><input placeholder="e.g. HR Manager"></div>
-                <div class="f"><label>Email <span class="req">*</span></label><input type="email" placeholder="email@company.co.ke"></div>
-                <div class="f"><label>Mobile</label><input placeholder="+254 7XX XXX XXX"></div>
-              </div>
-              <div class="sec-label">Relationship</div>
-              <div class="fg fg-3">
-                <div class="f"><label>Assigned Broker</label><select><option value="">No broker — direct</option><option>Aon Minet Kenya Ltd</option><option>Old Mutual Brokers</option></select></div>
-                <div class="f"><label>Relationship Manager</label><select><option>James Mwangi</option><option>Sarah Chebet</option></select></div>
-                <div class="f"><label>Source / How they found us</label><select><option>Broker referral</option><option>Direct enquiry</option><option>Existing client referral</option><option>Marketing campaign</option></select></div>
-              </div>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-head"><div class="card-ico ico-teal">🔐</div><div><h3>KYC Documents</h3><p>Upload verification documents — can be completed later but required before a policy can be issued</p></div></div>
-            <div class="card-body">
-              <div class="fg fg-3">
-                <div style="border:1.5px dashed var(--slate-7);border-radius:var(--radius-sm);padding:12px;text-align:center;cursor:pointer;font-size:11px;color:var(--slate-5)">📎<br>Certificate of Incorporation<br><span style="font-size:10px;color:var(--accent)">Click to upload</span></div>
-                <div style="border:1.5px dashed var(--slate-7);border-radius:var(--radius-sm);padding:12px;text-align:center;cursor:pointer;font-size:11px;color:var(--slate-5)">📎<br>KRA PIN Certificate<br><span style="font-size:10px;color:var(--accent)">Click to upload</span></div>
-                <div style="border:1.5px dashed var(--slate-7);border-radius:var(--radius-sm);padding:12px;text-align:center;cursor:pointer;font-size:11px;color:var(--slate-5)">📎<br>CR12 / Directors List<br><span style="font-size:10px;color:var(--accent)">Click to upload</span></div>
-              </div>
-              <div class="banner ban-info" style="margin-top:12px;margin-bottom:0"><span class="bn-i">ℹ</span><div>KYC can be uploaded later. Customer profile will be saved in "KYC Pending" status. A policy cannot be issued until KYC is complete.</div></div>
-            </div>
-          </div>
-          <div style="display:flex;justify-content:flex-end;gap:8px;padding-bottom:20px">
-            <button class="btn btn-ghost btn-sm">Cancel</button>
-            <button class="btn btn-outline btn-sm">Save — KYC Pending</button>
-            <button class="btn btn-ok btn-sm">Save & Complete KYC ✓</button>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-  </div><!-- /main-area -->
-</div><!-- /shell -->
-
-<script>
-// Tab switching
-function switchTab(id, triggerEl) {
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.mtab').forEach(t => t.classList.remove('active'));
-  const panel = document.getElementById('tab-' + id);
-  if (panel) panel.classList.add('active');
-  if (triggerEl) triggerEl.classList.add('active');
-}
-
-// Nav sidebar
-function navTo(el) {
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  el.classList.add('active');
-}
-
-// Quote wizard steps
-function qStep(n) {
-  for(let i=0;i<5;i++) {
-    const p = document.getElementById('qpanel-'+i);
-    const s = document.querySelectorAll('.qws')[i];
-    if(p) p.style.display = (i===n)?'block':'none';
-    if(s) {
-      s.classList.remove('active','done');
-      if(i < n) s.classList.add('done');
-      if(i === n) s.classList.add('active');
+      );
     }
-  }
-}
 
-// Customer type selector
-function selectCType(type, el) {
-  document.querySelectorAll('.ctype-card').forEach(c => {
-    c.style.border = '2px solid var(--slate-7)';
-    c.style.background = 'var(--white)';
-    c.querySelectorAll('div')[1].style.color = 'var(--slate-3)';
-  });
-  el.style.border = '2px solid var(--accent)';
-  el.style.background = 'var(--accent-l)';
-  el.querySelector('div:nth-child(2)').style.color = 'var(--accent)';
-}
-
-// Expand coverage body
-document.querySelectorAll('.cov-expand').forEach(el => {
-  el.addEventListener('click', e => e.stopPropagation());
-});
-</script>
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
 </body>
 </html>
